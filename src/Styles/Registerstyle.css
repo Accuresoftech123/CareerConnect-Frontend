@@ -36,8 +36,8 @@
   border-radius: 5px;
   cursor: pointer;
 }
-.btn-primary:hover{
-  background-color: #842CC0;
+.btn-primary:hover {
+  background-color: #842cc0;
 }
 .register-section {
   padding: 10px;
@@ -46,7 +46,7 @@
   background: linear-gradient(156deg, #e0cef5, #fff);
   position: relative;
   overflow: hidden;
-    margin-bottom: 0;
+  margin-bottom: 0;
 }
 .register-section::before {
   content: " ";
@@ -148,8 +148,8 @@
   border: none;
   cursor: pointer;
 }
-.registerbtn-primary:hover{
-  background-color: #842CC0;
+.registerbtn-primary:hover {
+  background-color: #842cc0;
 }
 .register-fillUp h3 {
   font-size: 22px;
@@ -159,6 +159,29 @@
   text-decoration: none;
   color: #b153e5;
 }
-.optionlogin {
+.optionregister {
   text-align: center;
+  margin-bottom: 82px;
+}
+.registerinput-container {
+  position: relative;
+}
+.registerinput-container > svg {
+  position: absolute;
+  margin: 6px;
+  opacity: 0.9;
+  font-size: 20px;
+}
+.registerinput-container > input {
+  padding-left: 40px;
+}
+.user-type {
+  display: flex;
+  /* justify-content: space-between; */
+}
+.user-type label {
+  font-size: 12px;
+  /* display: flex; */
+  /* align-content: center; */
+  gap: 2px;
 }

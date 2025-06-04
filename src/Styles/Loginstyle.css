@@ -36,8 +36,8 @@
   border-radius: 5px;
   cursor: pointer;
 }
-.btn-primary:hover{
-  background-color: #842CC0;
+.btn-primary:hover {
+  background-color: #842cc0;
 }
 .login-section {
   padding: 10px;
@@ -93,7 +93,7 @@
   font-weight: Extra bold;
   color: #000;
   padding-right: 6rem;
-   padding-top: 10px;
+  padding-top: 10px;
   padding-left: 10px;
   position: relative;
   z-index: 1;
@@ -149,8 +149,8 @@
   font-weight: bold;
   margin-top: 4px;
 }
-.loginbtn-outline:hover{
- background-color: #ffc78e;
+.loginbtn-outline:hover {
+  background-color: #ffc78e;
 }
 .loginbtn-primary {
   background: #b153e5;
@@ -158,8 +158,8 @@
   border: none;
   cursor: pointer;
 }
-.loginbtn-primary:hover{
-  background-color: #842CC0;
+.loginbtn-primary:hover {
+  background-color: #842cc0;
 }
 .login-fillUp img {
   height: 25px;
@@ -179,4 +179,17 @@
 .optionlogin {
   text-align: center;
   margin: 4px;
+  margin-bottom: 32px;
+}
+.Logininput-container {
+  position: relative;
+}
+.Logininput-container > svg {
+  position: absolute;
+  margin: 6px;
+  opacity: 0.9;
+  font-size: 20px;
+}
+.Logininput-container > input {
+  padding-left: 40px;
 }

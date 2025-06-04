@@ -1,15 +1,35 @@
-// import react from 'react';
+import React, { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../Helper/ActionsAsync";
 import { useNavigate } from "react-router-dom";
 import "../Styles/Loginstyle.css";
 import linkedin from "../Images/linkedin.svg";
 import google_g from "../Images/google_g.jpg";
 import login from "../Images/login.svg";
+import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
+import LockIcon from "@mui/icons-material/Lock";
+import SvgIcon from "@mui/icons-material/LocalPostOffice";
 
 const Login = () => {
   const navigate = useNavigate();
   const UserRegistration = (e) => {
     navigate("/Registration");
   };
+  const dispatch = useDispatch();
+  const loginState = useSelector((state) => state.login);
+  const { isAuthenticated, error } = loginState;
+  // const isAuthenticated = useSelector(state => state.login.isAuthenticated);
+
+  const [email, setemail] = useState("");
+  const [LPass, setLPass] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    dispatch(loginUser({ email, LPass }));
+  };
+  if (isAuthenticated) {
+    return <h2>Welcome back!</h2>;
+  }
 
   return (
     <div className="loginpage-container">
@@ -34,10 +54,9 @@ const Login = () => {
               Welcome Back, to <span> Career Connect</span>
             </h1>
             <p>Your gateway to professional opportunities</p>
-             <div className="illustration"><img
-              src={login}
-              alt="welcome Illustration"
-            /></div>
+            <div className="illustration">
+              <img src={login} alt="welcome Illustration" />
+            </div>
           </div>
           {/*Form section */}
           <div className="login-fillUp col-6">
@@ -46,49 +65,56 @@ const Login = () => {
               <p>Please enter your details</p>
               <div>
                 <label className="m-1 row">Email Id : </label>
-                <input
-                  type="email"
-                  //   onChange={(e) => setemail(e.target.value)}
-                  placeholder="Enter email id"
-                  required
-                ></input>
+                <div className="Logininput-container">
+                  <SvgIcon component={LocalPostOfficeIcon} />
+                  <input
+                    type="email"
+                    onChange={(e) => setemail(e.target.value)}
+                    placeholder="Enter email id"
+                    required
+                  ></input>
+                </div>
               </div>
               <div>
                 <label className="m-1 row">Password :</label>
-                <input
-                  type="Password"
-                  //   onChange={(e) => setLPass(e.target.value)}
-                  placeholder="Enter Password  "
-                  required
-                ></input>
+                <div className="Logininput-container">
+                  <SvgIcon component={LockIcon} />
+                  <input
+                    type="Password"
+                    onChange={(e) => setLPass(e.target.value)}
+                    placeholder="Enter Password  "
+                    required
+                  ></input>
+                </div>
                 <p className="forgotpass">
-                  <a href="forgot_password"> Forgot Password</a>
+                  <a href="forgot_password"> Forgot Password?</a>
                 </p>
               </div>
               <div>
                 <div>
                   <button
                     className="loginbtn-primary"
-                    // onClick={loginUser}
+                    onClick={handleSubmit}
                     type="submit"
                   >
                     Log in
                   </button>
+                  {error && <p style={{ color: "red" }}>{error}</p>}
                 </div>
                 <div className="optionlogin">or continue with</div>
                 <div>
                   <button className="loginbtn-outline">
                     <img src={google_g} alt="Google" />
-                     Google
+                    Google
                   </button>
                   <button className="loginbtn-outline">
                     <img src={linkedin} alt="LinkedIn" />
-                     Continue with LinkedIn
+                    Continue with LinkedIn
                   </button>
                 </div>
                 <div className="optionlogin">
                   <p>
-                    Don't have an account?<a href="register"> Register</a>
+                    Don't have an account?<a href="registration"> Register</a>
                   </p>
                 </div>
               </div>

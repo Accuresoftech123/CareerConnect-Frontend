@@ -15,37 +15,44 @@ import HealthAndSafetyOutlinedIcon from "@mui/icons-material/HealthAndSafetyOutl
 import MonitorIcon from "@mui/icons-material/Monitor";
 import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
 import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
-import { Card } from "@mui/material";
-import { useNavigate } from "react-router-dom";
-// import { Search } from 'lucide-react';
+import { Card, SvgIcon } from "@mui/material";
+import { Link } from "react-router-dom";
+import SearchIcon from "@mui/icons-material/Search";
+import { MapPin } from "lucide-react";
 
 const HomePage = () => {
-  const navigate = useNavigate();
-  const UserRegistration = (e) => {
-    navigate("/Registration");
-  };
-  const UserLogin = (e) => {
-    navigate("/Login");
-  };
+  // const navigate = useNavigate();
+  // const UserRegistration = (e) => {
+  //   navigate("/Registration");
+  // };
+  // const UserLogin = (e) => {
+  //   navigate("/Login");
+  // };
   return (
     <div className="page-container">
       {/* Header */}
-      <header className="Homepage-header">
+      <nav className="Homepage-header">
         <div className="logo">
           <span>Career</span> Connect
         </div>
-        <nav className="nav-links">
-          <a href="home">Home</a>
-          <a href="jobs">Jobs</a>
-          <a href="companies">Companies</a>
-          <button className="btn-outline" onClick={UserLogin}>
-            Log In
-          </button>
-          <button className="btn-primary" onClick={UserRegistration}>
-            Register
-          </button>
-        </nav>
-      </header>
+        <div className="nav-links">
+          <Link to="/" className="nav-link active">
+            Home
+          </Link>
+          <Link to="/jobs" className="nav-link">
+            Jobs
+          </Link>
+          <Link to="/companies" className="nav-link">
+            Companies
+          </Link>
+          <Link to="/login">
+            <button className="btn-outline">Log In</button>
+          </Link>
+          <Link to="/registration">
+            <button className="btn-primary">Register</button>
+          </Link>
+        </div>
+      </nav>
       {/*Middle section  */}
       <main className="main-section">
         <div className="main-content">
@@ -60,23 +67,23 @@ const HomePage = () => {
             </p>
           </div>
           <Card className="search-bar">
-            <div>
-              {/* <Search style={{
-        position: 'absolute',
-        left: 12,
-        top: '50%',
-        transform: 'translateY(-50%)'
-      }} /> */}
-              <input type="text" placeholder="      Job title, keywords or company" />
+            <div className="searchinput-container">
+              <SvgIcon component={SearchIcon} />
+              <input
+                type="text"
+                name="search"
+                placeholder="Job title, keywords or company"
+              />
+            </div>
+            <div className="searchinput-container">
+              <SvgIcon component={MapPin} style={{ fill: "none" }} />
               <input
                 type="text"
                 placeholder="Location"
                 style={{ maxWidth: "200px" }}
               />
-              <button className="btn-primary">
-                Explore Jobs
-              </button>
             </div>
+            <button className="btn-primary">Explore Jobs</button>
           </Card>
           <div className="main-image">
             <img src={JobPortalHome} alt="HandShake" />

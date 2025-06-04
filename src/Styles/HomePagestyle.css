@@ -3,15 +3,15 @@
   color: #222;
 }
 .Homepage-header {
-  display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.3rem;
-  padding-left: 70px;
-  padding-right: 50px;
-  background-color: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  padding: 0.5rem;
+  padding-left: 4.2rem;
+  padding-right: 3.2rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-size: 18px;
+  display: flex;
 }
 .logo {
   font-size: 28px;
@@ -21,36 +21,52 @@
 .logo span {
   color: #000;
 }
-.nav-links a {
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+.nav-link {
   text-decoration: none;
+  margin-left: 10px;
+  margin-right: 10px;
+  padding: 2px;
   color: #333;
-  cursor: pointer;
-  padding-right: 70px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+.nav-link:hover {
+  color: #9b5de5;
+}
+.nav-link.active {
+  color: #9b5de5;
+  border-bottom: 4px solid #9b5de5;
+  size: 2px;
 }
 .btn-outline {
   border: 1px solid #f3b7a4;
   color: #000;
-  background: transparent;
+  background-color: transparent;
   cursor: pointer;
   border-radius: 5px;
-  padding-left: 40px;
-  padding-right: 40px;
+  padding: 0.2rem 2.7rem;
+  transition: background-color 0.3s ease;
 }
-.btn-outline:hover{
- background-color: #ffc78e;
+.btn-outline:hover {
+  background-color: #ffc78e;
 }
 .btn-primary {
   background-color: #b153e5;
   color: #fff;
-  padding-left: 40px;
-  padding-right: 40px;
-  margin-left: 10px;
+  padding: 0.2rem 0.9rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
 }
 .btn-primary:hover {
-  background-color: #842CC0;
+  background-color: #842cc0;
 }
 .main-section {
   background-color: white;
@@ -93,8 +109,8 @@
 }
 .main-image {
   flex: 1;
-   padding-right: 25px;
-   padding-left: 70px;
+  padding-right: 25px;
+  padding-left: 70px;
 }
 .main-image img {
   width: 100%;
@@ -110,6 +126,7 @@
   margin-top: 300px;
   margin-left: 48px;
   border: 1px solid #f3b7a4;
+  background-color: #f7f1ec;
   /* border-radius: 2rem; */
 }
 .search-bar input {
@@ -117,7 +134,7 @@
   padding: 7px 7px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  font-size: 16PX;
+  font-size: 16px;
   margin-right: 10px;
   width: 400px;
 }
@@ -132,7 +149,7 @@
   transition: background-color o.3 s;
 }
 .search-bar button:hover {
-  background-color: #842CC0;
+  background-color: #842cc0;
 }
 
 .company-section,
@@ -140,7 +157,8 @@
   text-align: center;
   padding-bottom: 30px;
 }
-.company-section,.categories-section h2 {
+.company-section,
+.categories-section h2 {
   font-size: 28px;
   font-weight: bold;
 }
@@ -168,7 +186,7 @@
   border: 1px solid #fdf5f5;
   padding: 5px;
   border-radius: 10px;
-  background-color: #F7F1EC;
+  background-color: #f7f1ec;
   transition: o.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
@@ -176,15 +194,15 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0, 1);
 }
 .category-card h3 {
- font-size: 18px;
- font-weight: bold;
+  font-size: 18px;
+  font-weight: bold;
 }
 .category-card p {
- font-size: 16px;
- color: #333;
+  font-size: 16px;
+  color: #333;
 }
 .stats-section {
-  background: #842CC0;
+  background: #842cc0;
   color: #000;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -203,10 +221,10 @@
   margin-bottom: 2px;
 }
 .Homepagefooter {
-  background-color: #F7F1EC;
-padding-top: 20px;
-padding-left: 70px;
-padding-bottom: 4px;
+  background-color: #f7f1ec;
+  padding-top: 20px;
+  padding-left: 70px;
+  padding-bottom: 4px;
   color: #444;
 }
 .footer-grid {
@@ -215,7 +233,7 @@ padding-bottom: 4px;
   font-size: 14px;
 }
 .footer-grid h6 {
-    font-size: 22px;
+  font-size: 22px;
 }
 .footer-grid h4 {
   margin-left: 2.5rem;
@@ -238,4 +256,16 @@ padding-bottom: 4px;
   text-align: center;
   font-size: 12px;
   margin-top: 2px;
+}
+.searchinput-container {
+  position: relative;
+}
+.searchinput-container > svg {
+  position: absolute;
+  margin: 8px;
+  opacity: 0.9;
+  font-size: 20px;
+}
+.searchinput-container > input {
+  padding-left: 40px;
 }
