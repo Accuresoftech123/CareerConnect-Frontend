@@ -1,5 +1,7 @@
 //import react from 'react';
 import { useNavigate } from "react-router-dom";
+import React, { useState } from "react";
+import axios from "axios";
 import "../Styles/Registerstyle.css";
 import register from "../Images/register.svg";
 import PersonIcon from "@mui/icons-material/Person";
@@ -7,15 +9,58 @@ import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
+import EmailVerificationPopup from "./EmailVerification.jsx";
 
 const Registration = () => {
   const navigate = useNavigate();
-  const UserLogin = (e) => {
-    navigate("/Login");
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+    const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    mobileNumber: '',
+    password: '',
+    confirmPassword: ''
+  });
+ 
+ const handleChange = (e) => {
+  e.preventDefault();
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
-  return (
+
+
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setShowVerificationPopup(true);  // show popup
+    try {
+      // await axios.post("http://localhost:9191/jobseekers/sendOtp", null, {
+      //   params: { email: formData.email }
+      // });
+      await axios.post("http://localhost:9191/jobseekers/register", formData);
+    } catch (error) {
+      alert("Error: " + (error.response?.data || error.message));
+    }
+  };
+
+
+    
+
+  
+
+const handleOtpVerified = () => {
+    setShowVerificationPopup(false);
+    setIsVerified(true);
+    alert("Email Verified Successfully!");
+    navigate("/login");
+  };
+  const UserLogin = (e) => {
+    // navigate("/login");
+  };
+
+
+ return (
     <div className="registerpage-container">
-      {/*Header */}
       <header className="register-header">
         <div className="logo">
           <span>Career</span> Connect
@@ -23,129 +68,111 @@ const Registration = () => {
         <nav className="registernav-links">
           <a href="jobs">Jobs</a>
           <a href="companies">Companies</a>
-          <button className="btn-primary" onClick={UserLogin}>
-            Log In
-          </button>
+          <button className="btn-primary" onClick={() => navigate("/Login")}>Log In</button>
         </nav>
       </header>
-      {/*Main Section */}
+
       <main className="register-section">
         <div className="register-content">
           <div className="register-text col-6">
-            <h1>
-              Welcome Back, to <span> Career Connect</span>
-            </h1>
+            <h1>Welcome Back, to <span> Career Connect</span></h1>
             <p>Your gateway to professional opportunities</p>
             <div className="illustration">
               <img src={register} alt="welcome Illustration" />
             </div>
           </div>
-          {/*Form section */}
+
+          {/* Registration Form */}
           <div className="register-fillUp col-6">
-            <div>
+            <form onSubmit={handleSubmit}>
               <h3>Register</h3>
               <p>Please enter your details</p>
-              <div>
-                <label className="m-1 row">Full Name</label>
-                <div className="registerinput-container">
-                  <SvgIcon component={PersonIcon} />
-                  <input
-                    type="name"
-                    //   onChange={(e) => setemail(e.target.value)}
-                    placeholder="Enter your full name"
-                    required
-                  ></input>
-                </div>
+
+              <label>Full Name</label>
+              <div className="registerinput-container">
+                <SvgIcon component={PersonIcon} />
+                <input
+                  type="text"
+                  name="fullName"
+                  value={formData.fullName}
+                  onChange={handleChange}
+                  placeholder="Enter your full name"
+                  required
+                />
               </div>
-              <div>
-                <label className="m-1 row">Email Id</label>
-                <div className="registerinput-container">
-                  <SvgIcon component={LocalPostOfficeIcon} />
-                  <input
-                    type="email"
-                    //   onChange={(e) => setemail(e.target.value)}
-                    placeholder="Enter your email id"
-                    required
-                  ></input>
-                </div>
+
+              <label>Email Id</label>
+              <div className="registerinput-container">
+                <SvgIcon component={LocalPostOfficeIcon} />
+                <input
+                  type="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={handleChange}
+                  placeholder="Enter your email id"
+                  required
+                />
               </div>
-              <div>
-                <label className="m-1 row">Mobile Number</label>
-                <div className="registerinput-container">
-                  <SvgIcon component={PhoneIcon} />
-                  <input
-                    type="number"
-                    //   onChange={(e) => setemail(e.target.value)}
-                    placeholder="Enter your mobile number"
-                    required
-                  ></input>
-                </div>
+
+              <label>Mobile Number</label>
+              <div className="registerinput-container">
+                <SvgIcon component={PhoneIcon} />
+                <input
+                  type="text"
+                  name="mobileNumber"
+                  value={formData.mobileNumber}
+                  onChange={handleChange}
+                  placeholder="Enter your mobile number"
+                  required
+                />
               </div>
-              <div>
-                <label className="m-1 row">Create Password</label>
-                <div className="registerinput-container">
-                  <SvgIcon component={LockIcon} />
-                  <input
-                    type="Password"
-                    //   onChange={(e) => setLPass(e.target.value)}
-                    placeholder="Create a Password"
-                    required
-                  ></input>
-                </div>
+
+              <label>Create Password</label>
+              <div className="registerinput-container">
+                <SvgIcon component={LockIcon} />
+                <input
+                  type="password"
+                  name="password"
+                  value={formData.password}
+                  onChange={handleChange}
+                  placeholder="Create a Password"
+                  required
+                />
               </div>
-              <div>
-                <label className="m-1 row">Confirm Password</label>
-                <div className="registerinput-container">
-                  <SvgIcon component={LockIcon} />
-                  <input
-                    type="Password"
-                    //   onChange={(e) => setLPass(e.target.value)}
-                    placeholder="Confirm your Password"
-                    required
-                  ></input>
-                </div>
+
+              <label>Confirm Password</label>
+              <div className="registerinput-container">
+                <SvgIcon component={LockIcon} />
+                <input
+                  type="password"
+                  name="confirmPassword"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                  placeholder="Confirm your Password"
+                  required
+                />
               </div>
-              {/* <div>
-                <label className="m-1 row">I am a........</label>
-                <div className="user-type">
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="jobseeker"
-                    checked={FormData.userType === "jobseeker"}
-                    //   onChange={(e) => setLPass(e.target.value)}
-                  ></input>
-                  <label>Job Seeker</label>
-                  <input
-                    type="radio"
-                    name="userType"
-                    value="employeer"
-                    checked={FormData.userType === "employer"}
-                    //   onChange={(e) => setLPass(e.target.value)}
-                  ></input>
-                  <label>Employer</label>
-                </div>
-              </div> */}
-              <div>
-                <div>
-                  <button
-                    className="registerbtn-primary"
-                    // onClick={loginUser}
-                    type="submit"
-                  >
-                    Register
-                  </button>
-                </div>
-                <div className="optionregister">
-                  <p>
-                    Already have an account?<a href="login"> Log In</a>
-                  </p>
-                </div>
-              </div>
+
+              <button className="registerbtn-primary" type="submit">Register</button>
+            </form>
+           {showVerificationPopup && (
+  <div className="popup-backdrop">
+    <EmailVerificationPopup 
+      email={formData.email}  
+      onVerify={handleOtpVerified}  // Correct function name
+    />
+  </div>
+)}
+
+
+            {isVerified && <p style={{ color: "green" }}>Email Verified Successfully!</p>}
+            <div className="optionregister">
+              <p>Already have an account? <a href="/login">Log In</a></p>
             </div>
           </div>
         </div>
       </main>
+     
     </div>
   );
 };

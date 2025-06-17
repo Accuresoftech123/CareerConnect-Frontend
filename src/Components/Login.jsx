@@ -9,27 +9,52 @@ import login from "../Images/login.svg";
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
+import axios from "axios";
+
+// import { Link } from "react-router-dom";
+
 
 const Login = () => {
+  const url= "http://localhost:9191/jobseekers";
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
   const navigate = useNavigate();
+
   const UserRegistration = (e) => {
     navigate("/Registration");
   };
-  const dispatch = useDispatch();
-  const loginState = useSelector((state) => state.login);
-  const { isAuthenticated, error } = loginState;
+  // const dispatch = useDispatch();
+  // const loginState = useSelector((state) => state.login);
+  // const { isAuthenticated, error } = loginState;
   // const isAuthenticated = useSelector(state => state.login.isAuthenticated);
 
-  const [email, setemail] = useState("");
-  const [LPass, setLPass] = useState("");
-
+ 
   const handleSubmit = (e) => {
     e.preventDefault();
-    dispatch(loginUser({ email, LPass }));
+    if (!email || !password) {
+      alert("Please fill in all fields");
+      return;
+    }
+
+    let user={email,password};
+    axios.post(`${url}/login`, user)
+      .then((response) => {
+        if (response.data) {
+          alert("Login Successful");
+          console.log("Login Successful:", response.data);
+          navigate("/");
+        } else {
+          alert("Invalid credentials");
+        }
+      })
+      .catch((error) => {
+        console.error("Login Failed:", error);
+        alert("Login Failed: " + (error.response?.data || error.message));
+      });
   };
-  if (isAuthenticated) {
-    return <h2>Welcome back!</h2>;
-  }
+
+  
 
   return (
     <div className="loginpage-container">
@@ -69,7 +94,7 @@ const Login = () => {
                   <SvgIcon component={LocalPostOfficeIcon} />
                   <input
                     type="email"
-                    onChange={(e) => setemail(e.target.value)}
+                    onChange={(e) => setEmail(e.target.value)}
                     placeholder="Enter email id"
                     required
                   ></input>
@@ -81,7 +106,7 @@ const Login = () => {
                   <SvgIcon component={LockIcon} />
                   <input
                     type="Password"
-                    onChange={(e) => setLPass(e.target.value)}
+                    onChange={(e) => setPassword(e.target.value)}
                     placeholder="Enter Password  "
                     required
                   ></input>
@@ -99,7 +124,7 @@ const Login = () => {
                   >
                     Log in
                   </button>
-                  {error && <p style={{ color: "red" }}>{error}</p>}
+                  
                 </div>
                 <div className="optionlogin">or continue with</div>
                 <div>

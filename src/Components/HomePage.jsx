@@ -19,15 +19,16 @@ import { Card, SvgIcon } from "@mui/material";
 import { Link } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import { MapPin } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
-  // const navigate = useNavigate();
-  // const UserRegistration = (e) => {
-  //   navigate("/Registration");
-  // };
-  // const UserLogin = (e) => {
-  //   navigate("/Login");
-  // };
+  const navigate = useNavigate();
+  const UserRegistration = (e) => {
+    navigate("/Registration");
+  };
+  const UserLogin = (e) => {
+    navigate("/Login");
+  };
   return (
     <div className="page-container">
       {/* Header */}
