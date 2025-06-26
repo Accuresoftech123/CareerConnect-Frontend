@@ -23,10 +23,10 @@ import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
   const navigate = useNavigate();
-  const UserRegistration = (e) => {
-    navigate("/Registration");
+  const EmployerLogin = (e) => {
+    navigate("/EmployerLogin");
   };
-  const UserLogin = (e) => {
+  const JobseekerLogin = (e) => {
     navigate("/Login");
   };
   return (
@@ -47,10 +47,10 @@ const HomePage = () => {
             Companies
           </Link>
           <Link to="/login">
-            <button className="btn-outline">Log In</button>
+            <button className="btn-outline">Job Seeker</button>
           </Link>
-          <Link to="/registration">
-            <button className="btn-primary">Register</button>
+          <Link to="/employerlogin">
+            <button className="btn-primary">Employer</button>
           </Link>
         </div>
       </nav>
