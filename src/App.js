@@ -1,9 +1,9 @@
 import "./App.css";
 import HomePage from "./Components/HomePage";
-import Login from "./Components/Login";
-import Registration from "./Components/Registration";
+import Login from "./Components/JobSeeker/Login";
+import Registration from "./Components/JobSeeker/Registration";
 import { Routes, Route, BrowserRouter } from "react-router-dom";
-import EmailVerificationPopup from "./Components/EmailVerification";
+import EmailVerificationPopup from "./Components/JobSeeker/EmailVerification";
 import React from "react";
 import axios from "axios";
 import EmployerLogin from "./Components/Employer/EmployerLogin";

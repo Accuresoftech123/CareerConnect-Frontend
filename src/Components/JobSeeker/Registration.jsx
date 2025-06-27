@@ -1,178 +1,188 @@
-//import react from 'react';
-import { useNavigate } from "react-router-dom";
 import React, { useState } from "react";
+import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
-import "../Styles/Registerstyle.css";
-import register from "../Images/register.svg";
+
+import "../../Styles/JobSeeker/Registerstyle.css";
+import register from "../../Images/register.svg";
+
 import PersonIcon from "@mui/icons-material/Person";
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
+
 import EmailVerificationPopup from "./EmailVerification.jsx";
 
 const Registration = () => {
   const navigate = useNavigate();
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
-    const [formData, setFormData] = useState({
+
+  const [formData, setFormData] = useState({
     fullName: '',
     email: '',
     mobileNumber: '',
     password: '',
     confirmPassword: ''
   });
- 
- const handleChange = (e) => {
-  e.preventDefault();
+
+  const handleChange = (e) => {
+    e.preventDefault();
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setShowVerificationPopup(true);  // show popup
+    setShowVerificationPopup(true);
+
     try {
-      // await axios.post("http://localhost:9191/jobseekers/sendOtp", null, {
-      //   params: { email: formData.email }
-      // });
       await axios.post("http://localhost:9191/jobseekers/register", formData);
     } catch (error) {
       alert("Error: " + (error.response?.data || error.message));
     }
   };
 
-
-    
-
-  
-
-const handleOtpVerified = () => {
+  const handleOtpVerified = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
     alert("Email Verified Successfully!");
     navigate("/login");
   };
-  const UserLogin = (e) => {
-    // navigate("/login");
-  };
 
-
- return (
-    <div className="registerpage-container">
-      <header className="register-header">
-        <div className="logo">
+  return (
+    <div className="jobseeker_register-container">
+      {/* Header */}
+      <header className="jobseeker_register-header">
+        <div className="jobseeker_register-logo">
           <span>Career</span> Connect
         </div>
-        <nav className="registernav-links">
-          <a href="jobs">Jobs</a>
-          <a href="companies">Companies</a>
-          <button className="btn-primary" onClick={() => navigate("/Login")}>Log In</button>
+        <nav className="jobseeker_register-nav">
+            <Link to="/" >
+            Home
+          </Link>
+          <Link to="/jobs" >
+            Jobs
+          </Link>
+          <Link to="/companies" >
+            Companies
+          </Link>
+          <Link to="/Login">
+          <button className="jobseeker_register-btn-primary">Log In</button>
+          </Link>
         </nav>
       </header>
 
-      <main className="register-section">
-        <div className="register-content">
-          <div className="register-text col-6">
-            <h1>Welcome Back, to <span> Career Connect</span></h1>
+      {/* Main Section */}
+      <main className="jobseeker_register-section">
+        <div className="jobseeker_register-content">
+          {/* Left side: welcome and illustration */}
+          <div className="jobseeker_register-text">
+            <h1>
+              Welcome Back, to <br></br><span>Career Connect</span>
+            </h1>
             <p>Your gateway to professional opportunities</p>
-            <div className="illustration">
-              <img src={register} alt="welcome Illustration" />
+            <div className="jobseeker_register-illustration">
+              <img src={register} alt="Welcome" />
             </div>
           </div>
 
-          {/* Registration Form */}
-          <div className="register-fillUp col-6">
+          {/* Right side: Registration form */}
+          <div className="jobseeker_register-form">
             <form onSubmit={handleSubmit}>
               <h3>Register</h3>
               <p>Please enter your details</p>
 
               <label>Full Name</label>
-              <div className="registerinput-container">
+              <div className="jobseeker_register-input-container">
                 <SvgIcon component={PersonIcon} />
                 <input
                   type="text"
                   name="fullName"
+                  placeholder="Enter your full name"
                   value={formData.fullName}
                   onChange={handleChange}
-                  placeholder="Enter your full name"
                   required
                 />
               </div>
 
               <label>Email Id</label>
-              <div className="registerinput-container">
+              <div className="jobseeker_register-input-container">
                 <SvgIcon component={LocalPostOfficeIcon} />
                 <input
                   type="email"
                   name="email"
+                  placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
-                  placeholder="Enter your email id"
                   required
                 />
               </div>
 
               <label>Mobile Number</label>
-              <div className="registerinput-container">
+              <div className="jobseeker_register-input-container">
                 <SvgIcon component={PhoneIcon} />
                 <input
                   type="text"
                   name="mobileNumber"
+                  placeholder="Enter your mobile number"
                   value={formData.mobileNumber}
                   onChange={handleChange}
-                  placeholder="Enter your mobile number"
                   required
                 />
               </div>
 
               <label>Create Password</label>
-              <div className="registerinput-container">
+              <div className="jobseeker_register-input-container">
                 <SvgIcon component={LockIcon} />
                 <input
                   type="password"
                   name="password"
+                  placeholder="Create a password"
                   value={formData.password}
                   onChange={handleChange}
-                  placeholder="Create a Password"
                   required
                 />
               </div>
 
               <label>Confirm Password</label>
-              <div className="registerinput-container">
+              <div className="jobseeker_register-input-container">
                 <SvgIcon component={LockIcon} />
                 <input
                   type="password"
                   name="confirmPassword"
+                  placeholder="Confirm your password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  placeholder="Confirm your Password"
                   required
                 />
               </div>
 
-              <button className="registerbtn-primary" type="submit">Register</button>
+              <button className="jobseeker_register-btn-submit" type="submit">
+                Register
+              </button>
             </form>
-           {showVerificationPopup && (
-  <div className="popup-backdrop">
-    <EmailVerificationPopup 
-      email={formData.email}  
-      onVerify={handleOtpVerified}  // Correct function name
-    />
-  </div>
-)}
 
+            {showVerificationPopup && (
+              <div className="popup-backdrop">
+                <EmailVerificationPopup
+                  email={formData.email}
+                  onVerify={handleOtpVerified}
+                />
+              </div>
+            )}
 
-            {isVerified && <p style={{ color: "green" }}>Email Verified Successfully!</p>}
-            <div className="optionregister">
-              <p>Already have an account? <a href="/login">Log In</a></p>
+            {isVerified && (
+              <p style={{ color: "green" }}>Email Verified Successfully!</p>
+            )}
+
+            <div className="jobseeker_register-option">
+              <p>
+                Already have an account? <a href="/login">Log In</a>
+              </p>
             </div>
           </div>
         </div>
       </main>
-     
     </div>
   );
 };

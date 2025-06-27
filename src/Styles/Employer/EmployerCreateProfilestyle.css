@@ -1,17 +1,3 @@
- * {
-      margin: 0;
-      padding: 0;
-    }
-
-/* General Body Styles */
-body {
-  font-family: sans-serif;
-  color: #222;
-  margin: 0;
-  background-color: #FFFFFF;
-  /* color: #F7F1EC; */
-  line-height: 1.6;
-}
 
 .employer_CreateProfile-container {
   background-color: #FFFFFF;
@@ -247,7 +233,7 @@ body {
 }
 
 
-label {
+/* label {
   display: block;
   margin-bottom: 8px;
   font-weight: bold;
@@ -299,7 +285,7 @@ select {
 textarea {
   resize: vertical;
   min-height: 100px;
-}
+} */
 
 
 /* Logo Upload */

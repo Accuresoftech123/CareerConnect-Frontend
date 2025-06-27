@@ -1,151 +1,158 @@
 import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../../Helper/ActionsAsync";
-import { useNavigate } from "react-router-dom";
-import "../../Styles/Employer/EmployerLoginstyle.css";
-import linkedin from "../../Images/linkedin.svg";
-import google_g from "../../Images/google_g.jpg";
-import employerLogin from "../../Images/employerLogin.svg";
+import { Link,useNavigate } from "react-router-dom";
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
-import axios from "axios";
 
-// import { Link } from "react-router-dom";
+import "../../Styles/Employer/EmployerLoginstyle.css";
 
+import linkedin from "../../Images/linkedin.svg";
+import google_g from "../../Images/google_g.jpg";
+import employerLogin from "../../Images/employerLogin.svg";
 
 const EmployerLogin = () => {
-  const url= "http://localhost:9191/jobseekers";
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  // State to hold input values
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
+  // React Router navigation hook
   const navigate = useNavigate();
 
-  const UserRegistration = (e) => {
+  // Navigate to Registration page
+  const goToRegistration = () => {
     navigate("/EmployerRegistration");
   };
-  // const dispatch = useDispatch();
-  // const loginState = useSelector((state) => state.login);
-  // const { isAuthenticated, error } = loginState;
-  // const isAuthenticated = useSelector(state => state.login.isAuthenticated);
 
- 
+  // Handle login form submission
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    // Basic validation
     if (!email || !password) {
       alert("Please fill in all fields");
       return;
     }
 
-    let user={email,password};
-    // axios.post(`${url}/login`, user)
-    //   .then((response) => {
-    //     if (response.data) {
-    //       alert("Login Successful");
-    //       console.log("Login Successful:", response.data);
-    //       navigate("/");
-    //     } else {
-    //       alert("Invalid credentials");
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     console.error("Login Failed:", error);
-    //     alert("Login Failed: " + (error.response?.data || error.message));
-    //   });
+    // TODO: Implement actual login logic here (e.g., API call)
+
+    // Temporary navigation after "login"
     navigate("/employercreateprofile");
   };
 
-  
-
   return (
     <div className="employer_loginpage-container">
-      {/*Header */}
+      {/* Header */}
       <header className="employer_Login-header">
         <div className="employer_logo">
           <span>Career</span> Connect
         </div>
+
         <nav className="employer_loginnav-links">
-          <a href="Candidates">Candidates</a>
-          <a href="companies">Companies</a>
-          <button className="employer_btn-primary" onClick={UserRegistration}>
+          <Link to="/" >
+                      Home
+                    </Link>
+                    <Link to="/candidates" >
+                      Candidates
+                    </Link>
+                    <Link to="/companies" >
+                      Companies
+                    </Link>
+                    <Link to="/EmployerRegistration">
+          <button className="employer_btn-primary">
             Register
           </button>
+          </Link>
         </nav>
       </header>
-      {/*Main Section */}
+
+      {/* Main Login Section */}
       <main className="employer_login-section">
         <div className="employer_login-content">
-          <div className="employer_login-text col-6">
+          {/* Left side: Welcome text and illustration */}
+          <section className="employer_login-text col-6">
             <h1>
-              Welcome Back, to <span> Career Connect</span>
+              Welcome Back, to <br></br><span className="employerlogin_logomain">Career Connect</span>
             </h1>
-            <p>Post jobs,review applications,and schedule interviews-all in one place</p>
+            <p>
+              Post jobs, review applications, and schedule interviews —  <span className="employerlogin_span-plogo">all in one place</span>
+            </p>
+
             <div className="employer_illustration">
-              <img src={employerLogin} alt="welcome Illustration" />
+              <img src={employerLogin} alt="Welcome Illustration" />
             </div>
-          </div>
-          {/*Form section */}
-          <div className="employer_login-fillUp col-6">
+          </section>
+
+          {/* Right side: Login form */}
+          <section className="employer_login-fillUp col-6">
+            <h3>Login</h3>
+            <p>Please enter your details</p>
+
+            <form onSubmit={handleSubmit}>
+              {/* Email Input */}
+              <label className="m-1 row" htmlFor="email">
+                Email Id:
+              </label>
+              <div className="employer_Logininput-container">
+                <SvgIcon component={LocalPostOfficeIcon}/>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="Enter email id"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Password Input */}
+              <label className="m-1 row" htmlFor="password">
+                Password:
+              </label>
+              <div className="employer_Logininput-container">
+                <SvgIcon component={LockIcon} />
+                <input
+                  id="password"
+                  type="password"
+                  placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+
+              {/* Forgot password link */}
+              <p className="employer_forgotpass">
+                <a href="forgot_password">Forgot Password?</a>
+              </p>
+
+              {/* Login Button */}
+              <button className="employer_loginbtn-primary" type="submit">
+                Log in
+              </button>
+            </form>
+
+            {/* Alternative login options */}
+            <div className="employer_optionlogin">or continue with</div>
+
             <div>
-              <h3>Employer Login</h3>
-              <p>Please enter your details</p>
-              <div>
-                <label className="m-1 row">Email Id : </label>
-                <div className="employer_Logininput-container">
-                  <SvgIcon component={LocalPostOfficeIcon} />
-                  <input
-                    type="email"
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter email id"
-                    required
-                  ></input>
-                </div>
-              </div>
-              <div>
-                <label className="m-1 row">Password :</label>
-                <div className="employer_Logininput-container">
-                  <SvgIcon component={LockIcon} />
-                  <input
-                    type="Password"
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter Password  "
-                    required
-                  ></input>
-                </div>
-                <p className="employer_forgotpass">
-                  <a href="forgot_password"> Forgot Password?</a>
-                </p>
-              </div>
-              <div>
-                <div>
-                  <button
-                    className="employer_loginbtn-primary"
-                    onClick={handleSubmit}
-                    type="submit"
-                  >
-                    Log in
-                  </button>
-                  
-                </div>
-                <div className="employer_optionlogin">or continue with</div>
-                <div>
-                  <button className="employer_loginbtn-outline">
-                    <img src={google_g} alt="Google" />
-                    Google
-                  </button>
-                  <button className="employer_loginbtn-outline">
-                    <img src={linkedin} alt="LinkedIn" />
-                    Continue with LinkedIn
-                  </button>
-                </div>
-                <div className="employer_optionlogin">
-                  <p>
-                    Don't have an account?<a href="employerregistration"> Register</a>
-                  </p>
-                </div>
-              </div>
+              <button className="employer_loginbtn-outline" type="button">
+                <img src={google_g} alt="Google" />
+                Google
+              </button>
+              <button className="employer_loginbtn-outline" type="button">
+                <img src={linkedin} alt="LinkedIn" />
+                Continue with LinkedIn
+              </button>
             </div>
-          </div>
+
+            {/* Registration link */}
+            <div className="employer_optionlogin">
+              <p>
+                Don't have an account?{" "}
+                <a href="employerregistration">Register</a>
+              </p>
+            </div>
+          </section>
         </div>
       </main>
     </div>

@@ -1,192 +1,190 @@
-.employer_registerpage-container {
+/* Global Container */
+.employer_register-container {
   font-family: sans-serif;
+  color: #222;
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
 }
+
+/* Header */
 .employer_register-header {
+position: relative;
+  z-index: 2;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.3rem;
-  padding-left: 70px;
-  padding-right: 65px;
-  background: #fff;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  padding: 0.6rem 4rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   font-size: 18px;
 }
-.employer_logo {
+
+.employer_register-logo {
   font-size: 28px;
-  font-weight: Extra bold;
+  font-weight: bold;
   color: #b153e5;
 }
-.employer_logo span {
+.employer_register-logo span {
   color: #000;
 }
-.employer_registernav-links a {
+.employer_register-nav{
+   display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+.employer_register-nav a {
   text-decoration: none;
   color: #333;
-  cursor: pointer;
-  padding-right: 70px;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
-.employer_btn-primary {
+.employer_register-nav a:hover {
+    color: #9b5de5;
+}
+.employer_register-btn-primary {
   background-color: #b153e5;
   color: #fff;
-  padding-left: 40px;
-  padding-right: 40px;
-  margin-left: 10px;
+  padding: 0.3rem 1.5rem;
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
 }
-.employer_btn-primary:hover {
+.employer_register-btn-primary:hover {
   background-color: #842cc0;
 }
+
+/* Section */
 .employer_register-section {
-  padding: 10px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0, 1);
-  flex: 1;
-  /* background: linear-gradient(156deg, #e0cef5, #fff); */
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 0;
+    position: relative;
+  z-index: 2;
+  padding: 1rem 2rem;
+  padding-top: 1px;
+  padding-right: 120px;
 }
-/* .employer_register-section::before {
-  content: " ";
-  position: absolute;
-  top: 24px;
-  left: 37px;
-  width: 80px;
-  height: 80px;
-  background-color: #d9b3ff;
-  border-radius: 50%;
-  opacity: 2;
-  z-index: 0;
-}
-.employer_register-section::after {
-  content: " ";
-  position: absolute;
-  top: 350px;
-  left: 300px;
-  width: 150px;
-  height: 150px;
-  background-color: #ffc78e;
-  border-radius: 50%;
-  opacity: 0.5;
-  z-index: 0;
-} */
+
 .employer_register-content {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 2rem;
 }
+
 @media (min-width: 1024px) {
   .employer_register-content {
     flex-direction: row;
     justify-content: space-between;
   }
 }
+
+/* Left Side */
 .employer_register-text {
   flex: 1;
-  padding-left: 45px;
-  padding-right: 50px;
+  padding-top: 35px;
+  text-align: center;
+ justify-items: flex-start;
+  padding-left: 4rem;
+    border-right: 1px solid #f3b7a4;
 }
-.employer_register-text h1 {
-  font-size: 40px;
-  padding-top: 60px;
-  padding-left: 10px;
-  font-weight: Extra bold;
-  color: #000;
-  padding-right: 6rem;
-  position: relative;
-  z-index: 1;
-}
-.employer_register-text span {
+.employerregister_logomain {
   color: #b153e5;
-}
-.employer_register-text p {
-  font-size: 23px;
-  color: #333;
-  position: relative;
-  z-index: 1;
-}
-.employer_illustration {
-  margin-top: 40px;
-  position: relative;
-  z-index: 1;
-  display: flex;
-  justify-content: center;
-}
-.employer_illustration img {
-  width: 100%;
-  max-width: 300px;
-  height: auto;
-  border-radius: 10px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0, 0.5);
-}
-.employer_register-fillUp {
-  flex: 1;
-  margin-top: 10px;
-  font-size: 12px;
-  margin-left: 180px;
-  margin-right: 60px;
-}
-.employer_register-fillUp input {
-  width: -webkit-fill-available;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  border: 1px solid #a8a4a4;
-  background-color: rgb(230, 228, 228);
-}
-.employer_register-fillUp button {
-  width: -webkit-fill-available;
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  margin-bottom: 2px;
-  margin-top: 12px;
-}
-.employer_registerbtn-primary {
-  background: #b153e5;
-  color: white;
-  border: none;
-  cursor: pointer;
-}
-.employer_registerbtn-primary:hover {
-  background-color: #842cc0;
-}
-.employer_register-fillUp h3 {
-  font-size: 22px;
   font-weight: bold;
 }
-.employer_register-fillUp a {
-  text-decoration: none;
-  color: #b153e5;
-}
-.employer_optionregister {
-  text-align: center;
-  margin-bottom: 82px;
-}
-.employer_registerinput-container {
-  position: relative;
-}
-.employer_registerinput-container > svg {
-  position: absolute;
-  margin: 6px;
-  opacity: 0.9;
-  font-size: 20px;
-}
-.employer_registerinput-container > input {
-  padding-left: 40px;
+.employer_register-text h1 {
+  position: relative; /* for ::before */
+  font-size: 36px;
+  padding-right: 10px;
+  font-weight: extra bold; /* corrected from 'extra bold' to numeric */
+  z-index: 1; /* above circle */
 }
 
-.user-type {
-  display: flex;
-  /* justify-content: space-between; */
+.employer_register-text p {
+  font-size: 16px;
+  color: #333;
 }
-.user-type label {
-  font-size: 12px;
-  /* display: flex; */
-  /* align-content: center; */
-  gap: 2px;
+.employerregister_span-plogo {
+  font-size: 16px;
+  color: #f5b52d;
 }
-.popup-backdrop{
+.employer_register-illustration {
+  position: relative; /* for ::after */
+  z-index: 1; /* above circle */
+}
+.employer_register-illustration img {
+ max-width: 300px;
+  width: 100%;
+  height: auto;
+}
+
+/* Right Side */
+.employer_register-form {
+  flex: 1;
+  padding: 1rem 2rem;
+  padding-bottom: 0;
+  max-width: 480px;
+  width: 100%;
+}
+
+.employer_register-form h3 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+   color: #000;
+}
+.employer_register-form p {
+ font-size: 14px;
+}
+
+.employer_register-input-container {
+ position: relative;
+}
+.employer_register-input-container svg {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #888;
+}
+.employer_register-input-container input {
+ width: 100%;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f3f3f3;
+  font-size: 14px;
+}
+
+/* Submit Button */
+.employer_register-btn-submit {
+  width: 100%;
+  padding: 0.75rem;
+  background-color: #b153e5;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  margin-top: 1rem;
+}
+.employer_register-btn-submit:hover {
+  background-color: #842cc0;
+}
+
+/* Bottom Text */
+.employer_register-option {
+  text-align: center;
+  margin-top: 1.5rem;
+}
+.employer_register-option a {
+  color: #b153e5;
+  text-decoration: none;
+}
+
+/* Backdrop for Popup */
+.popup-backdrop {
   position: fixed;
   top: 0;
   left: 0;
@@ -197,4 +195,78 @@
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Responsive Design */
+
+/* Tablets and smaller laptops (up to 980px) */
+@media (max-width: 980px) {
+  .employer_register-section {
+    padding: 1rem;
+    padding-top: 2rem;
+  }
+
+  .employer_register-content {
+    flex-direction: column;
+  }
+  .employer_register-text {
+    border-right: none;
+  }
+  .employer_register-text h1 {
+    font-size: 28px;
+    padding-right: 0;
+  }
+
+  .employer_register-fillUp {
+    padding: 1rem;
+  }
+}
+/* Tablets and large mobiles (up to 767px) */
+@media (max-width: 767px) {
+   .employer_register-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+  .employer_register-section {
+    padding: 1rem;
+    padding-top: 2rem;
+  }
+
+  .employer_register-content {
+    flex-direction: column;
+  }
+ .employer_register-text {
+    border-right: none;
+  }
+  .employer_register-text h1 {
+    font-size: 28px;
+    padding-right: 0;
+  }
+
+  .employer_register-fillUp {
+    padding: 1rem;
+  }
+}
+
+/* Small mobiles (up to 480px) */
+@media (max-width: 480px) {
+   .employer_register-header {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 1rem;
+  }
+  .employer_register-nav {
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  .employer_register-section {
+    padding-top: 2rem;
+  }
+   .employer_register-text {
+    border-right: none;
+     padding-left: 0;
+  }
 }
