@@ -40,10 +40,10 @@ const HomePage = () => {
           <Link to="/companies" className="Homepage_nav-link">
             Companies
           </Link>
-          <Link to="/login">
+          <Link to="/Login">
             <button className="Homepage_btn-outline">Job Seeker</button>
           </Link>
-          <Link to="/employerlogin">
+          <Link to="/EmployerLogin">
             <button className="Homepage_btn-primary">Employer</button>
           </Link>
         </div>

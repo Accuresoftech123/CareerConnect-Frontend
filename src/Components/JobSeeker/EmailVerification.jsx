@@ -67,7 +67,7 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
         alert(message);
         if (success) {
           onVerify(otpValue);
-          navigate("/");
+          navigate("/JobSeeker-Subscription");
         }
       } catch (error) {
         alert(error.response?.data || "Verification failed");

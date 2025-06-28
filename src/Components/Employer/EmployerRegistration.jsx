@@ -18,7 +18,7 @@ const Registration = () => {
     password: "",
     confirmPassword: "",
   });
- const [agreed, setAgreed] = useState(false);
+  const [agreed, setAgreed] = useState(false);
 
   const handleChange = (e) => {
     e.preventDefault();
@@ -31,7 +31,7 @@ const Registration = () => {
       alert("You must agree to the Terms and Conditions.");
       return;
     }
-navigate("/employercreateprofile");
+    navigate("/EmployerCreateProfile");
     // try {
     //   await axios.post("http://localhost:9191/jobseekers/register", formData);
     // } catch (error) {
@@ -73,7 +73,10 @@ navigate("/employercreateprofile");
               <span className="employerregister_logomain">Career Connect</span>
             </h1>
             <p>
-              Post jobs, review applications, and schedule interviews —  <span className="employerregister_span-plogo">all in one place</span>
+              Post jobs, review applications, and schedule interviews —{" "}
+              <span className="employerregister_span-plogo">
+                all in one place
+              </span>
             </p>
             <div className="employer_register-illustration">
               <img src={EmployerRegistrationImage} alt="Welcome" />
@@ -150,20 +153,24 @@ navigate("/employercreateprofile");
                   required
                 />
               </div>
-      <div className="employer_register-checkbox-container">
-        <input
-          type="checkbox"
-          id="terms"
-          checked={agreed}
-          onChange={(e) => setAgreed(e.target.checked)}
-        />
-        <label htmlFor="terms">
-          I agree with all{" "}
-          <a href="/terms-and-conditions" target="_blank" rel="noopener noreferrer">
-            Terms and Conditions
-          </a>
-        </label>
-      </div>
+              <div className="employer_register-checkbox-container">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={agreed}
+                  onChange={(e) => setAgreed(e.target.checked)}
+                />
+                <label htmlFor="terms">
+                  I agree with all{" "}
+                  <a
+                    href="/terms-and-conditions"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Terms and Conditions
+                  </a>
+                </label>
+              </div>
               <button className="employer_register-btn-submit" type="submit">
                 Register
               </button>

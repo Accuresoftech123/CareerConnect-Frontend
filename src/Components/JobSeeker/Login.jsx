@@ -35,7 +35,7 @@ const Login = () => {
         if (response.data) {
           alert("Login Successful");
           console.log("Login Successful:", response.data);
-          navigate("/");
+          navigate("/JobSeekerDashboard");
         } else {
           alert("Invalid credentials");
         }
