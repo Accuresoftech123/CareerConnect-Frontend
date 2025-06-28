@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 const EmployerDashboard = () => {
     return(
         <>
+        <h1>Employer Dashboard</h1>
         </>
     );
 

@@ -21,10 +21,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { MapPin } from "lucide-react";
 
 const HomePage = () => {
-  const navigate = useNavigate();
-  const UserRegistration = () => navigate("/Registration");
-  const UserLogin = () => navigate("/Login");
-
+ 
+ 
   return (
     <div className="Homepage_page-container">
       {/* Header */}
