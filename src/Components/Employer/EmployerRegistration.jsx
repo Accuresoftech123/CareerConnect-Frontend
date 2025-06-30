@@ -27,11 +27,13 @@ const Registration = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // try {
-    //   await axios.post("http://localhost:9191/jobseekers/register", formData);
-    // } catch (error) {
-    //   alert("Error: " + (error.response?.data || error.message));
-    // }
+    try {
+      await axios.post("http://localhost:9191/recruiters/register", formData);
+      window.alert("registration successfully!");
+       navigate("/EmployerLogin");
+    } catch (error) {
+      alert("Error: " + (error.response?.data || error.message));
+    }
   };
 
   // const handleOtpVerified = () => {
