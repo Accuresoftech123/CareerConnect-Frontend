@@ -6,7 +6,11 @@ import SvgIcon from "@mui/icons-material/LocalPostOffice";
 import linkedin from "../../Images/linkedin.svg";
 import google_g from "../../Images/google_g.jpg";
 import employerLogin from "../../Images/employerLogin.svg";
+
+import axios from "axios";
+
 import "../../Styles/Employer/EmployerLoginstyle.css";
+
 
 const EmployerLogin = () => {
   // State to hold input values
@@ -33,8 +37,27 @@ const EmployerLogin = () => {
 
     // TODO: Implement actual login logic here (e.g., API call)
 
+     const user = { email, password };
+    axios.post("http://localhost:9191/recruiters/login", user)
+      .then((response) => {
+        if (response.data) {
+          alert("Login Successful");
+          navigate("/employercreateprofile");
+        } else {
+          alert("Invalid credentials");
+        }
+      })
+      .catch((error) => {
+        console.error("Login Failed:", error);
+        alert("Login Failed: " + (error.response?.data || error.message));
+      });
+
     // Temporary navigation after "login"
+
+    // navigate("/employercreateprofile");
+
     
+
   };
 
   return (

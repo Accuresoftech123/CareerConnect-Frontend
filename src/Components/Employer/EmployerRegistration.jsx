@@ -25,18 +25,31 @@ const Registration = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!agreed) {
+    
+ if (!agreed) {
       alert("You must agree to the Terms and Conditions.");
       return;
     }
-    navigate("/EmployerCreateProfile");
-    // try {
+
+    try {
+      await axios.post("http://localhost:9191/recruiters/register", formData);
+      window.alert("registration successfully!");
+       navigate("/EmployerCreateProfile");
+    } catch (error) {
+      alert("Error: " + (error.response?.data || error.message));
+    }
+
+   
+
     //   await axios.post("http://localhost:9191/jobseekers/register", formData);
     // } catch (error) {
     //   alert("Error: " + (error.response?.data || error.message));
     // }
+
   };
 
   // const handleOtpVerified = () => {
