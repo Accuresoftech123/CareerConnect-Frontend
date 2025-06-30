@@ -3,13 +3,14 @@ import { Link,useNavigate } from "react-router-dom";
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
-
-import "../../Styles/Employer/EmployerLoginstyle.css";
-
 import linkedin from "../../Images/linkedin.svg";
 import google_g from "../../Images/google_g.jpg";
 import employerLogin from "../../Images/employerLogin.svg";
+
 import axios from "axios";
+
+import "../../Styles/Employer/EmployerLoginstyle.css";
+
 
 const EmployerLogin = () => {
   // State to hold input values
@@ -27,7 +28,7 @@ const EmployerLogin = () => {
   // Handle login form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-
+    navigate("/EmployerDashboard");
     // Basic validation
     if (!email || !password) {
       alert("Please fill in all fields");
@@ -52,7 +53,11 @@ const EmployerLogin = () => {
       });
 
     // Temporary navigation after "login"
+
     // navigate("/employercreateprofile");
+
+    
+
   };
 
   return (

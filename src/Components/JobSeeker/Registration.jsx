@@ -37,6 +37,7 @@ const Registration = () => {
 
     try {
       await axios.post("http://localhost:9191/jobseekers/register", formData);
+      navigate("/JobSeeker-Create-Profile");
     } catch (error) {
       alert("Error: " + (error.response?.data || error.message));
     }
@@ -46,7 +47,7 @@ const Registration = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
     alert("Email Verified Successfully!");
-    navigate("/login");
+    navigate("/Login");
   };
 
   return (
@@ -177,7 +178,7 @@ const Registration = () => {
 
             <div className="jobseeker_register-option">
               <p>
-                Already have an account? <a href="/login">Log In</a>
+                Already have an account? <a href="/Login">Log In</a>
               </p>
             </div>
           </div>

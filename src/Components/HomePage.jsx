@@ -21,10 +21,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import { MapPin } from "lucide-react";
 
 const HomePage = () => {
-  const navigate = useNavigate();
-  const UserRegistration = () => navigate("/Registration");
-  const UserLogin = () => navigate("/Login");
-
+ 
+ 
   return (
     <div className="Homepage_page-container">
       {/* Header */}
@@ -42,10 +40,10 @@ const HomePage = () => {
           <Link to="/companies" className="Homepage_nav-link">
             Companies
           </Link>
-          <Link to="/login">
+          <Link to="/Login">
             <button className="Homepage_btn-outline">Job Seeker</button>
           </Link>
-          <Link to="/employerlogin">
+          <Link to="/EmployerLogin">
             <button className="Homepage_btn-primary">Employer</button>
           </Link>
         </div>

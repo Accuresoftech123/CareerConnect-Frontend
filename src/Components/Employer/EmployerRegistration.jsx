@@ -18,22 +18,38 @@ const Registration = () => {
     password: "",
     confirmPassword: "",
   });
+  const [agreed, setAgreed] = useState(false);
 
   const handleChange = (e) => {
     e.preventDefault();
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+ if (!agreed) {
+      alert("You must agree to the Terms and Conditions.");
+      return;
+    }
 
     try {
       await axios.post("http://localhost:9191/recruiters/register", formData);
       window.alert("registration successfully!");
-       navigate("/EmployerLogin");
+       navigate("/EmployerCreateProfile");
     } catch (error) {
       alert("Error: " + (error.response?.data || error.message));
     }
+
+   
+
+    //   await axios.post("http://localhost:9191/jobseekers/register", formData);
+    // } catch (error) {
+    //   alert("Error: " + (error.response?.data || error.message));
+    // }
+
   };
 
   // const handleOtpVerified = () => {
@@ -70,7 +86,10 @@ const Registration = () => {
               <span className="employerregister_logomain">Career Connect</span>
             </h1>
             <p>
-              Post jobs, review applications, and schedule interviews —  <span className="employerregister_span-plogo">all in one place</span>
+              Post jobs, review applications, and schedule interviews —{" "}
+              <span className="employerregister_span-plogo">
+                all in one place
+              </span>
             </p>
             <div className="employer_register-illustration">
               <img src={EmployerRegistrationImage} alt="Welcome" />
@@ -147,7 +166,24 @@ const Registration = () => {
                   required
                 />
               </div>
-
+              <div className="employer_register-checkbox-container">
+                <input
+                  type="checkbox"
+                  id="terms"
+                  checked={agreed}
+                  onChange={(e) => setAgreed(e.target.checked)}
+                />
+                <label htmlFor="terms">
+                  I agree with all{" "}
+                  <a
+                    href="/terms-and-conditions"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Terms and Conditions
+                  </a>
+                </label>
+              </div>
               <button className="employer_register-btn-submit" type="submit">
                 Register
               </button>

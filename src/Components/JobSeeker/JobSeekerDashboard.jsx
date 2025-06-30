@@ -2,14 +2,14 @@ import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 
-const EmployerDashboard = () => {
+const JobSeekerDashboard = () => {
     return(
         <>
-        <h1>Employer Dashboard</h1>
+        <h1>JobSeeker Dashboard</h1>
         </>
     );
 
     
 
 };
-export default EmployerDashboard;
+export default JobSeekerDashboard;
