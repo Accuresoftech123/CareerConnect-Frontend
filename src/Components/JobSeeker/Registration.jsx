@@ -18,6 +18,8 @@ const Registration = () => {
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
+  const url = "http://localhost:9191";
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -36,7 +38,7 @@ const Registration = () => {
     setShowVerificationPopup(true);
 
     try {
-      await axios.post("http://localhost:9191/jobseekers/register", formData);
+      await axios.post(`${url}/jobseekers/register`, formData);
       navigate("/JobSeeker-Create-Profile");
     } catch (error) {
       alert("Error: " + (error.response?.data || error.message));

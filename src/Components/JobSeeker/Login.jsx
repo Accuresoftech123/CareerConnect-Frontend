@@ -12,7 +12,7 @@ import SvgIcon from "@mui/icons-material/LocalPostOffice";
 import axios from "axios";
 
 const Login = () => {
-  const url = "http://localhost:9191/jobseekers";
+  const url = "http://localhost:9191";
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -30,7 +30,7 @@ const Login = () => {
     }
 
     const user = { email, password };
-    axios.post(`${url}/login`, user)
+    axios.post(`${url}/jobseekers/login`, user)
       .then((response) => {
         if (response.data) {
           alert("Login Successful");
