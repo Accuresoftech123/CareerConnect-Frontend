@@ -37,7 +37,7 @@ const Registration = () => {
 
     try {
       await axios.post("http://localhost:9191/jobseekers/register", formData);
-      navigate("/JobSeeker-Create-Profile");
+      // navigate("/JobSeeker-Create-Profile");
     } catch (error) {
       alert("Error: " + (error.response?.data || error.message));
     }
@@ -47,7 +47,7 @@ const Registration = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
     alert("Email Verified Successfully!");
-    navigate("/Login");
+    // navigate("/Login");
   };
 
   return (

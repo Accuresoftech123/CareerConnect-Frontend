@@ -48,7 +48,7 @@ const EmployerCreateProfile = () => {
           </Link>
         </nav>
       </header>
-
+ 
       {/* Main */}
       <main className="ecp-main">
         {/* Progress Bar */}
@@ -56,7 +56,7 @@ const EmployerCreateProfile = () => {
           <h1>Create your profile</h1>
           <p>
             Start your journey towards the right job. Fill in your details so
-            employers can find you easily.
+            job seekers can find you easily.
           </p>
           <div className="ecp-progress-container">
             <div className="ecp-progress-line">
