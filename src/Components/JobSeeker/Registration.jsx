@@ -38,8 +38,11 @@ const Registration = () => {
     setShowVerificationPopup(true);
 
     try {
+
       await axios.post(`${url}/jobseekers/register`, formData);
       navigate("/JobSeeker-Create-Profile");
+
+      
     } catch (error) {
       alert("Error: " + (error.response?.data || error.message));
     }
@@ -49,7 +52,7 @@ const Registration = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
     alert("Email Verified Successfully!");
-    navigate("/Login");
+    // navigate("/Login");
   };
 
   return (
