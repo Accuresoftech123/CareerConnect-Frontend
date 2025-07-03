@@ -21,6 +21,7 @@ import portfolioWebsite from "../../Images/portfolioWebsite.svg";
 import JobPreferences from "../../Images/JobPreferferences.svg";
 import "../../Styles/JobSeeker/JobSeekerCreateProfile.css";
 import plusIcon from "../../Images/plusIcon.svg";
+import axios from "axios";
 
 const TOTAL_STEPS = 6;
 
@@ -32,6 +33,9 @@ const JobSeekerCreateProfile = () => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
   const [jobPreference, setJobPreference] = useState("");
+
+  const url = "http://localhost:9191";
+
   const preferencesOptions = [
     "Full Time",
     "Part Time",
@@ -42,20 +46,23 @@ const JobSeekerCreateProfile = () => {
   ];
     const [fullName, setFullName] = React.useState("");
   const [email, setEmail] = React.useState("");
-  const [phone, setPhone] = React.useState("");
-  const [personalInfos, setPersonalInfos] = useState({
+  const [mobileNumber, setPhone] = React.useState("");
+  const [personalInfo, setPersonalInfos] = useState({
     city: "",
     state: "",
     country: "",
-    resume: null,
-    video: null,
+    resumeUrl: "",
+    introVideoUrl: null,
     autoParse: false,
   });
 
-  const [educations, setEducations] = useState([
-    { degree: "", fieldOfStudy: "", institution: "", passingYear: "" },
+  const [educationList, setEducations] = useState([
+    { degree: "", 
+      fieldOfStudy: "", 
+      institution: "", 
+      passingYear: "" },
   ]);
-  const [experiences, setExperiences] = useState([
+  const [experienceList, setExperiences] = useState([
     {
       jobTitle: "",
       companyName: "",
@@ -65,14 +72,21 @@ const JobSeekerCreateProfile = () => {
       keyResponsibilities: "",
     },
   ]);
-  const [socialLinks, setSocialLinks] = React.useState({
+  const [socialProfile, setSocialLinks] = React.useState({
     linkedinUrl: "",
     githubUrl: "",
-    portfolioUrl: "",
+    portfolioWebsite: "",
   });
-  const [desiredJobTitle, setDesiredJobTitle] = React.useState("");
-  const [expectedSalary, setExpectedSalary] = React.useState("");
-  const [preferredLocation, setPreferredLocation] = React.useState("");
+
+  const [jobPrefeences, setjobPrefeences] = useState({
+   desiredJobTitle:"",
+      jobType:"",
+      expectedSalary:0,
+      preferredLocation:"",
+  });
+  // const [desiredJobTitle, setDesiredJobTitle] = React.useState("");
+  // const [expectedSalary, setExpectedSalary] = React.useState("");
+  // const [preferredLocation, setPreferredLocation] = React.useState("");
   const [agreeTerms, setAgreeTerms] = React.useState(false);
 
   // Handler for personal info inputs
@@ -87,14 +101,14 @@ const JobSeekerCreateProfile = () => {
 
   /*Add education functionality */
   const handleEducationChange = (index, field, value) => {
-    const updatedEducations = [...educations];
+    const updatedEducations = [...educationList];
     updatedEducations[index][field] = value;
     setEducations(updatedEducations);
   };
 
   /*Add experience functionality */
   const handleExperienceChange = (index, field, value) => {
-    const updatedExperiences = [...experiences];
+    const updatedExperiences = [...experienceList];
     updatedExperiences[index][field] = value;
     setExperiences(updatedExperiences);
   };
@@ -110,42 +124,60 @@ const JobSeekerCreateProfile = () => {
   const handleNext = () => setStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
   const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
 
-const handleSubmit = (e) => {
+const handleSubmit =async (e) => {
   e.preventDefault();
 
+
+  const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
+
   if (!agreeTerms) {
-    alert("Please agree to the terms and conditions before submitting.");
+    window.alert("Please agree to the terms and conditions before submitting.");
     return;
   }
 
   const profileData = {
     fullName: fullName,
     email: email,
-    mobileNumber: phone,
-    personalInfo: personalInfos,
-    education: educations,
-    experience: experiences,
+    mobileNumber: mobileNumber,
+    personalInfo: personalInfo,
+    educationList: educationList,
+    experienceList: experienceList,
     skills: skills,
-    socialLinks: socialLinks,
-    jobPreferences: {
-      desiredJobTitle,
-      jobPreference,
-      expectedSalary,
-      preferredLocation,
-    },
+    scoicalProfile: socialProfile,
+    // jobPreferences: {
+    //   desiredJobTitle,
+    //   jobPreference,
+    //   expectedSalary,
+    //   preferredLocation,
+    // },
+    jobPreferences:jobPrefeences,
     agreedToTerms: agreeTerms,
   };
 
   console.log("Submitting profile data:", profileData);
+ 
 
-  // TODO: Replace this with your API call logic
-  // Example:
-  // axios.post("/api/jobseeker/profile", profileData)
-  //   .then(() => navigate("/JobSeekerDashboard"))
-  //   .catch((err) => console.error("Submission failed:", err));
+  
+    try {
+         
+         const response = await axios.put(`${url}/jobseekers/${jobSeekerId}/profile`, profileData);
 
-  // For now, navigate to dashboard after success
-  navigate("/JobSeekerDashboard");
+         
+        if (response.status === 200) {
+            alert("Job Seeker profile updated successfully!");
+            navigate("/JobSeekerDashboard");
+        }
+    } catch (error) {
+        if (error.response) {
+            alert(error.response.data); // e.g., "Job Seeker not found with ID: 2"
+        } else if (error.request) {
+            alert("No response from server.");
+        } else {
+            alert("Unexpected error. Please try again.");
+        }
+    }
+
+  // navigate("/JobSeekerDashboard");
 };
 
   return (
@@ -272,8 +304,8 @@ const handleSubmit = (e) => {
                       <label htmlFor="phone">Phone Number</label>
                       <input
                         type="tel"
-                        id="phone"
-                        value={phone}
+                        id="mobileNumber"
+                        value={mobileNumber}
                         onChange={(e)=>{setPhone(e.target.value)}}
                         placeholder="Enter your phone number"
                       />
@@ -287,13 +319,13 @@ const handleSubmit = (e) => {
                         <input
                           type="text"
                           id="city"
-                          value={personalInfos.city}
+                          value={personalInfo.city}
                           onChange={handlePersonalInfoChange}
                           placeholder="Enter your City"
                         />
                         <select
                           id="state"
-                          value={personalInfos.state}
+                          value={personalInfo.state}
                           onChange={handlePersonalInfoChange}
                         >
                           <option value="">Select your state</option>
@@ -303,7 +335,7 @@ const handleSubmit = (e) => {
                         </select>
                         <select
                           id="country"
-                          value={personalInfos.country}
+                          value={personalInfo.country}
                           onChange={handlePersonalInfoChange}
                         >
                           <option value="">Select your Country</option>
@@ -394,7 +426,7 @@ const handleSubmit = (e) => {
                 <input
                   type="checkbox"
                   id="autoParse"
-                  checked={personalInfos.autoParse}
+                  checked={personalInfo.autoParse}
                   onChange={handlePersonalInfoChange}
                 />
                 <label htmlFor="autoParse">Auto‑parse resume data</label>
@@ -428,7 +460,7 @@ const handleSubmit = (e) => {
                   <h3>Education</h3>
                 </header>
                 <div className="jscp-card-body">
-                  {educations.map((edu, index) => (
+                  {educationList.map((edu, index) => (
                     <div className="jscp-education-entry" key={index}>
                       <div className="jscp-form-row">
                         <div className="jscp-input-group jscp-half">
@@ -575,7 +607,7 @@ const handleSubmit = (e) => {
                   <h3>Work Experience</h3>
                 </header>
                 <div className="jscp-card-body">
-                  {experiences.map((exp, index) => (
+                  {experienceList.map((exp, index) => (
                     <div className="jscp-experience-entry" key={index}>
                       <div className="jscp-form-row">
                         <div className="jscp-input-group jscp-half">
@@ -622,12 +654,13 @@ const handleSubmit = (e) => {
                           <input
                             type="month"
                             id={`startDate-${index}`}
-                            value={exp.startDate}
+                            //changes
+                            value={exp.startDate ?exp.startDate.slice(0,7) : ""}
                             onChange={(e) =>
                               handleExperienceChange(
                                 index,
                                 "startDate",
-                                e.target.value
+                                e.target.value + "-01"
                               )
                             }
                           />
@@ -637,12 +670,13 @@ const handleSubmit = (e) => {
                           <input
                             type="month"
                             id={`endDate-${index}`}
-                            value={exp.endDate}
+                            // changes
+                            value={exp.endDate ? exp.endDate.slice(0, 7) : ""}
                             onChange={(e) =>
                               handleExperienceChange(
                                 index,
                                 "endDate",
-                                e.target.value
+                                e.target.value + "-01"
                               )
                             }
                             disabled={exp.currentlyWorking}
@@ -832,7 +866,7 @@ const handleSubmit = (e) => {
                       type: "url",
                     },
                     {
-                      id: "portfolioUrl",
+                      id: "portfolioWebsite",
                       icon: portfolioWebsite,
                       label: "Portfolio Website",
                       type: "url",
@@ -852,7 +886,7 @@ const handleSubmit = (e) => {
                           type={item.type}
                           id={item.id}
                           placeholder={`Enter your ${item.label}`}
-                          value={socialLinks[item.id]}
+                          value={socialProfile[item.id]}
                           onChange={handleSocialLinkChange}
                         />
                       </div>
@@ -900,8 +934,13 @@ const handleSubmit = (e) => {
                       type="text"
                       id="desiredJobTitle"
                       placeholder="Enter your desired job title"
-                      value={desiredJobTitle}
-                      onChange={(e) => setDesiredJobTitle(e.target.value)}
+                      value={JobPreferences.desiredJobTitle}
+                       onChange={(e) =>
+                                setjobPrefeences((prev) => ({
+                                     ...prev,
+                                      desiredJobTitle: e.target.value,
+                                }))
+                      }
                     />
                   </div>
                   <div className="jscp-input-group">
@@ -913,11 +952,16 @@ const handleSubmit = (e) => {
                           <div key={value} className="jscp-radio-item">
                             <input
                               type="radio"
-                              id={value}
+                               id={value}
                               name="jobPreference"
                               value={label}
-                              checked={jobPreference === label}
-                              onChange={(e) => setJobPreference(e.target.value)}
+                              checked={jobPrefeences.jobType === label}
+                              onChange={(e) =>
+                               setjobPrefeences((prev) => ({
+                                ...prev,
+                                  jobType: e.target.value,
+                                 }))
+                              }
                             />
                             <label htmlFor={value}>{label}</label>
                           </div>
@@ -933,8 +977,13 @@ const handleSubmit = (e) => {
                         type="text"
                         id="expectedSalary"
                         placeholder="Enter your Expected salary per annum"
-                        value={expectedSalary}
-                        onChange={(e) => setExpectedSalary(e.target.value)}
+                        value={JobPreferences.expectedSalary}
+                       onChange={(e) =>
+                                setjobPrefeences((prev) => ({
+                                 ...prev,
+                                expectedSalary: e.target.value,
+                               }))
+                        }
                       />
                     </div>
                     <div className="jscp-input-group jscp-half">
@@ -945,8 +994,13 @@ const handleSubmit = (e) => {
                         type="text"
                         id="preferredLocation"
                         placeholder="Enter your Preferred location"
-                        value={preferredLocation}
-                        onChange={(e) => setPreferredLocation(e.target.value)}
+                        value={JobPreferences.preferredLocation}
+                        onChange={(e) =>
+                        setjobPrefeences((prev) => ({
+                        ...prev,
+                        preferredLocation: e.target.value,
+                        }))
+                        }
                       />
                     </div>
                   </div>
