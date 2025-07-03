@@ -28,7 +28,7 @@ const EmployerLogin = () => {
   // Handle login form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate("/EmployerDashboard");
+    // navigate("/EmployerDashboard");
     // Basic validation
     if (!email || !password) {
       alert("Please fill in all fields");
@@ -40,8 +40,11 @@ const EmployerLogin = () => {
      const user = { email, password };
     axios.post("http://localhost:9191/recruiters/login", user)
       .then((response) => {
-        if (response.data) {
+        console.log("Login Response:", response.data);
+        const recruiter = response.data;
+        if (recruiter?.id) {
           alert("Login Successful");
+          localStorage.setItem("recruiterId", response.data.id); 
           navigate("/employercreateprofile");
         } else {
           alert("Invalid credentials");

@@ -36,8 +36,9 @@ const Registration = () => {
     setShowVerificationPopup(true);
 
     try {
-      await axios.post("http://localhost:9191/jobseekers/register", formData);
-      navigate("/JobSeeker-Create-Profile");
+      const response = await axios.post("http://localhost:9191/jobseekers/register", formData);
+      
+     // navigate("/JobSeeker-Create-Profile");
     } catch (error) {
       alert("Error: " + (error.response?.data || error.message));
     }
