@@ -39,10 +39,10 @@ const Registration = () => {
 
     try {
 
-      await axios.post(`${url}/jobseekers/register`, formData);
+
+      const response = await axios.post(`${url}/jobseekers/register`, formData);
       navigate("/JobSeeker-Create-Profile");
 
-      
     } catch (error) {
       alert("Error: " + (error.response?.data || error.message));
     }
