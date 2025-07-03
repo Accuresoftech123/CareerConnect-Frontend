@@ -10,6 +10,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
 
 const Registration = () => {
+   const url = "http://localhost:9191";
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     fullName: "",
@@ -37,10 +38,9 @@ const Registration = () => {
 
     try {
 
-      const response = await axios.post("http://localhost:9191/recruiters/register", formData);
-      const recruiter = response.data;
 
-       
+     const response =  await axios.post(`${url}/recruiters/register`, formData);
+ const recruiter = response.data;
 
       window.alert("registration successfully!");
      localStorage.setItem("recruiterId", recruiter.id);

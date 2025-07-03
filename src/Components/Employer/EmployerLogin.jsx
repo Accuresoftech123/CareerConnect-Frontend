@@ -17,6 +17,8 @@ const EmployerLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const url = "http://localhost:9191";
+
   // React Router navigation hook
   const navigate = useNavigate();
 
@@ -24,6 +26,7 @@ const EmployerLogin = () => {
   const goToRegistration = () => {
     navigate("/EmployerRegistration");
   };
+
 
   // Handle login form submission
   const handleSubmit = (e) => {
@@ -55,13 +58,30 @@ const EmployerLogin = () => {
         alert("Login Failed: " + (error.response?.data || error.message));
       });
 
-    // Temporary navigation after "login"
 
-    // navigate("/employercreateprofile");
+  // Basic validation
+  if (!email || !password) {
+    alert("Please fill in all fields");
+    return;
+  }
 
-    
+  const user = { email, password };
 
-  };
+  try {
+    const response = await axios.post(`${url}/recruiters/login`, user);
+
+    if (response.data) {
+      alert("Login Successful");
+      navigate("/employercreateprofile"); // Navigate after successful login
+    } else {
+      alert("Invalid credentials");
+    }
+  } catch (error) {
+    console.error("Login Failed:", error);
+    const errorMsg = error.response?.data?.message || "Login failed. Please check your credentials.";
+    alert("Error: " + errorMsg);
+  }
+};
 
   return (
     <div className="employer_loginpage-container">
