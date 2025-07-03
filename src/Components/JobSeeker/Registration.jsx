@@ -18,6 +18,8 @@ const Registration = () => {
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
+  const url = "http://localhost:9191";
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -36,18 +38,33 @@ const Registration = () => {
     setShowVerificationPopup(true);
 
     try {
-      await axios.post("http://localhost:9191/jobseekers/register", formData);
-      navigate("/JobSeeker-Create-Profile");
-    } catch (error) {
-      alert("Error: " + (error.response?.data || error.message));
+    const response = await axios.post(`${url}/jobseekers/register`, formData);
+
+
+    if (response.status === 201) {
+      const { message, jobSeekerId } = response.data;
+
+      // Store the JobSeeker ID for later use (e.g. in profile update)
+      localStorage.setItem("jobSeekerId", jobSeekerId);
+
+      alert(message); // e.g., "OTP sent. Please verify your email."
+
+      // Now show the OTP popup
+      setShowVerificationPopup(true);
+    } else {
+      alert("Unexpected response from server.");
     }
-  };
+  } catch (error) {
+    alert("Error: " + (error.response?.data || error.message));
+    setShowVerificationPopup(false);
+  }
+};
 
   const handleOtpVerified = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
     alert("Email Verified Successfully!");
-    navigate("/Login");
+    // navigate("/Login");
   };
 
   return (

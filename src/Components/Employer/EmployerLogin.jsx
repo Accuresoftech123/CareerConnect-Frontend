@@ -17,6 +17,8 @@ const EmployerLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const url = "http://localhost:9191";
+
   // React Router navigation hook
   const navigate = useNavigate();
 
@@ -25,10 +27,11 @@ const EmployerLogin = () => {
     navigate("/EmployerRegistration");
   };
 
+
   // Handle login form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    navigate("/EmployerDashboard");
+    // navigate("/EmployerDashboard");
     // Basic validation
     if (!email || !password) {
       alert("Please fill in all fields");
@@ -40,8 +43,11 @@ const EmployerLogin = () => {
      const user = { email, password };
     axios.post("http://localhost:9191/recruiters/login", user)
       .then((response) => {
-        if (response.data) {
+        console.log("Login Response:", response.data);
+        const recruiter = response.data;
+        if (recruiter?.id) {
           alert("Login Successful");
+          localStorage.setItem("recruiterId", response.data.id); 
           navigate("/employercreateprofile");
         } else {
           alert("Invalid credentials");
@@ -52,13 +58,30 @@ const EmployerLogin = () => {
         alert("Login Failed: " + (error.response?.data || error.message));
       });
 
-    // Temporary navigation after "login"
 
-    // navigate("/employercreateprofile");
+  // Basic validation
+  if (!email || !password) {
+    alert("Please fill in all fields");
+    return;
+  }
 
-    
+  const user = { email, password };
 
-  };
+  try {
+    const response = await axios.post(`${url}/recruiters/login`, user);
+
+    if (response.data) {
+      alert("Login Successful");
+      navigate("/employercreateprofile"); // Navigate after successful login
+    } else {
+      alert("Invalid credentials");
+    }
+  } catch (error) {
+    console.error("Login Failed:", error);
+    const errorMsg = error.response?.data?.message || "Login failed. Please check your credentials.";
+    alert("Error: " + errorMsg);
+  }
+};
 
   return (
     <div className="employer_loginpage-container">
