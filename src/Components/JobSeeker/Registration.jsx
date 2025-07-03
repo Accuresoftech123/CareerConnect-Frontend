@@ -38,15 +38,27 @@ const Registration = () => {
     setShowVerificationPopup(true);
 
     try {
+    const response = await axios.post(`${url}/jobseekers/register`, formData);
 
 
-      const response = await axios.post(`${url}/jobseekers/register`, formData);
-      navigate("/JobSeeker-Create-Profile");
+    if (response.status === 201) {
+      const { message, jobSeekerId } = response.data;
 
-    } catch (error) {
-      alert("Error: " + (error.response?.data || error.message));
+      // Store the JobSeeker ID for later use (e.g. in profile update)
+      localStorage.setItem("jobSeekerId", jobSeekerId);
+
+      alert(message); // e.g., "OTP sent. Please verify your email."
+
+      // Now show the OTP popup
+      setShowVerificationPopup(true);
+    } else {
+      alert("Unexpected response from server.");
     }
-  };
+  } catch (error) {
+    alert("Error: " + (error.response?.data || error.message));
+    setShowVerificationPopup(false);
+  }
+};
 
   const handleOtpVerified = () => {
     setShowVerificationPopup(false);
