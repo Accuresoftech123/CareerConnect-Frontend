@@ -27,31 +27,41 @@ const EmployerLogin = () => {
     navigate("/EmployerRegistration");
   };
 
-  const handleSubmit = async (e) => {
-  e.preventDefault(); // Prevent default form submission
 
-  // Basic validation
-  if (!email || !password) {
-    alert("Please fill in all fields");
-    return;
-  }
-
-  const user = { email, password };
-
-  try {
-    const response = await axios.post(`${url}/recruiters/login`, user);
-
-    if (response.data) {
-      alert("Login Successful");
-      navigate("/employercreateprofile"); // Navigate after successful login
-    } else {
-      alert("Invalid credentials");
+  // Handle login form submission
+  const handleSubmit = async(e) => {
+    e.preventDefault();
+    // navigate("/EmployerDashboard");
+    // Basic validation
+    if (!email || !password) {
+      alert("Please fill in all fields");
+      return;
     }
-  } catch (error) {
-    console.error("Login Failed:", error);
-    const errorMsg = error.response?.data?.message || "Login failed. Please check your credentials.";
-    alert("Error: " + errorMsg);
-  }
+
+    // TODO: Implement actual login logic here (e.g., API call)
+
+     const user = { email, password };
+      await axios.post(`${url}/recruiters/login`, user)
+      .then((response) => {
+        console.log("Login Response:", response.data);
+        const recruiter = response.data;
+        if (recruiter?.id) {
+          alert("Login Successful");
+          localStorage.setItem("recruiterId", response.data.id); 
+          navigate("/employercreateprofile");
+        } else {
+          alert("Invalid credentials");
+        }
+      })
+      .catch((error) => {
+        console.error("Login Failed:", error);
+        alert("Login Failed: " + (error.response?.data || error.message));
+      });
+
+
+
+  
+      
 };
 
   return (

@@ -37,8 +37,14 @@ const Registration = () => {
     }
 
     try {
-      await axios.post(`${url}/recruiters/register`, formData);
+
+
+     const response =  await axios.post(`${url}/recruiters/register`, formData);
+ const recruiter = response.data;
+
       window.alert("registration successfully!");
+     localStorage.setItem("recruiterId", recruiter.id);
+     console.log("Recruiter ID:", recruiter.id);
        navigate("/EmployerCreateProfile");
     } catch (error) {
       alert("Error: " + (error.response?.data || error.message));

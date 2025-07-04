@@ -10,16 +10,69 @@ import camera from "../../Images/camera.svg";
 import profileIcon from "../../Images/profileIcon.svg";
 import companyBuilding from "../../Images/companyBuilding.svg";
 import plusIcon from "../../Images/plusIcon.svg";
+import axios from "axios";
 import "../../Styles/Employer/EmployerCreateProfilestyle.css";
 
+const url = "http://localhost:9191/recruitersProfile";
 const EmployerCreateProfile = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: "",
+    companyProfile: {
+      companyName: "",
+      companyEmail: "",
+      companySize: "",
+      img: "",
+      website: "",
+      industryType: "",
+      about: "",
+      foundingYear: 0,
+      hrContactEmail: "",
+     hrContactMobileNumber: "",
+    },
+    companyLocations: [
+      {
+        address: "",
+        city: "",
+        state: "",
+        country: "",
+      },
+    ],
+  });
 
+  const handleChange = (e, group, index = 0) => {
+    const { name, value } = e.target;
+
+    if (!group) {
+      // Top-level field
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    } else if (group === "companyProfile") {
+      setFormData((prev) => ({
+        ...prev,
+        companyProfile: {
+          ...prev.companyProfile,
+          [name]: value,
+        },
+      }));
+    } else if (group === "companyLocations") {
+      const updatedLocations = [...formData.companyLocations];
+      updatedLocations[index][name] = value;
+      setFormData((prev) => ({
+        ...prev,
+        companyLocations: updatedLocations,
+      }));
+    }
+  };
   const handleNextStep = (e) => {
     e.preventDefault();
     const companyName = document.getElementById("companyName").value.trim();
-    const email = document.getElementById("emailAddress").value.trim();
+    const email = document.getElementById("companyEmail").value.trim();
     if (!companyName || !email) {
       alert("Please complete Company Name and Email Address.");
       return;
@@ -27,10 +80,53 @@ const EmployerCreateProfile = () => {
     setStep(2);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    navigate("/EmployerDashboard");
+    setShowVerificationPopup(true); // Optional: remove if not needed
+    const recruiterId = localStorage.getItem("recruiterId"); 
+    console.log("Recruiter ID:", recruiterId);
+
+    try {
+      const payload = {
+      // your profile data,
+      recruiterId: parseInt(recruiterId) // ✅ convert string to int
+    };
+
+      const response = await axios.post(`${url}/create-profile/${recruiterId}`, formData);
+      if (response.status === 200) {
+        const data = response.data;
+
+       if (data.success) {
+        alert("Recruiter profile created successfully!");
+        setIsVerified(true);
+        navigate("/EmployerDashboard");
+      } else {
+        // Backend responded with success: false
+        alert("Error: " + data.message);
+      }
+      }
+    } catch (error) {
+      console.error("Error creating recruiter profile", error);
+      alert("Something went wrong. Please try again.");
+    }
   };
+
+  const handleImageUpload = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prev) => ({
+        ...prev,
+        companyProfile: {
+          ...prev.companyProfile,
+          img: reader.result, // Base64 string
+        },
+      }));
+    };
+    reader.readAsDataURL(file);
+  }
+};
 
   return (
     <div className="ecp-container">
@@ -92,13 +188,28 @@ const EmployerCreateProfile = () => {
               </header>
               <div className="ecp-card-body">
                 <div className="ecp-logo-upload">
-                  <img
-                    src={UploadCompanyImage}
-                    alt="Upload"
-                    className="ecp-upload-image"
-                  />
-                  <img src={camera} alt="Camera" className="ecp-camera-icon" />
-                </div>
+  {/* Preview uploaded image or default */}
+  <img
+    src={formData.companyProfile.img || UploadCompanyImage}
+    alt="Upload"
+    className="ecp-upload-image"
+  />
+
+  {/* Camera icon as upload trigger */}
+  <label htmlFor="companyImageInput">
+    <img src={camera} alt="Camera" className="ecp-camera-icon" />
+  </label>
+
+  {/* Hidden file input */}
+  <input
+    type="file"
+    id="companyImageInput"
+    accept="image/*"
+    style={{ display: "none" }}
+    onChange={handleImageUpload}
+  />
+</div>
+
 
                 <div className="ecp-form-row">
                   <div className="ecp-input-group ecp-full">
@@ -106,7 +217,10 @@ const EmployerCreateProfile = () => {
                     <input
                       type="text"
                       id="companyName"
+                      name="companyName"
                       placeholder="Enter company name"
+                      value={formData.companyProfile.companyName}
+                      onChange={(e) => handleChange(e, "companyProfile")}
                     />
                   </div>
                 </div>
@@ -116,8 +230,11 @@ const EmployerCreateProfile = () => {
                     <label htmlFor="emailAddress">Email Address</label>
                     <input
                       type="email"
-                      id="emailAddress"
+                      id="companyEmail"
+                      name="companyEmail"
                       placeholder="Enter company Email-ID"
+                      value={formData.companyProfile.companyEmail}
+                      onChange={(e) => handleChange(e, "companyProfile")}
                     />
                   </div>
                   <div className="ecp-input-group ecp-half">
@@ -125,7 +242,10 @@ const EmployerCreateProfile = () => {
                     <input
                       type="url"
                       id="website"
+                      name="website"
                       placeholder="Enter company website"
+                      value={formData.companyProfile.website}
+                      onChange={(e) => handleChange(e, "companyProfile")}
                     />
                   </div>
                 </div>
@@ -133,14 +253,36 @@ const EmployerCreateProfile = () => {
                 <div className="ecp-form-row">
                   <div className="ecp-input-group ecp-half">
                     <label htmlFor="industry">Industry</label>
-                    <select id="industry">
-                      <option value="">Select industry</option>
+                    <select
+                      id="industry"
+                      name="industryType"
+                      value={formData.companyProfile.industryType}
+                      onChange={(e) => handleChange(e, "companyProfile")}
+                    >
+                      <option value="Select industry">Select industry</option>
+                      <option value="IT Services & consulting">
+                        IT Services & consulting
+                      </option>
+                      <option value="Healthcare">Healthcare</option>
+                      <option value="BPO">BPO</option>
+                      <option value="Insurance">Insurance</option>
                     </select>
                   </div>
                   <div className="ecp-input-group ecp-half">
                     <label htmlFor="companySize">Company Size</label>
-                    <select id="companySize">
-                      <option value="">Select company size</option>
+                    <select
+                      id="companySize"
+                      name="companySize"
+                      value={formData.companyProfile.companySize}
+                      onChange={(e) => handleChange(e, "companyProfile")}
+                    >
+                      <option value="Select company size">
+                        Select company size
+                      </option>
+                      <option value="0-10">0-10</option>
+                      <option value="0-50">0-50</option>
+                      <option value="0-200">0-200</option>
+                      <option value="0-500">0-500</option>
                     </select>
                   </div>
                 </div>
@@ -149,12 +291,29 @@ const EmployerCreateProfile = () => {
                   <div className="ecp-input-group ecp-full">
                     <label>Location</label>
                     <div className="ecp-location-group">
-                      <input type="text" placeholder="Enter your City" />
-                      <select>
+                      {/* State Dropdown */}
+                      <select
+                        name="state"
+                        id="locationState"
+                        value={formData.companyLocations[0].state}
+                        onChange={(e) => handleChange(e, "companyLocations", 0)}
+                      >
                         <option value="">Select your state</option>
+                        <option value="Maharashtra">Maharashtra</option>
+                        <option value="Delhi">Delhi</option>
+                        <option value="MP">MP</option>
                       </select>
-                      <select>
-                        <option value="">Select your Country</option>
+
+                      {/* Country Dropdown */}
+                      <select
+                        name="country"
+                        id="locationCountry"
+                        value={formData.companyLocations[0].country}
+                        onChange={(e) => handleChange(e, "companyLocations", 0)}
+                      >
+                        <option value="">Select your country</option>
+                        <option value="India">India</option>
+                        <option value="Russia">Russia</option>
                       </select>
                     </div>
                   </div>
@@ -171,8 +330,11 @@ const EmployerCreateProfile = () => {
                     <label htmlFor="aboutCompany">About company</label>
                     <textarea
                       id="aboutCompany"
+                      name="about"
                       rows="4"
                       placeholder="Enter brief introduction about company..."
+                      value={formData.companyProfile.about}
+                      onChange={(e) => handleChange(e, "companyProfile")}
                     ></textarea>
                   </div>
                 </div>
@@ -208,6 +370,9 @@ const EmployerCreateProfile = () => {
                       type="text"
                       id="recruiterName"
                       placeholder="Enter your full Name"
+                      name="fullName"
+                      value={formData.fullName}
+                      onChange={(e) => handleChange(e)}
                     />
                   </div>
                 </div>
@@ -216,16 +381,22 @@ const EmployerCreateProfile = () => {
                     <label htmlFor="recruiterEmail">Email Address</label>
                     <input
                       type="email"
-                      id="recruiterEmail"
-                      placeholder="Enter your Email Id"
+                      id="hrContactEmail"
+                      name="hrContactEmail"
+                      placeholder="Enter company Email-ID"
+                      value={formData.companyProfile.hrContactEmail}
+                      onChange={(e) => handleChange(e, "companyProfile")}
                     />
                   </div>
                   <div className="ecp-input-group ecp-half">
                     <label htmlFor="mobileNumber">Mobile Number</label>
                     <input
                       type="tel"
-                      id="mobileNumber"
+                      id="hrContactMobileNumber"
+                      name="hrContactMobileNumber"
                       placeholder="Enter Mobile number for candidates communication"
+                      value={formData.companyProfile.hrContactMobileNumber}
+                      onChange={(e) =>  handleChange(e, "companyProfile")}
                     />
                   </div>
                 </div>

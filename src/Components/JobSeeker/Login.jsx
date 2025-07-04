@@ -32,10 +32,17 @@ const Login = () => {
     const user = { email, password };
     axios.post(`${url}/jobseekers/login`, user)
       .then((response) => {
+        const JobSeeker = response.data;
         if (response.data) {
           alert("Login Successful");
           console.log("Login Successful:", response.data);
+
+        
+
+          localStorage.setItem("jobSeekerId", response.data.id); 
+          console.log("Job Seeker ID:", response.data.id);
           navigate("/JobSeekerDashboard");
+
         } else {
           alert("Invalid credentials");
         }
