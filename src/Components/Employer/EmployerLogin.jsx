@@ -29,7 +29,7 @@ const EmployerLogin = () => {
 
 
   // Handle login form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     // navigate("/EmployerDashboard");
     // Basic validation
@@ -41,7 +41,7 @@ const EmployerLogin = () => {
     // TODO: Implement actual login logic here (e.g., API call)
 
      const user = { email, password };
-    axios.post("http://localhost:9191/recruiters/login", user)
+      await axios.post(`${url}/recruiters/login`, user)
       .then((response) => {
         console.log("Login Response:", response.data);
         const recruiter = response.data;
@@ -59,28 +59,9 @@ const EmployerLogin = () => {
       });
 
 
-  // Basic validation
-  if (!email || !password) {
-    alert("Please fill in all fields");
-    return;
-  }
 
-  const user = { email, password };
-
-  try {
-    const response = await axios.post(`${url}/recruiters/login`, user);
-
-    if (response.data) {
-      alert("Login Successful");
-      navigate("/employercreateprofile"); // Navigate after successful login
-    } else {
-      alert("Invalid credentials");
-    }
-  } catch (error) {
-    console.error("Login Failed:", error);
-    const errorMsg = error.response?.data?.message || "Login failed. Please check your credentials.";
-    alert("Error: " + errorMsg);
-  }
+  
+      
 };
 
   return (
