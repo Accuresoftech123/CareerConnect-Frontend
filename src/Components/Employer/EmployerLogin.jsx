@@ -29,7 +29,9 @@ const EmployerLogin = () => {
 
 
   // Handle login form submission
-  const handleSubmit = async (e) => {
+
+  const handleSubmit = async(e) => {
+
     e.preventDefault();
     // navigate("/EmployerDashboard");
     // Basic validation
@@ -39,6 +41,7 @@ const EmployerLogin = () => {
     }
 
     // TODO: Implement actual login logic here (e.g., API call)
+
 
   const user = { email, password };
 
@@ -60,6 +63,7 @@ const EmployerLogin = () => {
     const errorMsg = error.response?.data?.message || "Login failed. Please check your credentials.";
     alert("Error: " + errorMsg);
   }
+
 };
 
   return (
