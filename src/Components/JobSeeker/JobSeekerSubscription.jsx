@@ -19,9 +19,92 @@ const JobSeekerSubscription = () => {
   const navigate = useNavigate();
   const [isMonthly, setIsMonthly] = useState(true);
 
+  
+  const loadRazorpayScript = () => {
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.body.appendChild(script);
+    });
+  };
+
+  
   const handleSubmit = () => {
     navigate("/JobSeeker-Create-Profile");
   };
+
+ const handlePayment = async (amount) => {
+  const res = await loadRazorpayScript();
+  if (!res) {
+    alert("Razorpay SDK failed to load.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:9191/payment/create-order?amount=${amount}`, {
+      method: "POST"
+    });
+
+    const orderData = await response.json(); // ✅ properly parse JSON here
+    const orderId = orderData.id;
+
+    const options = {
+      key: "rzp_test_jML5Wc4X8t5FHP",
+      amount: amount * 100,
+      currency: "INR",
+      name: "Career Connect",
+      description: "Subscription Payment",
+      order_id: orderId,
+      handler: function (response) {
+        alert("✅ Payment Successful! Payment ID: " + response.razorpay_payment_id);
+       
+        // 👉 Automatically call /confirm-payment backend API here
+        fetch("http://localhost:9191/payment/confirm-payment", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            userId: 5, // replace this with logged-in JobSeeker’s id dynamically
+           
+            amount: amount
+          })
+        })
+          .then(res => res.text())
+          .then(result => {
+            console.log("✅ Receipt send to registered email:", result);
+            // Now navigate to profile page
+            navigate("/JobSeeker-Create-Profile");
+          })
+          .catch(err => {
+            console.error("❌ Error calling confirm-payment:", err);
+            // Optionally navigate back to subscription page on failure
+            navigate("/JobSeeker-Subscription");
+          });
+      
+
+      },
+      modal: {
+        ondismiss: function () {
+          alert("❌ Payment was cancelled.");
+          navigate("/JobSeeker-Subscription");
+        }
+      },
+      theme: {
+        color: "#3399cc"
+      }
+    };
+
+    const rzp = new window.Razorpay(options);
+    rzp.open();
+  } catch (error) {
+    console.error("Payment failed", error);
+    navigate("/JobSeeker-Subscription");
+  }
+};
+
 
   const starterFeatures = [
     "Upload your CV",
@@ -138,7 +221,7 @@ const JobSeekerSubscription = () => {
             <p className="js_subscription_features-title">Features includes:</p>
             <ul>{renderFeatures(proFeatures)}</ul>
           </div>
-          <button onClick={handleSubmit} className="js_subscription_continue-button pro-btn">
+          <button onClick={() => handlePayment(isMonthly ? 999 : 9999)} className="js_subscription_continue-button pro-btn">
             Continue with Pro plan
           </button>
         </div>
@@ -155,7 +238,7 @@ const JobSeekerSubscription = () => {
             <p className="js_subscription_features-title">Features includes:</p>
             <ul>{renderFeatures(eliteFeatures)}</ul>
           </div>
-          <button onClick={handleSubmit} className="js_subscription_continue-button elite-btn">
+          <button onClick={()=>handlePayment(isMonthly?4999 : 24999)} className="js_subscription_continue-button elite-btn">
             Continue with Elite plan
           </button>
         </div>

@@ -41,6 +41,7 @@ const Registration = () => {
     const response = await axios.post(`${url}/jobseekers/register`, formData);
 
 
+
     if (response.status === 201) {
       const { message, jobSeekerId } = response.data;
 
