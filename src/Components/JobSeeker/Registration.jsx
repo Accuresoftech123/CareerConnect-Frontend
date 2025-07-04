@@ -40,7 +40,7 @@ const Registration = () => {
     try {
 
       await axios.post(`${url}/jobseekers/register`, formData);
-      navigate("/JobSeeker-Create-Profile");
+     // navigate("/JobSeeker-Create-Profile");
 
       
     } catch (error) {
