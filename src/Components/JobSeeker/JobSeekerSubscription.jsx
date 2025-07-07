@@ -13,37 +13,53 @@ import linkedin from "../../Images/linkedin.svg";
 import x from "../../Images/x.svg";
 import axios from "axios";
 
+import { useEffect } from "react";
+
+
 // CSS
 import "../../Styles/JobSeeker/JobSeekerSubscription.css";
 
 const JobSeekerSubscription = () => {
   const navigate = useNavigate();
+  const [amount, setAmount] = useState("");
+  const [userId, setUserId] = useState(""); 
   const [isMonthly, setIsMonthly] = useState(true);
   const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
   
-  const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
+   const loadRazorpay = () => {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => {
+      resolve(true);
+    };
+    script.onerror = () => {
+      reject("Razorpay SDK failed to load.");
+    };
+    document.body.appendChild(script);
+  });
+};
+
+
+  
 
   
   const handleSubmit = () => {
     navigate("/JobSeeker-Create-Profile");
   };
+ const handlePayment = async (selectedAmount) => {
+  const userIdFromStorage = localStorage.getItem("jobSeekerId");
+  setAmount(selectedAmount);
+  setUserId(userIdFromStorage);
 
- const handlePayment = async (amount) => {
-  const res = await loadRazorpayScript();
+  const res = await loadRazorpay();
   if (!res) {
-    alert("Razorpay SDK failed to load.");
+    alert("Razorpay SDK failed to load. Are you online?");
     return;
   }
 
   try {
+
    // ✅ Pass jobSeekerId and amount both to your backend
     const { data: orderData } = await axios.post(
       `http://localhost:9191/payment/create-order`,
@@ -87,17 +103,24 @@ const JobSeekerSubscription = () => {
         }
       },
       theme: { color: "#3399cc" }
+
     };
 
     // ✅ This line is necessary to open Razorpay checkout window
     const rzp = new window.Razorpay(options);
     rzp.open();
 
+
   } catch (error) {
     console.error("Payment failed", error);
     navigate("/JobSeeker-Subscription");
+
   }
 };
+useEffect(() => {
+  loadRazorpay();
+}, []);
+
 
 const starterFeatures = [
     "Upload your CV",
