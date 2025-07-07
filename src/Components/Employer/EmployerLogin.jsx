@@ -29,7 +29,9 @@ const EmployerLogin = () => {
 
 
   // Handle login form submission
-  const handleSubmit = (e) => {
+
+  const handleSubmit = async(e) => {
+
     e.preventDefault();
     // navigate("/EmployerDashboard");
     // Basic validation
@@ -40,47 +42,28 @@ const EmployerLogin = () => {
 
     // TODO: Implement actual login logic here (e.g., API call)
 
-     const user = { email, password };
-    axios.post("http://localhost:9191/recruiters/login", user)
-      .then((response) => {
-        console.log("Login Response:", response.data);
-        const recruiter = response.data;
-        if (recruiter?.id) {
-          alert("Login Successful");
-          localStorage.setItem("recruiterId", response.data.id); 
-          navigate("/employercreateprofile");
-        } else {
-          alert("Invalid credentials");
-        }
-      })
-      .catch((error) => {
-        console.error("Login Failed:", error);
-        alert("Login Failed: " + (error.response?.data || error.message));
-      });
 
+   const user = { email, password };
 
-  // Basic validation
-  // if (!email || !password) {
-  //   alert("Please fill in all fields");
-  //   return;
-  // }
+  try {
+    const response = await axios.post(`${url}/recruiters/login`, user);
+    const recruiter = response.data;
+  
 
-  // const user = { email, password };
+    if (response.data) {
+      alert("Login Successful");
+       localStorage.setItem("recruiterId", recruiter.id);
+     console.log("Recruiter ID:", recruiter.id);
+      navigate("/employercreateprofile"); // Navigate after successful login
+    } else {
+      alert("Invalid credentials");
+    }
+  } catch (error) {
+    console.error("Login Failed:", error);
+    const errorMsg = error.response?.data?.message || "Login failed. Please check your credentials.";
+    alert("Error: " + errorMsg);
+  }
 
-  // try {
-  //   const response = await axios.post(`${url}/recruiters/login`, user);
-
-  //   if (response.data) {
-  //     alert("Login Successful");
-  //     navigate("/employercreateprofile"); // Navigate after successful login
-  //   } else {
-  //     alert("Invalid credentials");
-  //   }
-  // } catch (error) {
-  //   console.error("Login Failed:", error);
-  //   const errorMsg = error.response?.data?.message || "Login failed. Please check your credentials.";
-  //   alert("Error: " + errorMsg);
-  // }
 };
 
   return (
