@@ -9,10 +9,13 @@ import React from "react";
 import EmployerLogin from "./Components/Employer/EmployerLogin";
 import EmployerRegistration from "./Components/Employer/EmployerRegistration";
 import EmployerCreateProfile from "./Components/Employer/EmployerCreateProfile";
-import EmployerDashboard from"./Components/Employer/EmployerDashboard"
+import EmployerDashboard from "./Components/Employer/EmployerDashboard"
 import JobSeekerSubscription from "./Components/JobSeeker/JobSeekerSubscription";
 import JobSeekerCreateProfile from "./Components/JobSeeker/JobSeekerCreateProfile";
 import JobSeekerDashboard from "./Components/JobSeeker/JobSeekerDashboard";
+import JobSeekerHome from "./Components/JobSeeker/JobSeekerHome";
+import Dashboard from "./Components/JobSeeker/DashComponents/Dashboard";
+import JSJobDetails from "./Components/JobSeeker/DashComponents/JSJobDetails";
 
 function App() {
   return (
@@ -26,6 +29,11 @@ function App() {
         <Route path="/JobSeeker-Subscription" element={<JobSeekerSubscription />}></Route>
         <Route path="/JobSeeker-Create-Profile" element={<JobSeekerCreateProfile />}></Route>
         <Route path="/JobSeekerDashboard" element={<JobSeekerDashboard />}></Route>
+        <Route path="/JobSeekerHome/*" element={<JobSeekerRoutes />}></Route>
+        {/* <Route path="/JobSeeker/DashComponents/Dashboard" element={<Dashboard />}></Route> */}
+        {/* <Route path="/JobSeeker/DashComponents/JSJobDetails" element={<JSJobDetails />}></Route> */}
+
+
 
         {/*Employer */}
         <Route path="/EmployerLogin" element={<EmployerLogin />}></Route>
@@ -37,4 +45,14 @@ function App() {
   );
 }
 
+const JobSeekerRoutes = () => {
+  return (
+    <JobSeekerHome>
+      <Routes>
+        <Route path="Jobseeker-Dashboard" element={<Dashboard/>}/>
+        <Route path="Job-details" element={<JSJobDetails/>}/>
+      </Routes>
+    </JobSeekerHome>
+  );
+};
 export default App;

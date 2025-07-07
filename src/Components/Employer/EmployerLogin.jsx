@@ -60,27 +60,27 @@ const EmployerLogin = () => {
 
 
   // Basic validation
-  if (!email || !password) {
-    alert("Please fill in all fields");
-    return;
-  }
+  // if (!email || !password) {
+  //   alert("Please fill in all fields");
+  //   return;
+  // }
 
-  const user = { email, password };
+  // const user = { email, password };
 
-  try {
-    const response = await axios.post(`${url}/recruiters/login`, user);
+  // try {
+  //   const response = await axios.post(`${url}/recruiters/login`, user);
 
-    if (response.data) {
-      alert("Login Successful");
-      navigate("/employercreateprofile"); // Navigate after successful login
-    } else {
-      alert("Invalid credentials");
-    }
-  } catch (error) {
-    console.error("Login Failed:", error);
-    const errorMsg = error.response?.data?.message || "Login failed. Please check your credentials.";
-    alert("Error: " + errorMsg);
-  }
+  //   if (response.data) {
+  //     alert("Login Successful");
+  //     navigate("/employercreateprofile"); // Navigate after successful login
+  //   } else {
+  //     alert("Invalid credentials");
+  //   }
+  // } catch (error) {
+  //   console.error("Login Failed:", error);
+  //   const errorMsg = error.response?.data?.message || "Login failed. Please check your credentials.";
+  //   alert("Error: " + errorMsg);
+  // }
 };
 
   return (
