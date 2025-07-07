@@ -43,7 +43,7 @@ const EmployerLogin = () => {
     // TODO: Implement actual login logic here (e.g., API call)
 
 
-  const user = { email, password };
+   const user = { email, password };
 
   try {
     const response = await axios.post(`${url}/recruiters/login`, user);

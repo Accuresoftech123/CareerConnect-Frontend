@@ -12,7 +12,9 @@ import instagram from "../../Images/instagram.svg";
 import linkedin from "../../Images/linkedin.svg";
 import x from "../../Images/x.svg";
 import axios from "axios";
+
 import { useEffect } from "react";
+
 
 // CSS
 import "../../Styles/JobSeeker/JobSeekerSubscription.css";
@@ -22,7 +24,7 @@ const JobSeekerSubscription = () => {
   const [amount, setAmount] = useState("");
   const [userId, setUserId] = useState(""); 
   const [isMonthly, setIsMonthly] = useState(true);
-
+  const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
   
    const loadRazorpay = () => {
   return new Promise((resolve, reject) => {
@@ -57,43 +59,62 @@ const JobSeekerSubscription = () => {
   }
 
   try {
-    const response = await axios.post(
-      "http://localhost:9191/payment/create-order",
+
+   // ✅ Pass jobSeekerId and amount both to your backend
+    const { data: orderData } = await axios.post(
+      `http://localhost:9191/payment/create-order`,
       null,
       {
-        params: { amount: selectedAmount },
+        params: {
+          userId: jobSeekerId,   // Pass JobSeeker id here
+          amount: amount
+        }
       }
-    );
-
-    const orderData = response.data;
+        );    const orderId = orderData.id;
 
     const options = {
       key: "rzp_test_AuIadyQBYv3HGr",
-      amount: orderData.amount,
-      currency: orderData.currency,
-      name: "CareerConnect",
-      description: "Registration Fee",
-      image: "/logo.png",
-      order_id: orderData.id,
-      handler: async function (response) {
-        alert("✅ Payment successful: " + response.razorpay_payment_id);
-        await axios.post("http://localhost:9191/payment/confirm-payment", {
-          userId: userIdFromStorage,
-          amount: selectedAmount,
+      amount: amount * 100,
+      currency: "INR",
+      name: "Career Connect",
+      description: "Subscription Payment",
+      order_id: orderId,
+      handler: function (response) {
+        alert("✅ Payment Successful! Payment ID: " + response.razorpay_payment_id);
+
+       axios.post("http://localhost:9191/payment/confirm-payment", null, {
+          params: {
+            paymentId: response.razorpay_order_id  // Use order_id here, because that’s saved in DB
+          }
+        })
+        .then((res) => {
+          console.log("✅ Receipt sent to registered email:", res.data);
+          navigate("/JobSeeker-Create-Profile");
+        })
+        .catch((err) => {
+          console.error("❌ Error calling confirm-payment:", err);
+          navigate("/JobSeeker-Subscription");
         });
-        alert("🧾 Receipt generated and emailed!");
       },
+      modal: {
+        ondismiss: function () {
+          alert("❌ Payment was cancelled.");
+          navigate("/JobSeeker-Subscription");
+        }
+      },
+      theme: { color: "#3399cc" }
+
     };
 
+    // ✅ This line is necessary to open Razorpay checkout window
     const rzp = new window.Razorpay(options);
     rzp.open();
 
-    rzp.on("payment.failed", function (response) {
-      alert("❌ Payment failed: " + response.error.description);
-    });
-  } catch (err) {
-    console.error("Error in payment:", err);
-    alert("Something went wrong with the payment. Please try again.");
+
+  } catch (error) {
+    console.error("Payment failed", error);
+    navigate("/JobSeeker-Subscription");
+
   }
 };
 useEffect(() => {
@@ -101,8 +122,7 @@ useEffect(() => {
 }, []);
 
 
-
-  const starterFeatures = [
+const starterFeatures = [
     "Upload your CV",
     "Apply to unlimited jobs",
     "Create and update profile any time",

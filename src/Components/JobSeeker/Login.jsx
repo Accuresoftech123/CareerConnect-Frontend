@@ -41,7 +41,7 @@ const Login = () => {
 
           localStorage.setItem("jobSeekerId", response.data.id); 
           console.log("Job Seeker ID:", response.data.id);
-          navigate("/JobSeekerDashboard");
+          navigate("/JobSeekerHome");
 
         } else {
           alert("Invalid credentials");
