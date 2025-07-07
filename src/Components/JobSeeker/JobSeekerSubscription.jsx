@@ -44,8 +44,17 @@ const JobSeekerSubscription = () => {
   }
 
   try {
-    const { data: orderData } = await axios.post(`http://localhost:9191/payment/create-order?amount=${amount}`);
-    const orderId = orderData.id;
+   // ✅ Pass jobSeekerId and amount both to your backend
+    const { data: orderData } = await axios.post(
+      `http://localhost:9191/payment/create-order`,
+      null,
+      {
+        params: {
+          userId: jobSeekerId,   // Pass JobSeeker id here
+          amount: amount
+        }
+      }
+        );    const orderId = orderData.id;
 
     const options = {
       key: "rzp_test_AuIadyQBYv3HGr",
@@ -57,9 +66,10 @@ const JobSeekerSubscription = () => {
       handler: function (response) {
         alert("✅ Payment Successful! Payment ID: " + response.razorpay_payment_id);
 
-        axios.post("http://localhost:9191/payment/confirm-payment", {
-          userId: jobSeekerId,
-          amount: amount
+       axios.post("http://localhost:9191/payment/confirm-payment", null, {
+          params: {
+            paymentId: response.razorpay_order_id  // Use order_id here, because that’s saved in DB
+          }
         })
         .then((res) => {
           console.log("✅ Receipt sent to registered email:", res.data);
