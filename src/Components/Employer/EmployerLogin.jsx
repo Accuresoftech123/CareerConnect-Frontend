@@ -54,7 +54,7 @@ const EmployerLogin = () => {
       alert("Login Successful");
        localStorage.setItem("recruiterId", recruiter.id);
      console.log("Recruiter ID:", recruiter.id);
-      navigate("/employercreateprofile"); // Navigate after successful login
+     navigate("/EmployerDashboard"); // Navigate after successful login
     } else {
       alert("Invalid credentials");
     }
@@ -64,7 +64,7 @@ const EmployerLogin = () => {
     alert("Error: " + errorMsg);
   }
 
-};
+ };
 
   return (
     <div className="employer_loginpage-container">

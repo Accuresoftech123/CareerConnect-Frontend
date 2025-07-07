@@ -11,99 +11,95 @@ import facebook from "../../Images/facebook.svg";
 import instagram from "../../Images/instagram.svg";
 import linkedin from "../../Images/linkedin.svg";
 import x from "../../Images/x.svg";
+import axios from "axios";
+import { useEffect } from "react";
 
 // CSS
 import "../../Styles/JobSeeker/JobSeekerSubscription.css";
 
 const JobSeekerSubscription = () => {
   const navigate = useNavigate();
+  const [amount, setAmount] = useState("");
+  const [userId, setUserId] = useState(""); 
   const [isMonthly, setIsMonthly] = useState(true);
 
   
-  const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
+   const loadRazorpay = () => {
+  return new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.onload = () => {
+      resolve(true);
+    };
+    script.onerror = () => {
+      reject("Razorpay SDK failed to load.");
+    };
+    document.body.appendChild(script);
+  });
+};
+
+
+  
 
   
   const handleSubmit = () => {
     navigate("/JobSeeker-Create-Profile");
   };
+ const handlePayment = async (selectedAmount) => {
+  const userIdFromStorage = localStorage.getItem("jobSeekerId");
+  setAmount(selectedAmount);
+  setUserId(userIdFromStorage);
 
- const handlePayment = async (amount) => {
-  const res = await loadRazorpayScript();
+  const res = await loadRazorpay();
   if (!res) {
-    alert("Razorpay SDK failed to load.");
+    alert("Razorpay SDK failed to load. Are you online?");
     return;
   }
 
   try {
-    const response = await fetch(`http://localhost:9191/payment/create-order?amount=${amount}`, {
-      method: "POST"
-    });
+    const response = await axios.post(
+      "http://localhost:9191/payment/create-order",
+      null,
+      {
+        params: { amount: selectedAmount },
+      }
+    );
 
-    const orderData = await response.json(); // ✅ properly parse JSON here
-    const orderId = orderData.id;
+    const orderData = response.data;
 
     const options = {
-      key: "rzp_test_jML5Wc4X8t5FHP",
-      amount: amount * 100,
-      currency: "INR",
-      name: "Career Connect",
-      description: "Subscription Payment",
-      order_id: orderId,
-      handler: function (response) {
-        alert("✅ Payment Successful! Payment ID: " + response.razorpay_payment_id);
-       
-        // 👉 Automatically call /confirm-payment backend API here
-        fetch("http://localhost:9191/payment/confirm-payment", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            userId: 5, // replace this with logged-in JobSeeker’s id dynamically
-           
-            amount: amount
-          })
-        })
-          .then(res => res.text())
-          .then(result => {
-            console.log("✅ Receipt send to registered email:", result);
-            // Now navigate to profile page
-            navigate("/JobSeeker-Create-Profile");
-          })
-          .catch(err => {
-            console.error("❌ Error calling confirm-payment:", err);
-            // Optionally navigate back to subscription page on failure
-            navigate("/JobSeeker-Subscription");
-          });
-      
-
+      key: "rzp_test_AuIadyQBYv3HGr",
+      amount: orderData.amount,
+      currency: orderData.currency,
+      name: "CareerConnect",
+      description: "Registration Fee",
+      image: "/logo.png",
+      order_id: orderData.id,
+      handler: async function (response) {
+        alert("✅ Payment successful: " + response.razorpay_payment_id);
+        await axios.post("http://localhost:9191/payment/confirm-payment", {
+          userId: userIdFromStorage,
+          amount: selectedAmount,
+        });
+        alert("🧾 Receipt generated and emailed!");
       },
-      modal: {
-        ondismiss: function () {
-          alert("❌ Payment was cancelled.");
-          navigate("/JobSeeker-Subscription");
-        }
-      },
-      theme: {
-        color: "#3399cc"
-      }
     };
 
     const rzp = new window.Razorpay(options);
     rzp.open();
-  } catch (error) {
-    console.error("Payment failed", error);
-    navigate("/JobSeeker-Subscription");
+
+    rzp.on("payment.failed", function (response) {
+      alert("❌ Payment failed: " + response.error.description);
+    });
+  } catch (err) {
+    console.error("Error in payment:", err);
+    alert("Something went wrong with the payment. Please try again.");
   }
 };
+useEffect(() => {
+  loadRazorpay();
+}, []);
+
 
 
   const starterFeatures = [
