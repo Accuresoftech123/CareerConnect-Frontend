@@ -11,7 +11,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #ffffff;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 10px 16px;
   position: fixed;
   top: 0;
@@ -19,6 +20,7 @@
   right: 0;
   height: 60px;
   z-index: 1001;
+  flex-wrap: wrap; /* ✨ Add for responsiveness */
 }
 
 .JobSeekerHome_sidebar-toggle-btn {
@@ -26,19 +28,25 @@
   background: none;
   border: none;
   font-size: 24px;
-  color: #22c55e;
+  color: #b153e5;
   cursor: pointer;
 }
 
-.JobSeekerHome_logo-container img {
-  height: 40px;
+.JobSeekerHome_logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #b153e5;
+}
+
+.JobSeekerHome_logo span {
+  color: #000;
 }
 
 .JobSeekerHome_search-container {
   display: flex;
   align-items: center;
-  background: #fff;
-  border: 1px solid #ccc;
+  background-color: #efefef;
+  border: 1px solid #f3b7a4;
   border-radius: 6px;
   padding: 4px 10px;
   max-width: 400px;
@@ -50,16 +58,20 @@
   border: none;
   outline: none;
   flex: 1;
+  padding-left: 14px;
+  background-color: #efefef;
 }
 
 .JobSeekerHome_search-icon {
-  color: #22c55e;
+  color: #000;
 }
 
 .JobSeekerHome_right-section {
   display: flex;
   align-items: center;
   gap: 16px;
+  padding-right: 19px;
+  flex-wrap: wrap; /* ✨ Add for mobile wrapping */
 }
 
 .JobSeekerHome_user-greeting {
@@ -82,6 +94,7 @@
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
   transition: transform 0.3s ease;
   z-index: 1000;
+  transform: translateX(0);
 }
 
 .link,
@@ -122,7 +135,7 @@
   z-index: 999;
 }
 
-/* ✅ Layout body + scrollable content */
+/* Layout body */
 .JobSeekerHome_layout-body {
   display: flex;
   margin-top: 60px;
@@ -140,7 +153,10 @@
   min-height: 0;
 }
 
-/* Responsive */
+/* ---------------------- */
+/* 📱 Responsive Styles    */
+/* ---------------------- */
+
 @media (max-width: 1024px) {
   .JobSeekerHome_search-container {
     max-width: 250px;
@@ -155,36 +171,82 @@
   .JobSeekerHome_sidebar {
     transform: translateX(-100%);
     width: 80%;
-    margin-top: 100px;
+    margin-top: 150px;
   }
 
   .JobSeekerHome_sidebar.active {
     transform: translateX(0);
   }
 
+  .JobSeekerHome_sidebar-overlay.active {
+    display: block;
+  }
+
   .JobSeekerHome_layout-body {
-    margin-top: 150px;
+    margin-top: 60px;
+    margin-left: 0;
   }
 
   .JobSeekerHome_main-content {
     margin-left: 0;
-    padding-bottom: 150px;
+    padding: 10px;
+    padding-top: 140px;
+    height: auto;
   }
 
   .JobSeekerHome_header {
     flex-direction: column;
     align-items: flex-start;
     height: auto;
-    gap: 8px;
+    gap: 10px;
+    padding: 12px;
   }
 
   .JobSeekerHome_right-section {
     width: 100%;
     justify-content: space-between;
+    flex-wrap: wrap;
   }
 
   .JobSeekerHome_logo-container {
     width: 100%;
     justify-content: center;
+  }
+
+  .JobSeekerHome_user-greeting {
+    font-size: 14px;
+  }
+
+  .JobSeekerHome_search-container {
+    width: 100%;
+    margin: 8px 0;
+  }
+}
+
+@media only screen and (max-width: 480px) {
+  .JobSeekerHome_header {
+    padding: 10px;
+  }
+
+  .JobSeekerHome_search-container {
+    padding: 6px 8px;
+  }
+
+  .JobSeekerHome_right-section {
+    gap: 10px;
+    justify-content: space-between;
+  }
+
+  .JobSeekerHome_user-greeting {
+    font-size: 13px;
+  }
+
+  .JobSeekerHome_logo {
+    font-size: 20px;
+  }
+
+  .JobSeekerHome_main-content {
+    padding: 10px;
+    padding-top: 140px;
   }
 }
