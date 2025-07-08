@@ -8,10 +8,14 @@ import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
+import EmailVerificationPopup from "./EmailVerification.jsx";
 
 const Registration = () => {
    const url = "http://localhost:9191";
   const navigate = useNavigate();
+   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
+    const [isVerified, setIsVerified] = useState(false);
+  
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -27,44 +31,45 @@ const Registration = () => {
   };
 
   
-  
-  const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
-    
- if (!agreed) {
+     if (!agreed) {
       alert("You must agree to the Terms and Conditions.");
       return;
     }
+    setShowVerificationPopup(true);
 
     try {
+    const response = await axios.post(`${url}/recruiters/register`, formData);
+//  const recruiter = response.data;
+console.log(response);
 
 
-     const response =  await axios.post(`${url}/recruiters/register`, formData);
- const recruiter = response.data;
+    if (response.status === 201) {
+      const { message, recruiterId } = response.data;
 
-      window.alert("registration successfully!");
-     localStorage.setItem("recruiterId", recruiter.id);
-     console.log("Recruiter ID:", recruiter.id);
-       navigate("/EmployerCreateProfile");
-    } catch (error) {
-      alert("Error: " + (error.response?.data || error.message));
+      // Store the JobSeeker ID for later use (e.g. in profile update)
+      localStorage.setItem("RecruiterId", recruiterId);
+
+      alert(message); // e.g., "OTP sent. Please verify your email."
+
+      // Now show the OTP popup
+      setShowVerificationPopup(true);
+    } else {
+      alert("Unexpected response from server.");
     }
+  } catch (error) {
+    alert("Error: " + (error.response?.data || error.message));
+    setShowVerificationPopup(false);
+  }
+};
 
-   
-
-    //   await axios.post("http://localhost:9191/jobseekers/register", formData);
-    // } catch (error) {
-    //   alert("Error: " + (error.response?.data || error.message));
-    // }
-
+  const handleOtpVerified = () => {
+    setShowVerificationPopup(false);
+    setIsVerified(true);
+    alert("Email Verified Successfully!");
+    // navigate("/login");
   };
-
-  // const handleOtpVerified = () => {
-  //   setShowVerificationPopup(false);
-  //   setIsVerified(true);
-  //   alert("Email Verified Successfully!");
-  //   navigate("/login");
-  // };
 
   return (
     <div className="employer_register-container">
@@ -75,7 +80,7 @@ const Registration = () => {
         </div>
         <nav className="employer_register-nav">
           <Link to="/">Home</Link>
-          <Link to="/candidates">Candidates</Link>
+          <Link to="/candida  tes">Candidates</Link>
           <Link to="/companies">Companies</Link>
           <Link to="/EmployerLogin">
             <button className="employer_register-btn-primary">Log In</button>
@@ -195,6 +200,18 @@ const Registration = () => {
                 Register
               </button>
             </form>
+            {showVerificationPopup && (
+              <div className="popup-backdrop">
+                <EmailVerificationPopup
+                  email={formData.email}
+                  onVerify={handleOtpVerified}
+                />
+              </div>
+            )}
+
+            {isVerified && (
+              <p style={{ color: "green" }}>Email Verified Successfully!</p>
+            )}
             <div className="employer_register-option">
               <p>
                 Already have an account? <a href="/EmployerLogin">Log In</a>

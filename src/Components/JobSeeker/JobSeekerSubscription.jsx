@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
+ 
 // Image imports
 import Notification from "../../Images/Notification.svg";
 import user from "../../Images/user.svg";
@@ -12,15 +12,15 @@ import instagram from "../../Images/instagram.svg";
 import linkedin from "../../Images/linkedin.svg";
 import x from "../../Images/x.svg";
 import axios from "axios";
-
+ 
 // CSS
 import "../../Styles/JobSeeker/JobSeekerSubscription.css";
-
+ 
 const JobSeekerSubscription = () => {
   const navigate = useNavigate();
   const [isMonthly, setIsMonthly] = useState(true);
   const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
-  
+ 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
       const script = document.createElement("script");
@@ -30,23 +30,32 @@ const JobSeekerSubscription = () => {
       document.body.appendChild(script);
     });
   };
-
-  
+ 
+ 
   const handleSubmit = () => {
     navigate("/JobSeeker-Create-Profile");
   };
-
+ 
  const handlePayment = async (amount) => {
   const res = await loadRazorpayScript();
   if (!res) {
     alert("Razorpay SDK failed to load.");
     return;
   }
-
+ 
   try {
-    const { data: orderData } = await axios.post(`http://localhost:9191/payment/create-order?amount=${amount}`);
-    const orderId = orderData.id;
-
+   // ✅ Pass jobSeekerId and amount both to your backend
+    const { data: orderData } = await axios.post(
+      `http://localhost:9191/payment/create-order`,
+      null,
+      {
+        params: {
+          userId: jobSeekerId,   // Pass JobSeeker id here
+          amount: amount
+        }
+      }
+        );    const orderId = orderData.id;
+ 
     const options = {
       key: "rzp_test_AuIadyQBYv3HGr",
       amount: amount * 100,
@@ -56,10 +65,11 @@ const JobSeekerSubscription = () => {
       order_id: orderId,
       handler: function (response) {
         alert("✅ Payment Successful! Payment ID: " + response.razorpay_payment_id);
-
-        axios.post("http://localhost:9191/payment/confirm-payment", {
-          userId: jobSeekerId,
-          amount: amount
+ 
+       axios.post("http://localhost:9191/payment/confirm-payment", null, {
+          params: {
+            paymentId: response.razorpay_order_id  // Use order_id here, because that’s saved in DB
+          }
         })
         .then((res) => {
           console.log("✅ Receipt sent to registered email:", res.data);
@@ -78,24 +88,24 @@ const JobSeekerSubscription = () => {
       },
       theme: { color: "#3399cc" }
     };
-
+ 
     // ✅ This line is necessary to open Razorpay checkout window
     const rzp = new window.Razorpay(options);
     rzp.open();
-
+ 
   } catch (error) {
     console.error("Payment failed", error);
     navigate("/JobSeeker-Subscription");
   }
 };
-
+ 
 const starterFeatures = [
     "Upload your CV",
     "Apply to unlimited jobs",
     "Create and update profile any time",
     "Email update for job matches",
   ];
-
+ 
   const proFeatures = [
     "Upload your CV",
     "Apply to unlimited jobs",
@@ -106,7 +116,7 @@ const starterFeatures = [
     "Priority application placement",
     "Career Connect badge on your profile",
   ];
-
+ 
   const eliteFeatures = [
     "Upload your CV",
     "Apply to unlimited jobs",
@@ -117,7 +127,7 @@ const starterFeatures = [
     "Priority application placement",
     "Career Connect badge on your profile",
   ];
-
+ 
   const renderFeatures = (features) =>
     features.map((feature, index) => (
       <li key={index}>
@@ -125,7 +135,7 @@ const starterFeatures = [
         {feature}
       </li>
     ));
-
+ 
   return (
     <div className="js_subscription_container">
       {/* Header */}
@@ -144,7 +154,7 @@ const starterFeatures = [
           </Link>
         </nav>
       </header>
-
+ 
       {/* Middle Section */}
       <section className="js_subscription_middle-section">
         <h1>
@@ -154,7 +164,7 @@ const starterFeatures = [
           Whether you're just starting out or ready to level up, choose a plan that helps you reach your job goals faster.
         </p>
       </section>
-
+ 
       {/* Toggle Buttons */}
       <section className="js_subscription_plan-toggle">
         <h2>Choose your plan</h2>
@@ -173,7 +183,7 @@ const starterFeatures = [
           </button>
         </div>
       </section>
-
+ 
       {/* Pricing Cards */}
       <section className="js_subscription_pricing-cards">
         {/* Starter */}
@@ -190,7 +200,7 @@ const starterFeatures = [
             Continue with Free plan
           </button>
         </div>
-
+ 
         {/* Pro */}
         <div className="js_subscription_pricing-card pro most-popular">
           <img src={mostPopular} alt="Most Popular" className="js_subscription_most-popular-tag" />
@@ -208,7 +218,7 @@ const starterFeatures = [
             Continue with Pro plan
           </button>
         </div>
-
+ 
         {/* Elite */}
         <div className="js_subscription_pricing-card elite">
           <div className="js_subscription_plan-header">
@@ -226,7 +236,7 @@ const starterFeatures = [
           </button>
         </div>
       </section>
-
+ 
       {/* Compare Table */}
       <section className="js_subscription_compare-plans-section">
         <h2 className="js_subscription_compare-plans-section-title">Compare All Plans</h2>
@@ -272,7 +282,7 @@ const starterFeatures = [
           </tbody>
         </table>
       </section>
-
+ 
       {/* Footer */}
       <footer className="js_subscription_footer">
         <div className="js_subscription_footer-grid">
@@ -318,5 +328,5 @@ const starterFeatures = [
     </div>
   );
 };
-
+ 
 export default JobSeekerSubscription;
