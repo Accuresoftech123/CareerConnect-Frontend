@@ -12,6 +12,8 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
   const navigate = useNavigate();
 
   // Start countdown on mount
+
+  const url= "http://localhost:9191";
   useEffect(() => {
     startCountdown();
     return () => clearInterval(intervalRef.current);
@@ -53,30 +55,61 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
   };
 
   // Verify OTP with server
-  const verifyOtp = async () => {
-    const otpValue = otp.join("");
-    if (otpValue.length === 6) {
-      try {
-        const response = await axios.post(
-          "http://localhost:9191/recruiters/Verify-recruiter",
-          { email, otp: otpValue },
-          { headers: { "Content-Type": "application/json" } }
-        );
+ const verifyOtp = async () => {
+  const otpValue = otp.join("");
 
-        const { success, message } = response.data;
-        alert(message);
-        if (success) {
-          onVerify(otpValue);
-          navigate("/EmployerCreateProfile");
+  if (otpValue.length === 6) {
+    try {
+      const response = await axios.post(
+        `${url}/recruiters/verify-otp`,
+        JSON.stringify({ email, otp: otpValue }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      } catch (error) {
-        alert(error.response?.data || "Verification failed");
-      }
-    } else {
-      alert("Please enter a valid 6-digit OTP.");
-    }
-  };
+      );
 
+      if (response.data.success) {
+        alert("✅ OTP Verified Successfully!");
+        // Optionally redirect or update UI
+        navigate("/EmployerCreateProfile");
+        onVerify(); // Call the parent callback to indicate verification success
+      } else {
+        alert("❌ " + response.data.message);
+      }
+    } catch (error) {
+      if (
+        error.response &&
+        error.response.data &&
+        error.response.data.message
+      ) {
+        const message = error.response.data.message;
+
+        if (message === "Invalid OTP") {
+          alert("❌ Invalid OTP. Please try again.");
+        } else if (message === "OTP has expired. Please click 'Resend OTP' to receive a new OTP.") {
+          alert("⏰ OTP has expired. Please request a new one.");
+        } else if (message === "Email not found") {
+          alert("⚠️ Email is not registered.");
+        } else if (message === "Email already registered") {
+          alert("⚠️ This email is already registered. Please login instead.");
+          // navigate("/login");
+        } else {
+          alert("❌ " + message);
+        }
+      } else {
+        alert("Something went wrong during verification.");
+      }
+    }
+  } else {
+    alert("Please enter a 6-digit OTP.");
+  }
+};
+
+
+
+       
   return (
     <div className="email-verification-popup">
       <div className="email-verification-container">
