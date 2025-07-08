@@ -137,7 +137,6 @@
 .JobSeeker-dashboard-stat-card .JobSeeker-dashboard-stat-link {
     font-size: 13px;
     color: #28a745;
-    /* Green for positive change */
     margin: 0;
 }
 
@@ -186,9 +185,7 @@
 .JobSeeker-dashboard-JobSeeker-job-card .JobSeeker-dashboard-icon,
 .JobSeeker-dashboard-card .JobSeeker-dashboard-icon {
     width: 50px;
-    /* Container size for the job icon */
     height: 50px;
-    /* Container size for the job icon */
     margin-right: 15px;
     flex-shrink: 0;
     display: flex;

@@ -1,0 +1,235 @@
+.AdminLogin_page-container {
+  font-family: sans-serif;
+  color: #222;
+  
+}
+
+
+
+/* header */
+
+.AdminLogin_header {
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 3.2rem 0.5rem 4.2rem;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  font-size: 18px;
+  display: flex;
+}
+
+.AdminLogin_logo {
+  font-size: 28px;
+  font-weight: bold;
+  color: #b153e5;
+}
+
+.AdminLogin_logo span {
+  color: #000;
+}
+
+.AdminLogin_nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2.5rem;
+}
+
+.AdminLogin_nav-link {
+  text-decoration: none;
+  margin: 0 10px;
+  padding: 2px;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.AdminLogin_nav-link:hover {
+  color: #9b5de5;
+}
+
+
+.AdminLogin_btn-outline {
+  border: 1px solid #f3b7a4;
+  color: #000;
+  background-color: transparent;
+  cursor: pointer;
+  border-radius: 5px;
+  padding: 0.2rem 1rem;
+  transition: background-color 0.3s ease;
+}
+
+.AdminLogin_btn-outline:hover {
+  outline: none;
+  border-color: #9b5de5;
+  box-shadow: 0 0 5px #9b5de5;
+}
+.AdminLogin_btn-outline:focus {
+  outline: none;
+  border-color: #9b5de5;
+  box-shadow: 0 0 5px #9b5de5;
+}
+
+
+
+
+
+/*login box */
+
+/* .AdminLogin_label {
+  width: 10px; 
+  font-weight: 500;
+  margin-right: 10px;
+  text-align: right;
+} */
+.AdminLogin_login-fillUp {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 90vh;
+  background: #f0f2f5;
+
+}
+
+.AdminLogin-loginBox{
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 570px;
+  text-align: center;
+  border: 2px solid #444444;
+  border-radius: 8px;
+
+}
+
+.AdminLogin_login-fillUp h3 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color:#000;
+}
+
+.AdminLogin_login-fillUp p {
+  font-size: 14px;
+}
+
+/* Make the wrapping div (label + input) a flex row */
+.AdminLogin-loginBox > div {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin: 1rem 0;
+  gap: 20px; /* space between label and input */
+}
+
+/* Adjust label style */
+.AdminLogin_label {
+  font-weight: bold;
+  width: 100px; /* fixed width for alignment */
+  margin: 0;
+  text-align: right;
+  margin-top: 0px;
+}
+
+/* Adjust input container so input doesn't shrink */
+.AdminLogin_Logininput-container {
+  flex: 1;
+  position: relative;
+}
+
+/* Adjust icon position since now input is not full-width */
+.AdminLogin_Logininput-container > svg {
+  left: 10px;
+  margin-left:-24px;
+  margin-right:-29px;
+    transform: translateY(-50%);
+    margin-top:22px;
+
+}
+
+/* Make input full width within its container */
+.AdminLogin_Logininput-container input {
+  width: 100%;
+  padding-left: 35px; /* account for icon */
+}
+
+
+/* .AdminLogin_Logininput-container {
+  position: relative;
+}
+
+
+.AdminLogin_Logininput-container input {
+  width: 60%;
+  padding: 0.6rem 1rem 0.6rem 2.5rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #f3f3f3;
+  font-size: 14px;
+}
+
+.AdminLogin_Logininput-container > svg {
+  position: absolute;
+  top: 50%;
+  left: 105px;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #888;
+}
+
+.AdminLogin_login-fillUp label{
+    font-weight: bold;
+    margin-left: -416px;
+
+} */
+
+/* Buttons */
+.AdminLogin_loginbtn-primary {
+  width: 100%;
+  background-color: #b153e5;
+  color: #fff;
+  padding: 0.6rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+}
+
+.AdminLogin_loginbtn-primary:hover {
+  background-color: #842cc0;
+}
+
+
+
+.AdminLogin_loginbtn-outline {
+  width: 100%;
+  background-color: transparent;
+  border: 1px solid #f3b7a4;
+  color: #000;
+  font-weight: bold;
+  padding: 0.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+  transition: background-color 0.3s ease;
+}
+
+
+.AdminLogin_loginbtn-outline:hover {
+  outline: none;
+  border-color: #9b5de5;
+  box-shadow: 0 0 5px #9b5de5;
+}
+
+
+
+
+
+
+
