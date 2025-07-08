@@ -11,17 +11,16 @@ import wipro from "../Images/wipro.svg";
 import accenture from "../Images/accenture.svg";
 import amazon from "../Images/amazon.svg";
 import JobPortalHome from "../Images/JobPortalHome.webp";
-import HealthAndSafetyOutlinedIcon from "@mui/icons-material/HealthAndSafetyOutlined";
-import MonitorIcon from "@mui/icons-material/Monitor";
-import CampaignRoundedIcon from "@mui/icons-material/CampaignRounded";
-import TrendingUpRoundedIcon from "@mui/icons-material/TrendingUpRounded";
 import { Card, SvgIcon } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
 import SearchIcon from "@mui/icons-material/Search";
 import { MapPin } from "lucide-react";
+import Techno_home from "../Images/Techno_home.svg";
+import Marketing_home from "../Images/Marketing_home.svg";
+import Finance_home from "../Images/Finance_home.svg";
+import HealthCare_home from "../Images/HealthCare_home.svg";
 
 const HomePage = () => {
- 
  
   return (
     <div className="Homepage_page-container">
@@ -108,22 +107,22 @@ const HomePage = () => {
         <h2>Popular job categories</h2>
         <div className="Homepage_categories-grid">
           <div className="Homepage_category-card">
-            <h1><MonitorIcon style={{ width: "4rem", height: "4rem" }} /></h1>
+            <h1><img src={Techno_home} alt="Laptop image" style={{ width: "3rem", height: "3rem" }} /></h1>
             <h3>Technology & IT</h3>
             <p>1350 Jobs available</p>
           </div>
           <div className="Homepage_category-card">
-            <h1><HealthAndSafetyOutlinedIcon style={{ width: "4rem", height: "4rem" }} /></h1>
+            <h1><img src={HealthCare_home} alt="Healthcare image" style={{ width: "3rem", height: "3rem" }} /></h1>
             <h3>Healthcare</h3>
             <p>578 Jobs available</p>
           </div>
           <div className="Homepage_category-card">
-            <h1><TrendingUpRoundedIcon style={{ width: "4rem", height: "4rem" }} /></h1>
+            <h1><img src={Finance_home} alt="Finance graph image" style={{ width: "3rem", height: "3rem" }} /></h1>
             <h3>Finance & Banking</h3>
             <p>842 Jobs available</p>
           </div>
           <div className="Homepage_category-card">
-            <h1><CampaignRoundedIcon style={{ width: "4rem", height: "4rem" }} /></h1>
+            <h1><img src={Marketing_home} alt="Marketing image" style={{ width: "3rem", height: "3rem" }} /></h1>
             <h3>Marketing & Sales</h3>
             <p>573 Jobs available</p>
           </div>

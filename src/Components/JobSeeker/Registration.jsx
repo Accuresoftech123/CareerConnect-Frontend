@@ -3,7 +3,7 @@ import { Link,useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import "../../Styles/JobSeeker/Registerstyle.css";
-import register from "../../Images/register.svg";
+import JSRegister from "../../Images/JSRegister.svg";
 
 import PersonIcon from "@mui/icons-material/Person";
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
@@ -101,7 +101,7 @@ const Registration = () => {
             </h1>
             <p>Your gateway to professional opportunities</p>
             <div className="jobseeker_register-illustration">
-              <img src={register} alt="Welcome" />
+              <img src={JSRegister} alt="Welcome" />
             </div>
           </div>
 
