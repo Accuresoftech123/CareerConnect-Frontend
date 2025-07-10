@@ -42,9 +42,15 @@ const HomePage = () => {
           <Link to="/Login">
             <button className="Homepage_btn-outline">Job Seeker</button>
           </Link>
+          <Link to="/AdminLogin">
+            <button className="Homepage_btn-outline">Admin</button>
+          </Link>
           <Link to="/EmployerLogin">
             <button className="Homepage_btn-primary">Employer</button>
           </Link>
+          
+
+          
         </div>
       </nav>
 

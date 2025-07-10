@@ -13,9 +13,9 @@ import EmailVerificationPopup from "./EmailVerification.jsx";
 const Registration = () => {
    const url = "http://localhost:9191";
   const navigate = useNavigate();
-   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
-    const [isVerified, setIsVerified] = useState(false);
-  
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
+
+  const [isVerified, setIsVerified] = useState(false);
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -24,53 +24,54 @@ const Registration = () => {
     confirmPassword: "",
   });
   const [agreed, setAgreed] = useState(false);
-
+ 
   const handleChange = (e) => {
     e.preventDefault();
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
+ 
+  const handleSubmit = async (e) => {
+  e.preventDefault();
 
-  
-   const handleSubmit = async (e) => {
-    e.preventDefault();
-     if (!agreed) {
-      alert("You must agree to the Terms and Conditions.");
+  if (!agreed) {
+    alert("You must agree to the Terms and Conditions.");
+    return;
+  }
+   if (formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match.");
       return;
     }
-    setShowVerificationPopup(true);
 
-    try {
+  try {
     const response = await axios.post(`${url}/recruiters/register`, formData);
-//  const recruiter = response.data;
-console.log(response);
 
+    const recruiterId = response.data.recruiterId;
+    localStorage.setItem("recruiterId", recruiterId);
+    console.log("Recruiter ID:", recruiterId);
 
-    if (response.status === 201) {
-      const { message, recruiterId } = response.data;
-
-      // Store the JobSeeker ID for later use (e.g. in profile update)
-      localStorage.setItem("RecruiterId", recruiterId);
-
-      alert(message); // e.g., "OTP sent. Please verify your email."
-
-      // Now show the OTP popup
-      setShowVerificationPopup(true);
-    } else {
-      alert("Unexpected response from server.");
-    }
+    setShowVerificationPopup(true);
+    alert("📨 OTP sent to your email. Please verify your email.");
   } catch (error) {
-    alert("Error: " + (error.response?.data || error.message));
-    setShowVerificationPopup(false);
+    const message =
+      error.response?.data?.message || JSON.stringify(error.response?.data || error.message);
+
+     if (message.includes("already registered")) {
+        alert("⚠️ This email is already registered. Please log in instead.");
+        navigate("/EmployerLogin");
+     }else {
+      alert("❌ Error: " + message);
+    }
   }
 };
 
+ 
   const handleOtpVerified = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
     alert("Email Verified Successfully!");
-    // navigate("/login");
+    navigate("/EmployerCreateProfile");
   };
-
+ 
   return (
     <div className="employer_register-container">
       {/* Header */}
@@ -131,7 +132,7 @@ console.log(response);
               <div className="employer_register-input-container">
                 <SvgIcon component={LocalPostOfficeIcon} />
                 <input
-                  type="email"
+                  type="text"
                   name="email"
                   placeholder="Enter your email"
                   value={formData.email}
