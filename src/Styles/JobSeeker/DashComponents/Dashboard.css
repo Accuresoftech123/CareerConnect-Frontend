@@ -364,8 +364,8 @@
 .JobSeeker-dashboard-JobSeeker-job-card .JobSeeker-dashboard-details-button:hover,
 .JobSeeker-dashboard-card .JobSeeker-dashboard-details-button:hover {
     color: var(--button-text-white);
-    background-color: #7a1fd1;
-
+     border-color: #9b5de5;
+  box-shadow: 0 0 5px #9b5de5;
 }
 
 .JobSeeker-dashboard-see-more-btn {
