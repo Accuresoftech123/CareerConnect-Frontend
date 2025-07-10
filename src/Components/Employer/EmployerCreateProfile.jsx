@@ -19,6 +19,8 @@ const EmployerCreateProfile = () => {
   const [step, setStep] = useState(1);
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+
   const [formData, setFormData] = useState({
     fullName: "",
     companyProfile: {
@@ -80,56 +82,77 @@ const EmployerCreateProfile = () => {
     setStep(2);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setShowVerificationPopup(true); // Optional: remove if not needed
-    const recruiterId = localStorage.getItem("recruiterId");
-    console.log("Recruiter ID:", recruiterId);
+  // Handle form submission
+  // This function will be called when the form is submitted
+      const handleSubmit = async (e) => {
+  e.preventDefault();
+  setShowVerificationPopup(true);
+  const recruiterId = localStorage.getItem("recruiterId");
 
-    try {
-      const payload = {
-        // your profile data,
-        recruiterId: parseInt(recruiterId), // ✅ convert string to int
-      };
+  try {
+    const payload = {
+      ...formData,
+      recruiterId: parseInt(recruiterId),
+    };
 
-      const response = await axios.post(
-        `${url}/create-profile/${recruiterId}`,
-        formData
-      );
-      if (response.status === 200) {
-        const data = response.data;
+    const multipartFormData = new FormData();
+    multipartFormData.append(
+      "profileDto",
+      new Blob([JSON.stringify(payload)], {
+        type: "application/json",
+      })
+    );
 
-        if (data.success) {
-          alert("Recruiter profile created successfully!");
-          setIsVerified(true);
-          navigate("/EmployerDashboard");
-        } else {
-          // Backend responded with success: false
-          alert("Error: " + data.message);
-        }
-      }
-    } catch (error) {
-      console.error("Error creating recruiter profile", error);
-      alert("Something went wrong. Please try again.");
+    if (imageFile) {
+      multipartFormData.append("image", imageFile);
     }
-  };
+
+    const response = await axios.post(
+      `${url}/create-profile/${recruiterId}`,
+      multipartFormData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      const data = response.data;
+      if (data.success) {
+        alert("Recruiter profile created successfully!");
+        setIsVerified(true);
+        navigate("/EmployerDashboard");
+      } else {
+        alert("Error: " + data.message);
+      }
+    }
+  } catch (error) {
+    console.error("Error creating recruiter profile", error);
+    alert("Something went wrong. Please try again.");
+  }
+};
+
 
   const handleImageUpload = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormData((prev) => ({
-          ...prev,
-          companyProfile: {
-            ...prev.companyProfile,
-            img: reader.result, // Base64 string
-          },
-        }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+  const file = e.target.files[0];
+  if (file) {
+    setImageFile(file); // Save the raw file
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prev) => ({
+        ...prev,
+        companyProfile: {
+          ...prev.companyProfile,
+          img: reader.result, // For preview only
+        },
+      }));
+    };
+    reader.readAsDataURL(file);
+  }
+};
+
+  
 
   return (
     <div className="ecp-container">

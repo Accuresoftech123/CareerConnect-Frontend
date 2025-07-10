@@ -44,9 +44,12 @@ const JobSeekerCreateProfile = () => {
     "Hybrid",
     "In Office",
   ];
-    const [fullName, setFullName] = React.useState("");
+  const [fullName, setFullName] = React.useState("");
   const [email, setEmail] = React.useState("");
   const [mobileNumber, setPhone] = React.useState("");
+  const [resumeFile, setResumeFile] = useState(null);
+  const [videoFile, setVideoFile] = useState(null);
+  const [imageFile, setImageFile] = useState(null);
   const [personalInfo, setPersonalInfos] = useState({
     city: "",
     state: "",
@@ -57,10 +60,7 @@ const JobSeekerCreateProfile = () => {
   });
 
   const [educationList, setEducations] = useState([
-    { degree: "", 
-      fieldOfStudy: "", 
-      institution: "", 
-      passingYear: "" },
+    { degree: "", fieldOfStudy: "", institution: "", passingYear: "" },
   ]);
   const [experienceList, setExperiences] = useState([
     {
@@ -79,10 +79,10 @@ const JobSeekerCreateProfile = () => {
   });
 
   const [jobPrefeences, setjobPrefeences] = useState({
-   desiredJobTitle:"",
-      jobType:"",
-      expectedSalary:0,
-      preferredLocation:"",
+    desiredJobTitle: "",
+    jobType: "",
+    expectedSalary: 0,
+    preferredLocation: "",
   });
   // const [desiredJobTitle, setDesiredJobTitle] = React.useState("");
   // const [expectedSalary, setExpectedSalary] = React.useState("");
@@ -124,61 +124,83 @@ const JobSeekerCreateProfile = () => {
   const handleNext = () => setStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
   const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
 
-const handleSubmit =async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
+    const formData = new FormData();
+    const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
 
-  const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
-
-  if (!agreeTerms) {
-    window.alert("Please agree to the terms and conditions before submitting.");
-    return;
-  }
-
-  const profileData = {
-    fullName: fullName,
-    email: email,
-    mobileNumber: mobileNumber,
-    personalInfo: personalInfo,
-    educationList: educationList,
-    experienceList: experienceList,
-    skills: skills,
-    scoicalProfile: socialProfile,
-    // jobPreferences: {
-    //   desiredJobTitle,
-    //   jobPreference,
-    //   expectedSalary,
-    //   preferredLocation,
-    // },
-    jobPreferences:jobPrefeences,
-    agreedToTerms: agreeTerms,
-  };
-
-  console.log("Submitting profile data:", profileData);
- 
-
-  
-    try {
-         
-         const response = await axios.put(`${url}/jobseekers/${jobSeekerId}/profile`, profileData);
-
-         
-        if (response.status === 200) {
-            alert("Job Seeker profile updated successfully!");
-            navigate("/JobSeekerDashboard");
-        }
-    } catch (error) {
-        if (error.response) {
-            alert(error.response.data); // e.g., "Job Seeker not found with ID: 2"
-        } else if (error.request) {
-            alert("No response from server.");
-        } else {
-            alert("Unexpected error. Please try again.");
-        }
+    if (!agreeTerms) {
+      window.alert(
+        "Please agree to the terms and conditions before submitting."
+      );
+      return;
     }
 
-  // navigate("/JobSeekerDashboard");
-};
+    const profileData = {
+      fullName: fullName,
+      email: email,
+      mobileNumber: mobileNumber,
+      personalInfo: personalInfo,
+      educationList: educationList,
+      experienceList: experienceList,
+      skills: skills,
+      scoicalProfile: socialProfile,
+      // jobPreferences: {
+      //   desiredJobTitle,
+      //   jobPreference,
+      //   expectedSalary,
+      //   preferredLocation,
+      // },
+      jobPreferences: jobPrefeences,
+      agreedToTerms: agreeTerms,
+    };
+
+    if (resumeFile) {
+      formData.append("resumeFile", resumeFile);
+    }
+    if (videoFile) {
+      formData.append("videoFile", videoFile);
+    }
+    if (imageFile) {
+      formData.append("imageFile", imageFile);
+    }
+
+    console.log("Submitting profile data:", profileData);
+
+    formData.append(
+      "dto",
+      new Blob([JSON.stringify(profileData)], {
+        type: "application/json",
+      })
+    );
+
+    try {
+      const response = await axios.put(
+        `${url}/jobseekers/${jobSeekerId}/profile`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      if (response.status === 200) {
+        alert("Job Seeker profile updated successfully!");
+        navigate("/JobSeekerDashboard");
+      }
+    } catch (error) {
+      if (error.response) {
+        alert(error.response.data); // e.g., "Job Seeker not found with ID: 2"
+      } else if (error.request) {
+        alert("No response from server.");
+      } else {
+        alert("Unexpected error. Please try again.");
+      }
+    }
+
+    // navigate("/JobSeekerDashboard");
+  };
 
   return (
     <div className="jscp-container">
@@ -264,15 +286,31 @@ const handleSubmit =async (e) => {
                 </header>
                 <div className="jscp-card-body">
                   <div className="jscp-logo-upload">
+                    {/* Preview uploaded image or default */}
                     <img
                       src={user}
-                      alt="User avatar"
+                      alt="preview"
                       className="jscp-upload-image"
                     />
-                    <img
-                      src={Camera1}
-                      alt="Upload"
-                      className="jscp-camera-icon"
+
+                    {/* Camera icon as upload trigger */}
+                    <label htmlFor="companyImageInput">
+                      <img
+                        src={Camera1}
+                        alt="Camera"
+                        className="jscp-camera-icon"
+                      />
+                    </label>
+
+                    {/* Hidden file input */}
+                    <input
+                      type="file"
+                      id="companyImageInput"
+                      accept="image/*"
+                      onChange={(e) => setImageFile(e.target.files[0])}
+                    
+                      style={{ display: "none" }}
+                      // onChange={handleImageUpload}
                     />
                   </div>
 
@@ -283,7 +321,9 @@ const handleSubmit =async (e) => {
                         type="text"
                         id="fullName"
                         value={fullName}
-                        onChange={(e)=>{setFullName(e.target.value)}}
+                        onChange={(e) => {
+                          setFullName(e.target.value);
+                        }}
                         placeholder="Enter your full name"
                       />
                     </div>
@@ -306,7 +346,9 @@ const handleSubmit =async (e) => {
                         type="tel"
                         id="mobileNumber"
                         value={mobileNumber}
-                        onChange={(e)=>{setPhone(e.target.value)}}
+                        onChange={(e) => {
+                          setPhone(e.target.value);
+                        }}
                         placeholder="Enter your phone number"
                       />
                     </div>
@@ -370,10 +412,10 @@ const handleSubmit =async (e) => {
                       Drag or drop your resume here or
                     </p>
                     <input
-                      type="file"
                       id="resume"
-                      accept=".pdf,.doc,.docx"
-                      onChange={handlePersonalInfoChange}
+                      type="file"
+                      style={{ display: "none" }}
+                      onChange={(e) => setResumeFile(e.target.files[0])}
                     />
                     <label htmlFor="resume" className="jscp-browse-button">
                       Browse files
@@ -409,7 +451,7 @@ const handleSubmit =async (e) => {
                       type="file"
                       id="video"
                       accept="video/*"
-                      onChange={handlePersonalInfoChange}
+                      onChange={(e) => setVideoFile(e.target.files[0])}
                     />
                     <label htmlFor="video" className="jscp-browse-button">
                       Browse Video files
@@ -655,7 +697,9 @@ const handleSubmit =async (e) => {
                             type="month"
                             id={`startDate-${index}`}
                             //changes
-                            value={exp.startDate ?exp.startDate.slice(0,7) : ""}
+                            value={
+                              exp.startDate ? exp.startDate.slice(0, 7) : ""
+                            }
                             onChange={(e) =>
                               handleExperienceChange(
                                 index,
@@ -935,11 +979,11 @@ const handleSubmit =async (e) => {
                       id="desiredJobTitle"
                       placeholder="Enter your desired job title"
                       value={JobPreferences.desiredJobTitle}
-                       onChange={(e) =>
-                                setjobPrefeences((prev) => ({
-                                     ...prev,
-                                      desiredJobTitle: e.target.value,
-                                }))
+                      onChange={(e) =>
+                        setjobPrefeences((prev) => ({
+                          ...prev,
+                          desiredJobTitle: e.target.value,
+                        }))
                       }
                     />
                   </div>
@@ -952,15 +996,15 @@ const handleSubmit =async (e) => {
                           <div key={value} className="jscp-radio-item">
                             <input
                               type="radio"
-                               id={value}
+                              id={value}
                               name="jobPreference"
                               value={label}
                               checked={jobPrefeences.jobType === label}
                               onChange={(e) =>
-                               setjobPrefeences((prev) => ({
-                                ...prev,
+                                setjobPrefeences((prev) => ({
+                                  ...prev,
                                   jobType: e.target.value,
-                                 }))
+                                }))
                               }
                             />
                             <label htmlFor={value}>{label}</label>
@@ -978,11 +1022,11 @@ const handleSubmit =async (e) => {
                         id="expectedSalary"
                         placeholder="Enter your Expected salary per annum"
                         value={JobPreferences.expectedSalary}
-                       onChange={(e) =>
-                                setjobPrefeences((prev) => ({
-                                 ...prev,
-                                expectedSalary: e.target.value,
-                               }))
+                        onChange={(e) =>
+                          setjobPrefeences((prev) => ({
+                            ...prev,
+                            expectedSalary: e.target.value,
+                          }))
                         }
                       />
                     </div>
@@ -996,10 +1040,10 @@ const handleSubmit =async (e) => {
                         placeholder="Enter your Preferred location"
                         value={JobPreferences.preferredLocation}
                         onChange={(e) =>
-                        setjobPrefeences((prev) => ({
-                        ...prev,
-                        preferredLocation: e.target.value,
-                        }))
+                          setjobPrefeences((prev) => ({
+                            ...prev,
+                            preferredLocation: e.target.value,
+                          }))
                         }
                       />
                     </div>
