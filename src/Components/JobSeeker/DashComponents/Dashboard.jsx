@@ -13,6 +13,8 @@ import UiUxDesigner from "../../../Images/UiUxDesigner.svg";
 import UxDesigner from "../../../Images/UxDesigner.svg";
 import { SvgIcon } from "@mui/material";
 import { MapPin, Building, IndianRupee } from "lucide-react";
+import axios from "axios";
+
 
 import "../../../Styles/JobSeeker/DashComponents/Dashboard.css";
 
@@ -22,68 +24,40 @@ const INTERVIEWS_KEY = "upcomingInterviews";
 const Dashboard = () => {
   const navigate = useNavigate();
 
-  const initialJobs = [
-    {
-      id: 1,
-      title: "UI UX Designer",
-      company: "Techno Solutions Pvt Ltd",
-      location: "Hinjewadi, Pune",
-      workType: "Hybrid",
-      salary: "3.5 Lakhs - 6 Lakhs",
-      tags: ["Figma", "UI", "UX", "Prototyping"],
-      image: UiUxDesigner,
-      bookmarked: false,
-      applied: false,
-    },
-    {
-      id: 2,
-      title: "Product Designer",
-      company: "QTS Softech Pvt. Ltd.",
-      location: "Sector 12, Gurugram",
-      workType: "In office",
-      salary: "6 Lakhs - 10.4 Lakhs",
-      tags: ["Adobe XD", "UI design", "Wireframing"],
-      image: productDesigner,
-      bookmarked: false,
-      applied: false,
-    },
-    {
-      id: 3,
-      title: "UX Researcher",
-      company: "Nexius Digital",
-      location: "Bangalore",
-      workType: "Remote",
-      salary: "7.2 Lakhs - 9.5 Lakhs",
-      tags: ["UX research", "UX", "User flow"],
-      image: UxDesigner,
-      bookmarked: false,
-      applied: false,
-    },
-    {
-      id: 4,
-      title: "Interaction Designer",
-      company: "Pixel & Code",
-      location: "Hyderabad",
-      workType: "In office",
-      salary: "5.5 Lakhs - 8.5 Lakhs",
-      tags: ["Sketch", "Interaction Design", "Figma"],
-      image: UiUxDesigner,
-      bookmarked: false,
-      applied: false,
-    },
-    {
-      id: 5,
-      title: "Junior UI Designer",
-      company: "DesignSpring",
-      location: "Noida",
-      workType: "Remote",
-      salary: "3 Lakhs - 5 Lakhs",
-      tags: ["UI", "HTML", "CSS"],
-      image: productDesigner,
-      bookmarked: false,
-      applied: false,
-    },
-  ];
+  const initialJobs = async () => {
+    try {
+      const response = await axios.get("http://localhost:9191/jobposts/recruiters/jobposts");
+      console.log(response.data);
+      
+      return response.data;
+      
+    } catch (error) {
+      console.error("Error fetching job posts:", error);
+      return [];
+    }
+  };
+  //save Job Post
+  const saveJob = async (jobId) => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId"); // or however you're storing it
+
+  try {
+    const response = await axios.post(
+      `http://localhost:9191/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
+    );
+
+    alert("Job saved successfully!");
+
+    // Optionally update UI locally (toggle bookmark)
+    const updated = recommendedJobs.map((job) =>
+      job.id === jobId ? { ...job, bookmarked: true } : job
+    );
+    setRecommendedJobs(updated);
+  } catch (error) {
+    console.error("Error saving job:", error);
+    alert("Failed to save job");
+  }
+};
+
 
   const initialInterviews = [
     {
@@ -187,14 +161,18 @@ const Dashboard = () => {
   };
 
   useEffect(() => {
-    seedJobs(initialJobs);
-    setRecommendedJobs(getJobs());
+    const fetchJobsAndInterviews = async () => {
+      const jobsFromApi = await initialJobs();
+      setRecommendedJobs(jobsFromApi);
 
-    seedInterviews(initialInterviews);
-    setInterviews(getInterviews());
 
-    // Fetch profile completion from API
-    fetchProfileCompletion();
+      seedInterviews(initialInterviews);
+      setInterviews(getInterviews());
+
+      // Fetch profile completion from API
+      fetchProfileCompletion();
+    };
+    fetchJobsAndInterviews();
   }, []);
 
   const handleClick = () => {
@@ -228,8 +206,8 @@ const Dashboard = () => {
               {profileCompletion >= 100
                 ? "All done!"
                 : profileCompletion >= 80
-                ? "Almost there"
-                : "Keep going"}
+                  ? "Almost there"
+                  : "Keep going"}
             </p>
             <div className="JobSeeker-dashboard-progress-bar-container">
               <div
@@ -307,7 +285,7 @@ const Dashboard = () => {
               >
                 <div className="JobSeeker-dashboard-header">
                   <div className="JobSeeker-dashboard-icon">
-                    <img src={job.image} alt={`${job.title} icon`} />
+                    <img src={job.image? job.image :"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Wipro_Primary_Logo_Color_RGB.svg/2560px-Wipro_Primary_Logo_Color_RGB.svg.png"} alt={`${job.title} icon`} />
                   </div>
                   <div className="JobSeeker-dashboard-details">
                     <div className="JobSeeker-dashboard-title-company">
@@ -316,7 +294,7 @@ const Dashboard = () => {
                     </div>
                     <button
                       className="JobSeeker-dashboard-bookmark-button"
-                      onClick={() => handleBookmarkToggle(job.id)}
+                      onClick={() => saveJob(job.id)}
                       aria-label={job.bookmarked ? "Remove bookmark" : "Bookmark job"}
                       style={{ cursor: "pointer" }}
                     >
@@ -339,22 +317,24 @@ const Dashboard = () => {
                     <span className="JobSeeker-dashboard-info-icon">
                       <Building />
                     </span>{" "}
-                    {job.workType}
+                    {job.employmentType}
                   </p>
                   <p>
                     <span className="JobSeeker-dashboard-info-icon">
                       <IndianRupee />
                     </span>{" "}
-                    {job.salary}
+                    {job.minSalary} to {job.maxSalary}
                   </p>
                 </div>
                 <div className="JobSeeker-dashboard-tags">
-                  {job.tags.map((tag, index) => (
-                    <span key={index} className="JobSeeker-dashboard-tag">
-                      {tag}
-                    </span>
-                  ))}
+                  {Array.isArray(job.skills) &&
+                    job.skills.map((skills, index) => (
+                      <span key={index} className="JobSeeker-dashboard-tag">
+                        {skills}
+                      </span>
+                    ))}
                 </div>
+
                 <div className="JobSeeker-dashboard-button-group">
                   <button
                     className="JobSeeker-dashboard-apply-button"
