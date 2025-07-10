@@ -15,6 +15,8 @@ import JobSeekerDashboard from "./Components/JobSeeker/JobSeekerDashboard";
 import JobSeekerHome from "./Components/JobSeeker/JobSeekerHome";
 import Dashboard from "./Components/JobSeeker/DashComponents/Dashboard";
 import JSJobDetails from "./Components/JobSeeker/DashComponents/JSJobDetails";
+import AdminLogin from "./Components/Admin/AdminLogin";
+import AdminHome from "./Components/Admin/AdminHome";
 
 // ✅ Import Google OAuth Provider
 import { GoogleOAuthProvider } from "@react-oauth/google";
@@ -36,14 +38,23 @@ function App() {
           <Route path="/JobSeekerDashboard" element={<JobSeekerDashboard />} />
           <Route path="/JobSeekerHome/*" element={<JobSeekerRoutes />} />
 
-          {/* Employer */}
-          <Route path="/EmployerLogin" element={<EmployerLogin />} />
-          <Route path="/EmployerRegistration" element={<EmployerRegistration />} />
-          <Route path="/EmployerCreateProfile" element={<EmployerCreateProfile />} />
-          <Route path="/EmployerDashboard" element={<EmployerDashboard />} />
-        </Routes>
-      </BrowserRouter>
+
+        
     </GoogleOAuthProvider>
+        {/*Employer */}
+        <Route path="/EmployerLogin" element={<EmployerLogin />}></Route>
+        <Route path="/EmployerRegistration" element={<EmployerRegistration />}></Route>
+        <Route path="/EmployerCreateProfile" element={<EmployerCreateProfile />}></Route>
+        <Route path="/EmployerDashboard" element={<EmployerDashboard />}></Route>
+
+        {/* Admin */}
+        <Route path="/AdminLogin" element={<AdminLogin />}></Route>
+        <Route path="/AdminHome" element={<AdminHome />}></Route>
+
+
+        
+      </Routes>
+    </BrowserRouter>
   );
 }
 

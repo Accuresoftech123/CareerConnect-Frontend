@@ -4,12 +4,16 @@ import { Link, useLocation } from "react-router-dom";
 import {
   FaBars,
   FaSignOutAlt,
+  FaEnvelope,
   FaBell,
   FaSearch,
   FaTachometerAlt,
   FaMapMarkedAlt,
   FaUserFriends,
-  FaUserGraduate,
+  FaChartBar,
+  FaRegUserCircle,
+  FaCog,
+  FaThumbsUp,
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import "../../Styles/JobSeeker/JobSeekerHome.css";
@@ -36,22 +40,22 @@ const JobSeekerHome = ({ children }) => {
     },
     {
       path: "/JobSeeker/Recommendations",
-      icon: <FaUserFriends />,
+      icon: <FaThumbsUp />,
       label: "Recommendations",
     },
     {
       path: "/JobSeeker/Messages",
-      icon: <FaUserFriends />,
+      icon: <FaEnvelope  />,
       label: "Messages",
     },
     {
       path: "/JobSeeker/Analysis",
-      icon: <FaUserGraduate />,
+      icon: <FaChartBar />,
       label: "Analysis",
     },
     {
       path: "/JobSeeker/Settings",
-      icon: <FaUserGraduate />,
+      icon: <FaCog />,
       label: "Settings",
     },
   ];
@@ -68,19 +72,18 @@ const JobSeekerHome = ({ children }) => {
           <FaBars />
         </button>
 
-        <div className="JobSeekerHome_logo-container">
-          <img src="" alt="Logo" />
+        <div className="JobSeekerHome_logo">
+          <span>Career</span> Connect
         </div>
 
         <div className="JobSeekerHome_search-container">
+          <FaSearch className="JobSeekerHome_search-icon" />
           <input
             type="text"
             placeholder="Search"
             className="JobSeekerHome_search-input"
           />
-          <FaSearch className="JobSeekerHome_search-icon" />
         </div>
-
         <div className="JobSeekerHome_right-section">
           <div className="JobSeekerHome_user-greeting">Jobs</div>
           <div className="JobSeekerHome_user-greeting">Companies</div>
@@ -89,6 +92,9 @@ const JobSeekerHome = ({ children }) => {
           </div>
           <div className="JobSeekerHome_Profile">
             <FaBell className="JobSeekerHome_Profile" />
+          </div>
+           <div className="JobSeekerHome_Profile">
+            <FaRegUserCircle className="JobSeekerHome-Profile"  size={40} color="#ccc"/>
           </div>
         </div>
       </header>

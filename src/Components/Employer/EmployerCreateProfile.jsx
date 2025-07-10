@@ -31,7 +31,7 @@ const EmployerCreateProfile = () => {
       about: "",
       foundingYear: 0,
       hrContactEmail: "",
-     hrContactMobileNumber: "",
+      hrContactMobileNumber: "",
     },
     companyLocations: [
       {
@@ -83,27 +83,30 @@ const EmployerCreateProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setShowVerificationPopup(true); // Optional: remove if not needed
-    const recruiterId = localStorage.getItem("recruiterId"); 
+    const recruiterId = localStorage.getItem("recruiterId");
     console.log("Recruiter ID:", recruiterId);
 
     try {
       const payload = {
-      // your profile data,
-      recruiterId: parseInt(recruiterId) // ✅ convert string to int
-    };
+        // your profile data,
+        recruiterId: parseInt(recruiterId), // ✅ convert string to int
+      };
 
-      const response = await axios.post(`${url}/create-profile/${recruiterId}`, formData);
+      const response = await axios.post(
+        `${url}/create-profile/${recruiterId}`,
+        formData
+      );
       if (response.status === 200) {
         const data = response.data;
 
-       if (data.success) {
-        alert("Recruiter profile created successfully!");
-        setIsVerified(true);
-        navigate("/EmployerDashboard");
-      } else {
-        // Backend responded with success: false
-        alert("Error: " + data.message);
-      }
+        if (data.success) {
+          alert("Recruiter profile created successfully!");
+          setIsVerified(true);
+          navigate("/EmployerDashboard");
+        } else {
+          // Backend responded with success: false
+          alert("Error: " + data.message);
+        }
       }
     } catch (error) {
       console.error("Error creating recruiter profile", error);
@@ -112,21 +115,21 @@ const EmployerCreateProfile = () => {
   };
 
   const handleImageUpload = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData((prev) => ({
-        ...prev,
-        companyProfile: {
-          ...prev.companyProfile,
-          img: reader.result, // Base64 string
-        },
-      }));
-    };
-    reader.readAsDataURL(file);
-  }
-};
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({
+          ...prev,
+          companyProfile: {
+            ...prev.companyProfile,
+            img: reader.result, // Base64 string
+          },
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   return (
     <div className="ecp-container">
@@ -144,7 +147,7 @@ const EmployerCreateProfile = () => {
           </Link>
         </nav>
       </header>
- 
+
       {/* Main */}
       <main className="ecp-main">
         {/* Progress Bar */}
@@ -188,28 +191,31 @@ const EmployerCreateProfile = () => {
               </header>
               <div className="ecp-card-body">
                 <div className="ecp-logo-upload">
-  {/* Preview uploaded image or default */}
-  <img
-    src={formData.companyProfile.img || UploadCompanyImage}
-    alt="Upload"
-    className="ecp-upload-image"
-  />
+                  {/* Preview uploaded image or default */}
+                  <img
+                    src={formData.companyProfile.img || UploadCompanyImage}
+                    alt="Upload"
+                    className="ecp-upload-image"
+                  />
 
-  {/* Camera icon as upload trigger */}
-  <label htmlFor="companyImageInput">
-    <img src={camera} alt="Camera" className="ecp-camera-icon" />
-  </label>
+                  {/* Camera icon as upload trigger */}
+                  <label htmlFor="companyImageInput">
+                    <img
+                      src={camera}
+                      alt="Camera"
+                      className="ecp-camera-icon"
+                    />
+                  </label>
 
-  {/* Hidden file input */}
-  <input
-    type="file"
-    id="companyImageInput"
-    accept="image/*"
-    style={{ display: "none" }}
-    onChange={handleImageUpload}
-  />
-</div>
-
+                  {/* Hidden file input */}
+                  <input
+                    type="file"
+                    id="companyImageInput"
+                    accept="image/*"
+                    style={{ display: "none" }}
+                    onChange={handleImageUpload}
+                  />
+                </div>
 
                 <div className="ecp-form-row">
                   <div className="ecp-input-group ecp-full">
@@ -396,7 +402,7 @@ const EmployerCreateProfile = () => {
                       name="hrContactMobileNumber"
                       placeholder="Enter Mobile number for candidates communication"
                       value={formData.companyProfile.hrContactMobileNumber}
-                      onChange={(e) =>  handleChange(e, "companyProfile")}
+                      onChange={(e) => handleChange(e, "companyProfile")}
                     />
                   </div>
                 </div>

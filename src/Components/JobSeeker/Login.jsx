@@ -4,6 +4,7 @@ import "../../Styles/JobSeeker/Loginstyle.css";
 import linkedin from "../../Images/linkedin.svg";
 import google_g from "../../Images/google_g.jpg";
 import login from "../../Images/login.svg";
+import JSLogin from "../../Images/JSLogin.svg";
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
@@ -78,7 +79,7 @@ const Login = () => {
             </h1>
             <p>Your gateway to professional opportunities</p>
             <div className="jobseeker_illustration">
-              <img src={login} alt="Welcome Illustration" />
+              <img src={JSLogin} alt="Welcome Illustration" />
             </div>
           </div>
 

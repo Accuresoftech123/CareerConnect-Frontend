@@ -149,7 +149,7 @@
   position: absolute;
   margin-top: 370px;
   margin-left: 48px;
-  border: 1px solid #f3b7a4;
+  border: 1px solid #f3b7a4; 
   background-color: #f8ebe1;
 }
 
@@ -229,6 +229,7 @@
 .Homepage_category-card {
   border: 1px solid #fdf5f5;
   padding: 5px;
+  padding-left: 20px;
   border-radius: 10px;
   background-color: #f7f1ec;
   transition: 0.3s ease;
