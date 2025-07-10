@@ -86,7 +86,7 @@
   width: 250px;
   height: calc(100vh - 60px);
   background: #fff;
-  padding: 20px 10px;
+  padding: 20px 0px;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -111,13 +111,14 @@
 }
 
 .link:hover {
-  background: #842cc0;
-  color: white;
+  background: #F7F1EC;
+  color: #b153e5;
 }
 
 .active-link {
-  background: #b153e5;
-  color: #ffffff;
+  background: #F7F1EC;
+  color: #b153e5;
+  border-right: 5px solid #b153e5;
 }
 
 .JobSeekerHome_sidebar-overlay {
