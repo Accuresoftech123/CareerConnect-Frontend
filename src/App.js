@@ -25,46 +25,48 @@ function App() {
   return (
     // ✅ Wrap everything inside GoogleOAuthProvider
     <GoogleOAuthProvider clientId="882498608985-spao219g75dhp9r3ghtkm1ajn9p9bk3g.apps.googleusercontent.com">
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-
-          {/* Job seeker */}
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Registration" element={<Registration />} />
-          <Route path="/EmailVerification" element={<EmailVerificationPopup />} />
-          <Route path="/JobSeeker-Subscription" element={<JobSeekerSubscription />} />
-          <Route path="/JobSeeker-Create-Profile" element={<JobSeekerCreateProfile />} />
-          <Route path="/JobSeekerDashboard" element={<JobSeekerDashboard />} />
-          <Route path="/JobSeekerHome/*" element={<JobSeekerRoutes />} />
-
-
-        
-    </GoogleOAuthProvider>
+      
+       <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<HomePage />}></Route>
+        {/*Job seeker */}
+        <Route path="/Login" element={<Login />}></Route>
+        <Route path="/Registration" element={<Registration />}></Route>
+        <Route path="/EmailVerification" element={<EmailVerificationPopup />}></Route>
+        <Route path="/JobSeeker-Subscription" element={<JobSeekerSubscription />}></Route>
+        <Route path="/JobSeeker-Create-Profile" element={<JobSeekerCreateProfile />}></Route>
+        <Route path="/JobSeekerDashboard" element={<JobSeekerDashboard />}></Route>
+        <Route path="/JobSeekerHome/*" element={<JobSeekerRoutes />}></Route>
+        {/* <Route path="/JobSeeker/DashComponents/Dashboard" element={<Dashboard />}></Route> */}
+        {/* <Route path="/JobSeeker/DashComponents/JSJobDetails" element={<JSJobDetails />}></Route> */}
+ 
+ 
+ 
         {/*Employer */}
         <Route path="/EmployerLogin" element={<EmployerLogin />}></Route>
         <Route path="/EmployerRegistration" element={<EmployerRegistration />}></Route>
         <Route path="/EmployerCreateProfile" element={<EmployerCreateProfile />}></Route>
         <Route path="/EmployerDashboard" element={<EmployerDashboard />}></Route>
-
+ 
         {/* Admin */}
         <Route path="/AdminLogin" element={<AdminLogin />}></Route>
         <Route path="/AdminHome" element={<AdminHome />}></Route>
-
-
-        
+ 
+ 
+       
       </Routes>
     </BrowserRouter>
+    </GoogleOAuthProvider>
   );
 }
 
 // ✅ Sub routes for JobSeeker Dashboard area
 const JobSeekerRoutes = () => {
   return (
-    <JobSeekerHome>
+   <JobSeekerHome>
       <Routes>
-        <Route path="Jobseeker-Dashboard" element={<Dashboard />} />
-        <Route path="Job-details" element={<JSJobDetails />} />
+        <Route path="Jobseeker-Dashboard" element={<Dashboard/>}/>
+        <Route path="Job-details" element={<JSJobDetails/>}/>
       </Routes>
     </JobSeekerHome>
   );
