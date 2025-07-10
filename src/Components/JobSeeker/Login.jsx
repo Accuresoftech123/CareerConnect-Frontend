@@ -1,21 +1,20 @@
 import React, { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import "../../Styles/JobSeeker/Loginstyle.css";
-
 import linkedin from "../../Images/linkedin.svg";
 import google_g from "../../Images/google_g.jpg";
+import login from "../../Images/login.svg";
 import JSLogin from "../../Images/JSLogin.svg";
-
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
 import axios from "axios";
+import { GoogleLogin } from "@react-oauth/google"; 
 
 const Login = () => {
   const url = "http://localhost:9191";
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleRegisterRedirect = () => {
@@ -30,19 +29,13 @@ const Login = () => {
     }
 
     const user = { email, password };
-    axios.post(`${url}/jobseekers/login`, user)
+    axios
+      .post(`${url}/jobseekers/login`, user)
       .then((response) => {
-        const JobSeeker = response.data;
         if (response.data) {
           alert("Login Successful");
-          console.log("Login Successful:", response.data);
-
-        
-
-          localStorage.setItem("jobSeekerId", response.data.id); 
-          console.log("Job Seeker ID:", response.data.id);
+          localStorage.setItem("jobSeekerId", response.data.id);
           navigate("/JobSeekerHome");
-
         } else {
           alert("Invalid credentials");
         }
@@ -53,6 +46,11 @@ const Login = () => {
       });
   };
 
+  const handleGoogleError = () => {
+    console.error("Google login failed");
+    alert("Google login failed. Please try again.");
+  };
+
   return (
     <div className="jobseeker_loginpage-container">
       {/* Header */}
@@ -61,19 +59,11 @@ const Login = () => {
           <span>Career</span> Connect
         </div>
         <nav className="jobseeker_loginnav-links">
-          <Link to="/" >
-            Home
-          </Link>
-          <Link to="/jobs" >
-            Jobs
-          </Link>
-          <Link to="/companies" >
-            Companies
-          </Link>
+          <Link to="/">Home</Link>
+          <Link to="/jobs">Jobs</Link>
+          <Link to="/companies">Companies</Link>
           <Link to="/Registration">
-          <button className="jobseeker_btn-primary" >
-            Register
-          </button>
+            <button className="jobseeker_btn-primary">Register</button>
           </Link>
         </nav>
       </header>
@@ -84,7 +74,8 @@ const Login = () => {
           {/* Left: Welcome Message + Illustration */}
           <div className="jobseeker_login-text">
             <h1>
-              Welcome Back, to <br></br><span>Career Connect</span>
+              Welcome Back, to <br />
+              <span>Career Connect</span>
             </h1>
             <p>Your gateway to professional opportunities</p>
             <div className="jobseeker_illustration">
@@ -136,12 +127,33 @@ const Login = () => {
 
             <div className="jobseeker_optionlogin">or continue with</div>
 
-            <button className="jobseeker_loginbtn-outline">
-              <img src={google_g} alt="Google" /> Google
-            </button>
-            <button className="jobseeker_loginbtn-outline">
-              <img src={linkedin} alt="LinkedIn" /> Continue with LinkedIn
-            </button>
+            <div className="jobseeker_sociallogin-container">
+              {/* ✅ Google Login Button */}
+              <GoogleLogin
+                onSuccess={(credentialResponse) => {
+                  console.log("Google Token:", credentialResponse.credential);
+                  axios
+                    .post(`${url}/auth/google-login`, {
+                      token: credentialResponse.credential,
+                    })
+                    .then((res) => {
+                      console.log("Google Login Successful", res.data);
+                      localStorage.setItem("jobSeekerId", res.data.id);
+                      navigate("/JobSeekerHome");
+                    })
+                    .catch((err) => {
+                      console.error("Google Login Failed", err);
+                      alert("Google login failed");
+                    });
+                }}
+                onError={handleGoogleError}
+                useOneTap
+              />
+
+              <button className="jobseeker_loginbtn-outline">
+                <img src={linkedin} alt="LinkedIn" /> Continue with LinkedIn
+              </button>
+            </div>
 
             <div className="jobseeker_optionlogin">
               <p>
