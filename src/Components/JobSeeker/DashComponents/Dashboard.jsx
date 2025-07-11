@@ -28,9 +28,9 @@ const Dashboard = () => {
     try {
       const response = await axios.get("http://localhost:9191/jobposts/recruiters/jobposts");
       console.log(response.data);
-      
+
       return response.data;
-      
+
     } catch (error) {
       console.error("Error fetching job posts:", error);
       return [];
@@ -38,25 +38,25 @@ const Dashboard = () => {
   };
   //save Job Post
   const saveJob = async (jobId) => {
-  const jobSeekerId = localStorage.getItem("jobSeekerId"); // or however you're storing it
+    const jobSeekerId = localStorage.getItem("jobSeekerId"); // or however you're storing it
 
-  try {
-    const response = await axios.post(
-      `http://localhost:9191/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
-    );
+    try {
+      const response = await axios.post(
+        `http://localhost:9191/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
+      );
 
-    alert("Job saved successfully!");
+      alert("Job saved successfully!");
 
-    // Optionally update UI locally (toggle bookmark)
-    const updated = recommendedJobs.map((job) =>
-      job.id === jobId ? { ...job, bookmarked: true } : job
-    );
-    setRecommendedJobs(updated);
-  } catch (error) {
-    console.error("Error saving job:", error);
-    alert("Failed to save job");
-  }
-};
+      // Optionally update UI locally (toggle bookmark)
+      const updated = recommendedJobs.map((job) =>
+        job.id === jobId ? { ...job, bookmarked: true } : job
+      );
+      setRecommendedJobs(updated);
+    } catch (error) {
+      console.error("Error saving job:", error);
+      alert("Failed to save job");
+    }
+  };
 
 
   const initialInterviews = [
@@ -105,12 +105,12 @@ const Dashboard = () => {
   };
 
   const applyToJob = (jobId) => {
-    const jobs = getJobs();
-    const updated = jobs.map((job) =>
-      job.id === jobId ? { ...job, applied: true } : job
-    );
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    return updated;
+    // const jobs = getJobs();
+    // const updated = jobs.map((job) =>
+    //   job.id === jobId ? { ...job, applied: true } : job
+    // );
+    // localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    // return updated;
   };
 
   const getInterviews = () => {
@@ -285,7 +285,7 @@ const Dashboard = () => {
               >
                 <div className="JobSeeker-dashboard-header">
                   <div className="JobSeeker-dashboard-icon">
-                    <img src={job.image? job.image :"https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Wipro_Primary_Logo_Color_RGB.svg/2560px-Wipro_Primary_Logo_Color_RGB.svg.png"} alt={`${job.title} icon`} />
+                    <img src={job.image ? job.image : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Wipro_Primary_Logo_Color_RGB.svg/2560px-Wipro_Primary_Logo_Color_RGB.svg.png"} alt={`${job.title} icon`} />
                   </div>
                   <div className="JobSeeker-dashboard-details">
                     <div className="JobSeeker-dashboard-title-company">
@@ -339,7 +339,7 @@ const Dashboard = () => {
                   <button
                     className="JobSeeker-dashboard-apply-button"
                     disabled={job.applied}
-                    onClick={() => handleApply(job.id)}
+                    // onClick={() => handleApply(job.id)}
                     aria-disabled={job.applied}
                     aria-label={job.applied ? "Already applied" : "Apply to job"}
                     style={{ cursor: job.applied ? "not-allowed" : "pointer" }}
