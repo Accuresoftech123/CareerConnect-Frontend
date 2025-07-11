@@ -1,197 +1,162 @@
-// JSJobDetails
-
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-
-import send from "../../../Images/send.svg";
-import bookmarkBlank from "../../../Images/bookmarkBlank.svg";
-
-
 import "../../../Styles/JobSeeker/DashComponents/JSJobDetails.css";
+import SearchIcon from "@mui/icons-material/Search";
+import { SvgIcon } from "@mui/material";
 
 const JSJobDetails = () => {
+    const JSjobDetails = [
+        {
+            id: 1,
+            title: "UI UX Designer",
+            company: "Techno Solutions Pvt Ltd",
+            location: "Hinjewadi, Pune",
+            type: "Hybrid / Remote",
+            salary: "3.5 Lakhs - 6 Lakhs",
+            experience: "0 - 1 year",
+            tags: ["Figma", "UI", "UX", "Prototyping"],
+            time: "7 hours before",
+        },
+        {
+            id: 2,
+            title: "UI Designer",
+            company: "Collabera Digital Pvt Ltd",
+            location: "Sector 5, Delhi",
+            type: "Remote",
+            salary: "5 Lakhs - 7.5 Lakhs",
+            experience: "0.6 - 2 years",
+            tags: ["UI design", "Figma", "Adobe", "wireframing"],
+            time: "12 hours before",
+        },
+        {
+            id: 3,
+            title: "Junior UI UX Designer",
+            company: "Surya Technologies",
+            location: "Rajiv Nagar, Indore",
+            type: "In Office",
+            salary: "4 Lakhs - 6.5 Lakhs",
+            experience: "0 - 2 years",
+            tags: ["Figma", "UX research", "UI Design"],
+            time: "1 day before",
+        },
+        {
+            id: 4,
+            title: "UX Researcher",
+            company: "QuantumQube Technologies",
+            location: "Dombivli, Mumbai",
+            type: "Remote",
+            salary: "6 Lakhs - 10 Lakhs",
+            experience: "2 - 4 years",
+            tags: ["UX research", "IA", "Wireframing"],
+            time: "2 days before",
+        },
+    ];
 
-    const tags = [
-    'Figma', 'UI', 'UX', 'Prototyping', 'User flow',
-    'Wireframing', 'HTML', 'CSS', 'Information Architecture'
-  ];
+    const [selectedIndex, setSelectedIndex] = useState(0);
+    const currentJob = JSjobDetails[selectedIndex];
 
+    const handlePrev = () => {
+        if (selectedIndex > 0) setSelectedIndex(selectedIndex - 1);
+    };
 
-    const jobSummaryContent = (
-        <p>
-            We are seeking a highly motivated UI/UX Designer to join our design team. You'll collaborate with product managers, developers, and fellow designers to create intuitive, user-friendly digital experiences. This role demands creativity, user empathy, and the ability to turn complex requirements into elegant solutions.
-        </p>
-    );
-
-    const keyResponsibilitiesContent = (
-        <ul>
-            <li>Work closely with product and engineering teams to define user interface requirements.</li>
-            <li>Create wireframes, interactive prototypes, and final UI designs for web and mobile applications.</li>
-            <li>Conduct user research, usability testing, and A/B testing to inform design decisions.</li>
-            <li>Maintain consistency across platforms and ensure alignment with brand guidelines.</li>
-            <li>Collaborate with developers to implement designs accurately.</li>
-            <li>Advocate for design best practices and user-centered design thinking within the team.</li>
-        </ul>
-
-    );
-
-    const qualificationsSkillsContent = (
-        <ul>
-            <li>Bachelor's degree in Design, HCI, Computer Science, or a related field.</li>
-            <li>0-1 years of experience in UI/UX design.</li>
-            <li>Proficiency in Figma, Adobe XD, Sketch, or similar tools.</li>
-            <li>Strong portfolio showcasing design process, UI skills, and interaction design.</li>
-            <li>Understanding of responsive design, accessibility, and usability principles.</li>
-            <li>Experience designing for SaaS or B2B products.</li>
-            <li>Knowledge of front-end technologies like HTML, CSS, JavaScript (not required to code).</li>
-        </ul>
-    );
-
-
-    const PerksSkillsContent = (
-        <ul>
-            <li>Health insurance for you and your family</li>
-            <li>Annual performance bonuses</li>
-            <li>Learning & development budget</li>
-            <li>Work-from-home flexibility</li>
-            <li>Free meals & gym (at Pune office)</li>
-        </ul>
-    );
-
+    const handleNext = () => {
+        if (selectedIndex < JSjobDetails.length - 1) setSelectedIndex(selectedIndex + 1);
+    };
 
     return (
-        <>
-            <div className="JS_JobDetails-page-container">
-                <div className="JS_JobDetails-job-card-wrapper">
-                    <div className="JS_JobDetails-job-info">
-                        <h1 className="JS_JobDetails-job-title">UI UX Designer</h1>
-                        <p className="JS_JobDetails-company-name">Techno Solutions Pvt Ltd</p>
-                        <div className="JS_JobDetails-rating">
-                            <span>⭐ 3.7</span>
+        <div >
+            <section class="jsjd-search">
+                <form action="#" method="get">
+                    <div className="jsjd-searchinput-container">
+                    <SvgIcon component={SearchIcon} />
+                    <input type="text" name="keywords"
+                        placeholder="Search jobs by title" />
                         </div>
-                        <div className="JS_JobDetails-actions">
-                            <button className="JS_JobDetails-icon-button"><img src={send} alt="send" /></button>
-                            <button className="JS_JobDetails-icon-button"><img src={bookmarkBlank} alt="Saved" /></button>
+                    <select name="location"
+                        placeholder="Location" >
+                            <option>Select Location</option>
+                        </select>
+                    <select  name="company"
+                        placeholder="Experience" >
+                        <option>Select Experince</option>
+                        </select>
+                    <button type="submit">
+                        Search
+                    </button>
+                </form>
+            </section>
+            <div className="jsjd-container">
+            {/* LEFT SIDEBAR WITH ALL JOB CARDS */}
+            <div className="jsjd-sidebar">
+                {JSjobDetails.map((job, index) => (
+                    <div
+                        key={job.id}
+                        className={`jsjd-card ${index === selectedIndex ? "jsjd-card-active" : ""}`}
+                        onClick={() => setSelectedIndex(index)}
+                    >
+                        <h3>{job.title}</h3>
+                        <p>{job.company}</p>
+                        <p>{job.location}</p>
+                        <div className="jsjd-tags">
+                            {job.tags.map((tag, i) => (
+                                <span key={i}>{tag}</span>
+                            ))}
                         </div>
+                        <p>{job.experience} • {job.salary}</p>
+                        <p className="jsjd-time">{job.time}</p>
                     </div>
-
-                    {/* Job Overview Section */}
-                    <section className="JS_JobDetails-job-overview-section">
-
-                        <div className="JS_JobDetails-detail-item">
-                            <span className="JS_JobDetails-detail-icon">📍</span> Hinjewadi, Pune
-                        </div>
-                        <div className="JS_JobDetails-detail-item">
-                            <span className="JS_JobDetails-detail-icon">🏢</span> Hybrid / Remote
-                        </div>
-
-                        <div className="JS_JobDetails-detail-item-below">
-                        <div className="JS_JobDetails-detail-item">
-                            <span className="JS_JobDetails-detail-icon">💰</span> 3.5 Lakhs - 6 Lakhs
-                        </div>
-                        <div className="JS_JobDetails-detail-item">
-                            <span className="JS_JobDetails-detail-icon">🗓️</span> 0-1 Year
-                        </div>
-                        </div>
-                        <button className="JS_JobDetails-apply-button-top">Apply</button>
-                    </section>
-                </div>
-
-
-                <div className="JS_JobDetails-Describe-Job_info">
-
-                {/* Tags Section */}
-                <section className="JS_JobDetails-tags-section">
-                    {tags.map((tag, index) => (
-                        <span key={index} className="JS_JobDetails-tag">
-                            {tag}
-                        </span>
-                    ))}
-                </section>
-
-
-
-                {/* Job Summary Section */}
-                <section className="JS_JobDetails-content-section">
-                    <h2 className="JS_JobDetails-section-title">Job Summary</h2>
-                    <div className="JS_JobDetails-section-content">
-                        {jobSummaryContent}
-                    </div>
-                </section>
-
-                {/* Key Responsibilities Section */}
-                <section className="JS_JobDetails-content-section">
-                    <h2 className="JS_JobDetails-section-title">Key responsibilities</h2>
-                    <div className="JS_JobDetails-section-content">
-                        {keyResponsibilitiesContent}
-                    </div>
-                </section>
-
-                {/* Qualifications & Skills Section */}
-                <section className="JS_JobDetails-content-section">
-                    <h2 className="JS_JobDetails-section-title">Qualifications & Skills</h2>
-                    <div className="JS_JobDetails-section-content">
-                        {qualificationsSkillsContent}
-                    </div>
-                </section>
-
-                {/* Perks And Benefits */}
-                <section className="JS_JobDetails-content-section">
-                    <h2 className="JS_JobDetails-section-title">Perks & Benefits</h2>
-                    <div className="JS_JobDetails-section-content">
-                        {PerksSkillsContent}
-                        <p>
-                            Click on <a href="#" className="JS_JobDetails-apply-now-link">Apply Now</a> to upload your resume and portfolio. Shortlisted candidates will be contacted within 5 working days.
-                        </p>
-                    </div>
-                </section>
-
-                {/* Company Overview Section */}
-                <section className="JS_JobDetails-company-overview-section">
-                    <h2 className="JS_JobDetails-section-title">Company overview</h2>
-                    <div className="JS_JobDetails-company-content">
-                        <p><strong>Company Name</strong> - Techno Solutions Pvt. Ltd.</p>
-                        <p><strong>Location</strong> - 602, Blue Ridge, Hinjewadi phase 1, Pune- 411057</p>
-                        <p><strong>Industry</strong> - IT solutions</p>
-                        <p>
-                            <strong>Website</strong> - <a href="http://www.technosolutions.com" target="_blank" rel="noopener noreferrer" className="JS_JobDetails-website-link">www.technosolutions.com</a>
-                        </p>
-                        <p className="JS_JobDetails-about-us-text">
-                            <strong>About us</strong> - Techno solutions is a global IT leader that trusted by 100+ customers across 26+ countries. Our team values innovation, collaboration, and human-centric design thinking.
-                        </p>
-                    </div>
-                </section>
-
-                {/* Contact Details Section */}
-                <section className="JS_JobDetails-contact-details-section">
-                    <h2 className="JS_JobDetails-section-title">Contact Details</h2>
-                    <div className="JS_JobDetails-contact-content">
-                        <p><strong>Recruiter Name</strong> - Anjali Sinha</p>
-                        <p><strong>Mail ID</strong> - <a href="mailto:careers@technosolutions.com" className="JS_JobDetails-mail-link">careers@technosolutions.com</a></p>
-                    </div>
-                </section>
-
-                <div className="JS_JobDetails-apply-button-bottom">
-                    <button className="JS_JobDetails-apply-button-bottom">Apply</button>
-                </div>
-                </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
+                ))}
             </div>
 
+            {/* RIGHT DETAILS PANEL */}
+            <div className="jsjd-detail">
+                <h2>{currentJob.title}</h2>
+                <p><strong>Company:</strong> {currentJob.company}</p>
+                <p><strong>Location:</strong> {currentJob.location}</p>
+                <p><strong>Type:</strong> {currentJob.type}</p>
+                <p><strong>Salary:</strong> {currentJob.salary}</p>
+                <p><strong>Experience:</strong> {currentJob.experience}</p>
+                <div className="jsjd-tags">
+                    {currentJob.tags.map((tag, index) => (
+                        <span key={index}>{tag}</span>
+                    ))}
+                </div>
 
-        </>
+                <div className="jsjd-job-summary">
+                    <h4>Job Summary</h4>
+                    <p>We are seeking a highly motivated UI/UX Designer to join our team...</p>
+
+                    <h4>Key Responsibilities</h4>
+                    <ul>
+                        <li>Collaborate with developers</li>
+                        <li>Design mockups and prototypes</li>
+                        <li>Conduct user testing</li>
+                    </ul>
+
+                    <h4>Skills</h4>
+                    <ul>
+                        <li>Figma, Adobe XD, Sketch</li>
+                        <li>Wireframing & Prototyping</li>
+                        <li>User research and usability testing</li>
+                    </ul>
+
+                    <h4>Perks</h4>
+                    <ul>
+                        <li>Remote work</li>
+                        <li>Flexible hours</li>
+                        <li>Annual bonus</li>
+                    </ul>
+                </div>
+
+                <button className="jsjd-apply-btn">Apply Now</button>
+            </div>
+            </div>
+            <div className="jsjd-pagination">
+                    <button onClick={handlePrev} disabled={selectedIndex === 0}>Prev</button>
+                    <span>{selectedIndex + 1} / {JSjobDetails.length}</span>
+                    <button onClick={handleNext} disabled={selectedIndex === JSjobDetails.length - 1}>Next</button>
+                </div>
+        </div>
     );
 };
-export default JSJobDetails; 
+
+export default JSJobDetails;
