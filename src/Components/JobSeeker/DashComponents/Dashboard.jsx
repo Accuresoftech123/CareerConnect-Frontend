@@ -15,19 +15,68 @@ import bookmarkBlank from "../../../Images/bookmarkBlank.svg";
 import productDesigner from "../../../Images/productDesigner.svg";
 import UiUxDesigner from "../../../Images/UiUxDesigner.svg";
 import UxDesigner from "../../../Images/UxDesigner.svg";
+import axios from "axios";
 
-
+import { useEffect } from "react";
 
 import "../../../Styles/JobSeeker/DashComponents/Dashboard.css";
 
+const url = "http://localhost:9191";
+
 const Dashboard = () => {
         const navigate = useNavigate(); // ✅ Add this line
+
+    //      const [searchParams, setSearchParams] = useState({
+    //     title: '',
+    //     location: '',
+    //     experience: ''
+    // });
+    // const [filteredJobs, setFilteredJobs] = useState([]);
+     
+    // const handleInputChange = (e) => {
+    //     const { name, value } = e.target;
+    //     setSearchParams({ ...searchParams, [name]: value });
+    // };
+
+    // const handleSearch = async () => {
+    //     try {
+    //         const response = await axios.get(`$url/jobposts/search`, {
+    //             params: searchParams,
+    //         });
+    //         setFilteredJobs(response.data);
+    //     } catch (error) {
+    //         console.error("Error fetching filtered jobs", error);
+    //     }
+    // };
 
     
         const handleClick = () => {
             navigate("/JobSeekerHome/Job-details");
 
         };
+
+    //     useEffect(() => {
+    //     handleSearch(); // Initial fetch (optional)
+    // }, []);
+
+    const [count, setCount] = useState(0);
+
+     const fetchSavedJobsCount = async () => {
+    try {
+      const response = await axios.get(`${url}/jobseekers/saved-jobs/count`);
+      setCount(response.data);
+      console.log('Saved jobs count:', response.data);
+    } catch (error) {
+      console.error('Error fetching saved jobs count:', error);
+    }
+  };
+
+  useEffect(() => {
+    fetchSavedJobsCount();
+  }, []);
+
+    
+    
 
 
         return (
@@ -63,7 +112,7 @@ const Dashboard = () => {
                             </div>
                             <div className="JobSeeker-dashboard-stat-info">
                                 <p className="JobSeeker-dashboard-stat-label">Saved jobs</p>
-                                <p className="JobSeeker-dashboard-stat-value">16</p>
+                                <p className="JobSeeker-dashboard-stat-value">{count}</p>
                                 <p className="JobSeeker-dashboard-stat-change">↑ 5 new for this week</p>
                             </div>
                         </div>
@@ -119,7 +168,7 @@ const Dashboard = () => {
                                     <span className="JobSeeker-dashboard-tag">UX</span>
                                     <span className="JobSeeker-dashboard-tag">Prototyping</span>
                                 </div>
-                                <div class="JobSeeker-dashboard-button-group">
+                                <div className="JobSeeker-dashboard-button-group">
                                     <button className="JobSeeker-dashboard-apply-button">Apply</button>
                                     <button onClick={handleClick}className="JobSeeker-dashboard-details-button">Details</button>
                                 </div>
@@ -150,7 +199,7 @@ const Dashboard = () => {
                                     <span className="JobSeeker-dashboard-tag">UI design</span>
                                     <span className="JobSeeker-dashboard-tag">Wireframing</span>
                                 </div>
-                                <div class="JobSeeker-dashboard-button-group">
+                                <div className="JobSeeker-dashboard-button-group">
                                     <button  className="JobSeeker-dashboard-apply-button">Apply</button>
                                     <button onClick={handleClick} className="JobSeeker-dashboard-details-button">Details</button>
                                 </div>
@@ -180,7 +229,7 @@ const Dashboard = () => {
                                     <span className="JobSeeker-dashboard-tag">UX</span>
                                     <span className="JobSeeker-dashboard-tag">User flow</span>
                                 </div>
-                                <div class="JobSeeker-dashboard-button-group">
+                                <div className="JobSeeker-dashboard-button-group">
                                     <button className="JobSeeker-dashboard-apply-button">Apply</button>
                                     <button onClick={handleClick} className="JobSeeker-dashboard-details-button">Details</button>
                                 </div>
@@ -272,13 +321,6 @@ const Dashboard = () => {
                         </div>
                     </div>
                 </div>
-
-
-
-
-
-
-
 
 
             </>

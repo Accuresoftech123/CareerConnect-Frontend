@@ -187,7 +187,7 @@ const JobSeekerCreateProfile = () => {
       );
       if (response.status === 200) {
         alert("Job Seeker profile updated successfully!");
-        navigate("/JobSeekerDashboard");
+        navigate("/JobSeekerHome/Jobseeker-Dashboard");
       }
     } catch (error) {
       if (error.response) {
