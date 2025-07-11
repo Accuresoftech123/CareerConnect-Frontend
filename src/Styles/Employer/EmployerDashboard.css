@@ -505,3 +505,36 @@ margin-right: 40px;
 .post-preview-section p:has(strong[children*="Job description"]) { /* Targeting the paragraph containing the job description label */
     word-wrap: break-word; /* Ensures long words/text break and wrap */
 }
+
+.Employer_Dashboard-skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.Employer_Dashboard-skill-tag {
+  background-color: #f0f0f0;
+  padding: 6px 10px;
+  border-radius: 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.Employer_Dashboard-remove-skill {
+  background: none;
+  border: none;
+  margin-left: 6px;
+  color: red;
+  font-weight: bold;
+  cursor: pointer;
+}
+.Employer_Dashboard-skill-tag {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 5px;
+  background-color: #f0f0f0;
+  border-radius: 20px;
+  font-size: 14px;
+}
