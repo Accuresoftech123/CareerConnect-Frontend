@@ -38,7 +38,7 @@ const Registration = () => {
     setShowVerificationPopup(true);
 
     try {
-    const response = await axios.post(`${url}/jobseekers/register`, formData);
+    const response = await axios.post(`${url}/api/jobseekers/register`, formData);
 
 
 

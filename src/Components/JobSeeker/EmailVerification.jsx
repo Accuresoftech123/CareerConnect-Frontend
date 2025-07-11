@@ -11,6 +11,8 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
   const inputRefs = useRef([]); // Refs for input focus
   const navigate = useNavigate();
 
+  const url = "http://localhost:9191";
+
   // Start countdown on mount
   useEffect(() => {
     startCountdown();
@@ -58,7 +60,7 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
     if (otpValue.length === 6) {
       try {
         const response = await axios.post(
-          "http://localhost:9191/jobseekers/verifyOtp",
+          `${url}/api/jobseekers/verify-otp`,
           { email, otp: otpValue },
           { headers: { "Content-Type": "application/json" } }
         );
