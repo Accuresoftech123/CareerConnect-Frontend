@@ -31,9 +31,42 @@
 }
 .jsjd-detail-title-company {
   display: flex;
-  align-items: flex-start;
-  flex: 1 1;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; /* allow wrapping if needed */
+  gap: 8px;
 }
+
+.jsjd-detail-title {
+  margin: 0;
+  font-size: 1.5rem;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.jsjd-icon-buttons {
+  display: flex;
+  gap: 4px; /* Reduce gap between icons */
+  flex-shrink: 0;
+}
+
+.jsjd-card-bookmark-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: filter 0.2s ease;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.bookmark-icon {
+  width: 24px;
+  height: 24px;
+}
+
 .jsjd-detail-title-company button {
   align-items: end;
 }
@@ -277,7 +310,7 @@
     background: none;
     border: none;
     font-size: 24px;
-    /* Placeholder for bookmark icon */
+   
     color: var(--text-light);
     cursor: pointer;
     align-self: flex-start;
@@ -295,14 +328,16 @@
 .jsjd-card-header {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  /* gap: 12px; */
+  justify-content: space-between; /* ensures icon+title and bookmark are spaced apart */
+  gap: 12px;
 }
 
 .jsjd-card-icon {
   flex-shrink: 0;
   width: 50px;
-  height: 50px;
+    height: 50px;
+     object-fit: contain;
+   /* box-shadow: 4px 4px 20px rgba(0.4, 0.4, 0.4, 0.4); */
 }
 
 .jsjd-card-header-main {
@@ -327,16 +362,17 @@
 }
 .jsjd-card-details {
   display: flex;
-  gap: 10px;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
 }
-
 .jsjd-card-bookmark-button {
   background: none;
   border: none;
-  /* font-size: 24px; */
   cursor: pointer;
-  align-items: end;
-  padding-left: 20px;
+  padding: 0;
+  margin-left: auto; /* push it to right */
+  align-self: center;
 }
 
 /* === Responsive Layout === */
@@ -364,6 +400,24 @@
   .jsjd-search button {
     width: 80%;
     padding-right: 20px;
+  }
+}
+@media (width:1024px) {
+    .jsjd-card-header {
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    align-items: flex-start;
+  }
+
+  .jsjd-card-details {
+    flex: 1 1 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .jsjd-card-bookmark-button {
+    margin-left: auto;
+    align-self: flex-start;
   }
 }
 @media screen and (max-width: 912px) {
@@ -419,6 +473,9 @@
   .jsjd-detail {
    width: 95%;
   }
+  .jsjd-card-info-grid {
+            display: contents;
+    }
 }
 @media screen and (max-width: 600px) {
   .jsjd-search {
@@ -449,6 +506,9 @@
   .jsjd-detail-title {
     font-size: 22px;
   }
+  .jsjd-card-info-grid {
+            display: contents;
+    }
 }
 
 @media screen and (max-width: 480px) {
@@ -458,4 +518,12 @@
   .jsjd-detail {
    width: 93%;
   }
+  .jsjd-card-info-grid {
+            display: contents;
+    }
 }
+@media  screen and (max-width: 344px) {
+  .jsjd-card-info-grid {
+            display: contents;
+    }
+  }

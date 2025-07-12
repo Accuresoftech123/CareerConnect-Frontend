@@ -551,43 +551,45 @@ const JSJobDetails = () => {
             <div className="jsjd-detail-header">
               <div className="jsjd-detail-title-company">
                 <h2 className="jsjd-detail-title">{currentJob.title}</h2>
-                 <button
-                className="jsjd-card-bookmark-button"
-                onClick={() => handleBookmarkToggle(currentJob.id)}
-                aria-label={
-                  currentJob.bookmarked ? "Remove bookmark" : "Bookmark job"
-                }
-                style={{ cursor: "pointer" }}
-              >
-                <img
-                  className={`bookmark-icon ${
-                    currentJob.bookmarked ? "bookmarked" : ""
-                  }`}
-                  src={send}
-                  alt={currentJob.bookmarked ? "Bookmarked" : "Not bookmarked"}
-                />
-              </button>
-              <button
-                className="jsjd-card-bookmark-button"
-                onClick={() => handleBookmarkToggle(currentJob.id)}
-                aria-label={
-                  currentJob.bookmarked ? "Remove bookmark" : "Bookmark job"
-                }
-                style={{ cursor: "pointer" }}
-              >
-                <img
-                  className={`bookmark-icon ${
-                    currentJob.bookmarked ? "bookmarked" : ""
-                  }`}
-                  src={currentJob.bookmarked ? bookmark : bookmarkBlank}
-                  alt={currentJob.bookmarked ? "Bookmarked" : "Not bookmarked"}
-                />
-              </button>
-               
-              </div>
-              <div className="jsjd-detail-company">
-                  {currentJob.company}
+
+                <div className="jsjd-icon-buttons">
+                  <button
+                    className="jsjd-card-bookmark-button"
+                    onClick={() => handleBookmarkToggle(currentJob.id)}
+                    aria-label={
+                      currentJob.bookmarked ? "Remove bookmark" : "Bookmark job"
+                    }
+                  >
+                    <img
+                      className={`bookmark-icon ${
+                        currentJob.bookmarked ? "bookmarked" : ""
+                      }`}
+                      src={send}
+                      alt="Send"
+                    />
+                  </button>
+
+                  <button
+                    className="jsjd-card-bookmark-button"
+                    onClick={() => handleBookmarkToggle(currentJob.id)}
+                    aria-label={
+                      currentJob.bookmarked ? "Remove bookmark" : "Bookmark job"
+                    }
+                  >
+                    <img
+                      className={`bookmark-icon ${
+                        currentJob.bookmarked ? "bookmarked" : ""
+                      }`}
+                      src={currentJob.bookmarked ? bookmark : bookmarkBlank}
+                      alt={
+                        currentJob.bookmarked ? "Bookmarked" : "Not bookmarked"
+                      }
+                    />
+                  </button>
                 </div>
+              </div>
+
+              <div className="jsjd-detail-company">{currentJob.company}</div>
             </div>
             <hr></hr>
             <div className="jsjd-card-info">
