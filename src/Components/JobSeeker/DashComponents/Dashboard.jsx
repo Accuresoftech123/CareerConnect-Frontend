@@ -21,13 +21,21 @@ import "../../../Styles/JobSeeker/DashComponents/Dashboard.css";
 const STORAGE_KEY = "recommendedJobs";
 const INTERVIEWS_KEY = "upcomingInterviews";
 
+
 const Dashboard = () => {
   const url = "http://localhost:9191";
   const navigate = useNavigate();
+  // States
+  const [recommendedJobs, setRecommendedJobs] = useState([]);
+  const [interviews, setInterviews] = useState([]);
+
+  // Add profile completion state
+  const [profileCompletion, setProfileCompletion] = useState(0);
+
 
   const initialJobs = async () => {
     try {
-      const response = await axios.get("http://localhost:9191/jobposts/recruiters/jobposts");
+      const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
       console.log(response.data);
 
       return response.data;
@@ -43,7 +51,7 @@ const Dashboard = () => {
 
     try {
       const response = await axios.post(
-        `http://localhost:9191/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
+        `${url}/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
       );
 
       alert("Job saved successfully!");
@@ -58,6 +66,100 @@ const Dashboard = () => {
       alert("Failed to save job");
     }
   };
+
+
+  const applyToJob = async (jobId) => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+  if (!jobSeekerId) {
+    alert("Please log in first.");
+    return;
+  }
+
+  try {
+    const response = await axios.post(
+      `${url}/applications/applyjob/${jobSeekerId}/job-post/${jobId}`
+    );
+    alert("Applied Successfully!");
+    const updated = recommendedJobs.map((job) =>
+      job.id === jobId ? { ...job, applied: true } : job
+    );
+    setRecommendedJobs(updated);
+  } catch (error) {
+    const errorMessage = error.response?.data?.message || error.response?.data || error.message;
+    console.error("Application failed:", errorMessage);
+
+    if (errorMessage.includes("already applied")) {
+      alert("You have already applied for this job.");
+    } else {
+      alert("Failed to apply for the job.");
+    }
+  }
+};
+
+
+const [count, setCount] = useState(0);
+ 
+     const fetchSavedJobsCount = async () => {
+    try {
+      const response = await axios.get(`${url}/jobseekers/saved-jobs/count`);
+      setCount(response.data);
+      console.log('Saved jobs count:', response.data);
+    } catch (error) {
+      console.error('Error fetching saved jobs count:', error);
+    }
+  };
+  // Add fetch function for profile completion API
+  const fetchProfileCompletion = async () => {
+    try {
+      // Replace this URL with your actual API endpoint
+      const response = await fetch("https://api.example.com/profile/completion");
+      if (!response.ok) throw new Error("Failed to fetch profile completion");
+
+      const data = await response.json();
+      setProfileCompletion(data.profileCompletion || 0);
+    } catch (error) {
+      console.error("Error fetching profile completion:", error);
+      // fallback value if API fails
+      setProfileCompletion(70);
+    }
+  };
+
+  const fetchJobsAndInterviews = async () => {
+      const jobsFromApi = await initialJobs();
+      setRecommendedJobs(jobsFromApi);
+
+
+      seedInterviews(initialInterviews);
+      setInterviews(getInterviews());
+
+      // Fetch profile completion from API
+      fetchProfileCompletion();
+    };
+    
+  useEffect(() => {
+    fetchSavedJobsCount();
+    
+    fetchJobsAndInterviews();
+  }, []);
+
+  const handleClick = () => {
+    navigate("/JobSeekerHome/Job-details");
+  };
+
+  const handleBookmarkToggle = (jobId) => {
+    const updated = toggleBookmark(jobId);
+    setRecommendedJobs(updated);
+  };
+
+  const handleApply = (jobId) => {
+   const  updated = applyToJob(jobId);
+    setRecommendedJobs(updated);
+  };
+
+  // Stats calculations
+  const applicationsSent = recommendedJobs.filter((job) => job.applied).length;
+  const savedJobs = recommendedJobs.filter((job) => job.bookmarked).length;
+  const jobMatches = recommendedJobs.length;
 
 
   const initialInterviews = [
@@ -105,14 +207,7 @@ const Dashboard = () => {
     return updated;
   };
 
-  const applyToJob = (jobId) => {
-    // const jobs = getJobs();
-    // const updated = jobs.map((job) =>
-    //   job.id === jobId ? { ...job, applied: true } : job
-    // );
-    // localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    // return updated;
-  };
+ 
 
   const getInterviews = () => {
     const data = localStorage.getItem(INTERVIEWS_KEY);
@@ -138,74 +233,8 @@ const Dashboard = () => {
     console.log("Edit interview", id);
   };
 
-  // States
-  const [recommendedJobs, setRecommendedJobs] = useState([]);
-  const [interviews, setInterviews] = useState([]);
+  
 
-  // Add profile completion state
-  const [profileCompletion, setProfileCompletion] = useState(0);
-
-const [count, setCount] = useState(0);
- 
-     const fetchSavedJobsCount = async () => {
-    try {
-      const response = await axios.get(`${url}/jobseekers/saved-jobs/count`);
-      setCount(response.data);
-      console.log('Saved jobs count:', response.data);
-    } catch (error) {
-      console.error('Error fetching saved jobs count:', error);
-    }
-  };
-  // Add fetch function for profile completion API
-  const fetchProfileCompletion = async () => {
-    try {
-      // Replace this URL with your actual API endpoint
-      const response = await fetch("https://api.example.com/profile/completion");
-      if (!response.ok) throw new Error("Failed to fetch profile completion");
-
-      const data = await response.json();
-      setProfileCompletion(data.profileCompletion || 0);
-    } catch (error) {
-      console.error("Error fetching profile completion:", error);
-      // fallback value if API fails
-      setProfileCompletion(70);
-    }
-  };
-
-  useEffect(() => {
-    fetchSavedJobsCount();
-    const fetchJobsAndInterviews = async () => {
-      const jobsFromApi = await initialJobs();
-      setRecommendedJobs(jobsFromApi);
-
-
-      seedInterviews(initialInterviews);
-      setInterviews(getInterviews());
-
-      // Fetch profile completion from API
-      fetchProfileCompletion();
-    };
-    fetchJobsAndInterviews();
-  }, []);
-
-  const handleClick = () => {
-    navigate("/JobSeekerHome/Job-details");
-  };
-
-  const handleBookmarkToggle = (jobId) => {
-    const updated = toggleBookmark(jobId);
-    setRecommendedJobs(updated);
-  };
-
-  const handleApply = (jobId) => {
-    const updated = applyToJob(jobId);
-    setRecommendedJobs(updated);
-  };
-
-  // Stats calculations
-  const applicationsSent = recommendedJobs.filter((job) => job.applied).length;
-  const savedJobs = recommendedJobs.filter((job) => job.bookmarked).length;
-  const jobMatches = recommendedJobs.length;
 
   return (
     <>
@@ -294,16 +323,27 @@ const [count, setCount] = useState(0);
               <article
                 key={job.id}
                 className="JobSeeker-dashboard-card"
-                aria-label={`${job.title} at ${job.company}`}
+                aria-label={`${job.title} at ${job.companyName}`}
               >
                 <div className="JobSeeker-dashboard-header">
-                  <div className="JobSeeker-dashboard-icon">
-                    <img src={job.image ? job.image : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Wipro_Primary_Logo_Color_RGB.svg/2560px-Wipro_Primary_Logo_Color_RGB.svg.png"} alt={`${job.title} icon`} />
-                  </div>
-                  <div className="JobSeeker-dashboard-details">
+                 <div className="JobSeeker-dashboard-icon">
+ {job.companyImageUrl && job.companyImageUrl.trim() !== "" ? (
+  <img
+    src={job.companyImageUrl}
+    alt="Company"
+    className="w-12 h-12 rounded-full object-cover"
+  />
+) : (
+  <div className="w-12 h-12 rounded-full bg-blue-500 text-black flex items-center justify-center text-lg font-bold">
+    {job.companyName?.charAt(0).toUpperCase() || "?"}
+  </div>
+)}
+
+</div>
+         <div className="JobSeeker-dashboard-details">
                     <div className="JobSeeker-dashboard-title-company">
                       <span className="JobSeeker-dashboard-title">{job.title}</span>
-                      <span className="JobSeeker-dashboard-company">{job.company}</span>
+                      <span className="JobSeeker-dashboard-company">{job.companyName}</span>
 
                     </div>
                     <button
@@ -354,7 +394,8 @@ const [count, setCount] = useState(0);
                   <button
                     className="JobSeeker-dashboard-apply-button"
                     disabled={job.applied}
-                    // onClick={() => handleApply(job.id)}
+                    onClick={() => applyToJob(job.id)}
+                    
                     aria-disabled={job.applied}
                     aria-label={job.applied ? "Already applied" : "Apply to job"}
                     style={{ cursor: job.applied ? "not-allowed" : "pointer" }}
