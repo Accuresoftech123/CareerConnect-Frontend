@@ -11,7 +11,6 @@ import EmployerCreateProfile from "./Components/Employer/EmployerCreateProfile";
 import EmployerDashboard from "./Components/Employer/EmployerDashboard";
 import JobSeekerSubscription from "./Components/JobSeeker/JobSeekerSubscription";
 import JobSeekerCreateProfile from "./Components/JobSeeker/JobSeekerCreateProfile";
-import JobSeekerDashboard from "./Components/JobSeeker/JobSeekerDashboard";
 import JobSeekerHome from "./Components/JobSeeker/JobSeekerHome";
 import Dashboard from "./Components/JobSeeker/DashComponents/Dashboard";
 import JSJobDetails from "./Components/JobSeeker/DashComponents/JSJobDetails";
@@ -28,19 +27,17 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
-
           {/* Job seeker */}
           <Route path="/Login" element={<Login />} />
           <Route path="/Registration" element={<Registration />} />
           <Route path="/EmailVerification" element={<EmailVerificationPopup />} />
           <Route path="/JobSeeker-Subscription" element={<JobSeekerSubscription />} />
           <Route path="/JobSeeker-Create-Profile" element={<JobSeekerCreateProfile />} />
-          <Route path="/JobSeekerDashboard" element={<JobSeekerDashboard />} />
           <Route path="/JobSeekerHome/*" element={<JobSeekerRoutes />} />
 
 
         
-    </GoogleOAuthProvider>
+   
         {/*Employer */}
         <Route path="/EmployerLogin" element={<EmployerLogin />}></Route>
         <Route path="/EmployerRegistration" element={<EmployerRegistration />}></Route>
@@ -55,6 +52,7 @@ function App() {
         
       </Routes>
     </BrowserRouter>
+     </GoogleOAuthProvider>
   );
 }
 
