@@ -43,26 +43,26 @@ function App() {
         <Route path="/EmployerRegistration" element={<EmployerRegistration />}></Route>
         <Route path="/EmployerCreateProfile" element={<EmployerCreateProfile />}></Route>
         <Route path="/EmployerDashboard" element={<EmployerDashboard />}></Route>
-
+ 
         {/* Admin */}
         <Route path="/AdminLogin" element={<AdminLogin />}></Route>
         <Route path="/AdminHome" element={<AdminHome />}></Route>
-
-
-        
+ 
+ 
+       
       </Routes>
     </BrowserRouter>
-     </GoogleOAuthProvider>
+    </GoogleOAuthProvider>
   );
 }
 
 // ✅ Sub routes for JobSeeker Dashboard area
 const JobSeekerRoutes = () => {
   return (
-    <JobSeekerHome>
+   <JobSeekerHome>
       <Routes>
-        <Route path="Jobseeker-Dashboard" element={<Dashboard />} />
-        <Route path="Job-details" element={<JSJobDetails />} />
+        <Route path="Jobseeker-Dashboard" element={<Dashboard/>}/>
+        <Route path="Job-details" element={<JSJobDetails/>}/>
       </Routes>
     </JobSeekerHome>
   );
