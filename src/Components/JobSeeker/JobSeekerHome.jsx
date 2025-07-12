@@ -17,7 +17,10 @@ import {
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import "../../Styles/JobSeeker/JobSeekerHome.css";
+import { useEffect } from "react";
+import axios from "axios"; // ✅ Import Axios
 
+const url = "http://localhost:9191"; // Base URL for API requests
 const JobSeekerHome = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
@@ -26,6 +29,23 @@ const JobSeekerHome = ({ children }) => {
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
   const isActive = (path) => location.pathname.startsWith(path);
+
+  const [jobSeekerInfo, setJobSeekerInfo] = useState({
+  fullName: "",
+  profileImageUrl: "",
+});
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+   const fetchJobSeekerInfo = async () => {
+    try {
+      const response = await axios.get(`${url}/jobseekers/get-image-name/${jobSeekerId}`);
+      setJobSeekerInfo({
+        fullName: response.data.fullName,
+        profileImageUrl: response.data.profileImageUrl,
+      });
+    } catch (error) {
+      console.error("Error fetching Job Seeker info:", error);
+    }
+  };
 
   const navItems = [
     {
@@ -59,6 +79,9 @@ const JobSeekerHome = ({ children }) => {
       label: "Settings",
     },
   ];
+  useEffect(() => {
+    fetchJobSeekerInfo(); // Fetch job seeker info when component mounts
+  }, []);
 
   return (
     <div className="JobSeekerHome_layout-container">
@@ -94,8 +117,20 @@ const JobSeekerHome = ({ children }) => {
             <FaBell className="JobSeekerHome_Profile" />
           </div>
            <div className="JobSeekerHome_Profile">
-            <FaRegUserCircle className="JobSeekerHome-Profile"  size={40} color="#ccc"/>
-          </div>
+ {jobSeekerInfo.profileImageUrl ? (
+    <img
+      src={jobSeekerInfo.profileImageUrl}
+      alt="Profile"
+      style={{
+        width: "40px",
+        height: "40px",
+        borderRadius: "50%",
+        objectFit: "cover",
+      }}
+    />
+  ) : (
+    <FaRegUserCircle size={40} color="#ccc" />
+  )}          </div>
         </div>
       </header>
 

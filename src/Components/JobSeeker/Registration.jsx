@@ -34,32 +34,41 @@ const Registration = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setShowVerificationPopup(true);
+  e.preventDefault();
 
-    try {
+  try {
     const response = await axios.post(`${url}/jobseekers/register`, formData);
 
+    const { message, jobSeekerId } = response.data;
 
-
-    if (response.status === 201) {
-      const { message, jobSeekerId } = response.data;
-
-      // Store the JobSeeker ID for later use (e.g. in profile update)
+    if (response.status === 201 || response.status === 200) {
       localStorage.setItem("jobSeekerId", jobSeekerId);
-
-      alert(message); // e.g., "OTP sent. Please verify your email."
-
-      // Now show the OTP popup
+      alert(message);
       setShowVerificationPopup(true);
     } else {
       alert("Unexpected response from server.");
     }
+
   } catch (error) {
-    alert("Error: " + (error.response?.data || error.message));
+    const res = error.response;
+    const msg = res?.data?.message || error.message;
+
+    if (res?.status === 200 && msg.includes("not verified")) {
+      const jobSeekerId = res.data.jobSeekerId;
+      localStorage.setItem("jobSeekerId", jobSeekerId);
+      alert(msg);
+      setShowVerificationPopup(true);
+    } else if (res?.status === 409) {
+      alert("⚠️ This email is already registered and verified. Please log in.");
+      navigate("/Login");
+    } else {
+      alert("❌ Error: " + msg);
+    }
+
     setShowVerificationPopup(false);
   }
 };
+
 
   const handleOtpVerified = () => {
     setShowVerificationPopup(false);
