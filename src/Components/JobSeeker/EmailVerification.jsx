@@ -64,7 +64,20 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
           { email, otp: otpValue },
           { headers: { "Content-Type": "application/json" } }
         );
+console.log(response.data);
 
+
+        // set token
+        const token = response.data.token;
+       localStorage.setItem("token", token);
+
+      // Decode token to extract role
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const role = payload.role[0].authority;
+      console.log(role);
+
+
+      
         const { success, message } = response.data;
         alert(message);
         if (success) {

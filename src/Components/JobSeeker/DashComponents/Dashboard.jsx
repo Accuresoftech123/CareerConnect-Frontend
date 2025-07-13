@@ -14,6 +14,7 @@ import UxDesigner from "../../../Images/UxDesigner.svg";
 import { SvgIcon } from "@mui/material";
 import { MapPin, Building, IndianRupee } from "lucide-react";
 import axios from "axios";
+import axiosInstance from "../../../axiosInstance";
 
 
 import "../../../Styles/JobSeeker/DashComponents/Dashboard.css";
@@ -27,7 +28,7 @@ const Dashboard = () => {
 
   const initialJobs = async () => {
     try {
-      const response = await axios.get("http://localhost:9191/jobposts/recruiters/jobposts");
+      const response = await axiosInstance.get(`/api/jobposts/recruiter`);
       console.log(response.data);
 
       return response.data;
@@ -42,8 +43,8 @@ const Dashboard = () => {
     const jobSeekerId = localStorage.getItem("jobSeekerId"); // or however you're storing it
 
     try {
-      const response = await axios.post(
-        `http://localhost:9191/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
+      const response = await axiosInstance.post(
+        `/api/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
       );
 
       alert("Job saved successfully!");
@@ -149,7 +150,7 @@ const [count, setCount] = useState(0);
  
      const fetchSavedJobsCount = async () => {
     try {
-      const response = await axios.get(`${url}/jobseekers/saved-jobs/count`);
+      const response = await axiosInstance.get(`/api/jobseekers/saved-jobs/count`);
       setCount(response.data);
       console.log('Saved jobs count:', response.data);
     } catch (error) {

@@ -19,6 +19,11 @@ import { useDispatch } from "react-redux";
 import "../../Styles/JobSeeker/JobSeekerDashboard.css";
  
 const JobSeekerDashboard = ({ children }) => {
+
+
+    const url = "http://localhost:9191";
+
+
  const [sidebarOpen, setSidebarOpen] = useState(false);
  const location = useLocation();
  const dispatch = useDispatch();

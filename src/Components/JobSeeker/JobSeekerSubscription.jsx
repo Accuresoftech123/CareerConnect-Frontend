@@ -12,6 +12,7 @@ import instagram from "../../Images/instagram.svg";
 import linkedin from "../../Images/linkedin.svg";
 import x from "../../Images/x.svg";
 import axios from "axios";
+import axiosInstance from "../../axiosInstance";
  
 // CSS
 import "../../Styles/JobSeeker/JobSeekerSubscription.css";
@@ -20,6 +21,8 @@ const JobSeekerSubscription = () => {
   const navigate = useNavigate();
   const [isMonthly, setIsMonthly] = useState(true);
   const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
+
+  const url = "http://localhost:9191";
  
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -46,7 +49,9 @@ const JobSeekerSubscription = () => {
   try {
    // ✅ Pass jobSeekerId and amount both to your backend
     const { data: orderData } = await axios.post(
-      `http://localhost:9191/payment/create-order`,
+
+      // create order api
+      `${url}/api/payments/create-order`,
       null,
       {
         params: {
@@ -66,9 +71,10 @@ const JobSeekerSubscription = () => {
       handler: function (response) {
         alert("✅ Payment Successful! Payment ID: " + response.razorpay_payment_id);
  
-       axios.post("http://localhost:9191/payment/confirm-payment", null, {
+           // Confirm payment API (Send paymentId as query param)
+        axiosInstance.post(`/api/payments/confirm-payment`, null, {
           params: {
-            paymentId: response.razorpay_order_id  // Use order_id here, because that’s saved in DB
+            paymentId: response.razorpay_order_id
           }
         })
         .then((res) => {

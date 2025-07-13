@@ -40,6 +40,7 @@ const Registration = () => {
     try {
     const response = await axios.post(`${url}/api/jobseekers/register`, formData);
 
+    
 
 
     if (response.status === 201) {

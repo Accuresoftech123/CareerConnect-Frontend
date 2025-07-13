@@ -29,12 +29,21 @@ const Login = () => {
     }
 
     const user = { email, password };
+    
     axios
-      .post(`${url}/jobseekers/login`, user)
+      .post(`${url}/api/jobseekers/login`, user)
       .then((response) => {
         if (response.data) {
           alert("Login Successful");
+
+          console.log(response.data);
+
           localStorage.setItem("jobSeekerId", response.data.id);
+
+            // set token
+           const token = response.data.token;
+           localStorage.setItem("token", token);
+
           navigate("/JobSeekerHome");
         } else {
           alert("Invalid credentials");

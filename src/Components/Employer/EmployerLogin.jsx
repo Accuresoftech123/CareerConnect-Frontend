@@ -46,14 +46,22 @@ const EmployerLogin = () => {
    const user = { email, password };
 
   try {
-    const response = await axios.post(`${url}/recruiters/login`, user);
+    const response = await axios.post(`${url}/api/recruiters/login`, user);
     const recruiter = response.data;
   
 
     if (response.data) {
       alert("Login Successful");
+
+       console.log(response.data);
+
        localStorage.setItem("recruiterId", recruiter.id);
-     console.log("Recruiter ID:", recruiter.id);
+        console.log("Recruiter ID:", recruiter.id);
+
+      // set token
+      const token = response.data.token;
+      localStorage.setItem("token", token);
+
      navigate("/EmployerDashboard"); // Navigate after successful login
     } else {
       alert("Invalid credentials");

@@ -61,7 +61,7 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
   if (otpValue.length === 6) {
     try {
       const response = await axios.post(
-        `${url}/recruiters/verify-otp`,
+        `${url}/api/recruiters/verify-otp`,
         JSON.stringify({ email, otp: otpValue }),
         {
           headers: {
@@ -69,6 +69,13 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
           },
         }
       );
+
+      console.log(response.data);
+
+
+        // set token
+        const token = response.data.token;
+       localStorage.setItem("token", token);
 
       if (response.data.success) {
         alert("✅ OTP Verified Successfully!");

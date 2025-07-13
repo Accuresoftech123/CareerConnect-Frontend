@@ -22,6 +22,7 @@ import JobPreferences from "../../Images/JobPreferferences.svg";
 import "../../Styles/JobSeeker/JobSeekerCreateProfile.css";
 import plusIcon from "../../Images/plusIcon.svg";
 import axios from "axios";
+import axiosInstance from "../../axiosInstance";
 
 const TOTAL_STEPS = 6;
 
@@ -176,8 +177,8 @@ const JobSeekerCreateProfile = () => {
     );
 
     try {
-      const response = await axios.put(
-        `${url}/jobseekers/${jobSeekerId}/profile`,
+      const response = await axiosInstance.put(
+        `/api/jobseekers/${jobSeekerId}/profile`,
         formData,
         {
           headers: {
