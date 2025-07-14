@@ -309,7 +309,6 @@ const JobSeekerCreateProfile = () => {
                       id="companyImageInput"
                       accept="image/*"
                       onChange={(e) => setImageFile(e.target.files[0])}
-                    
                       style={{ display: "none" }}
                       // onChange={handleImageUpload}
                     />
@@ -417,6 +416,7 @@ const JobSeekerCreateProfile = () => {
                       type="file"
                       style={{ display: "none" }}
                       onChange={(e) => setResumeFile(e.target.files[0])}
+                      required
                     />
                     <label htmlFor="resume" className="jscp-browse-button">
                       Browse files
@@ -424,6 +424,11 @@ const JobSeekerCreateProfile = () => {
                     <p className="jscp-supported-formats">
                       Supported: PDF, DOC, DOCX (Max 5 MB)
                     </p>
+                    {resumeFile && (
+                      <p className="jscp-selected-file">
+                        Selected: {resumeFile.name}
+                      </p>
+                    )}
                   </div>
                 </div>
               </section>
@@ -460,6 +465,11 @@ const JobSeekerCreateProfile = () => {
                     <p className="jscp-supported-formats">
                       Supported: MP4, AVI, MOV (Max 50MB)
                     </p>
+                     {videoFile && (
+                      <p className="jscp-selected-file">
+                        Selected: {videoFile.name}
+                      </p>
+                    )}
                   </div>
                 </div>
               </section>

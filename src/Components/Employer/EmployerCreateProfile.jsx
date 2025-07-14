@@ -12,6 +12,7 @@ import companyBuilding from "../../Images/companyBuilding.svg";
 import plusIcon from "../../Images/plusIcon.svg";
 import axios from "axios";
 import "../../Styles/Employer/EmployerCreateProfilestyle.css";
+import axiosInstance from "../../axiosInstance";
 
 const url = "http://localhost:9191/recruitersProfile";
 const EmployerCreateProfile = () => {
@@ -107,8 +108,8 @@ const EmployerCreateProfile = () => {
       multipartFormData.append("image", imageFile);
     }
 
-    const response = await axios.post(
-      `${url}/create-profile/${recruiterId}`,
+    const response = await axiosInstance.post(
+      `/api/recruiters/profile/create/${recruiterId}`,
       multipartFormData,
       {
         headers: {

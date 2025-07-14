@@ -61,7 +61,7 @@ const EmployerDashboard = () => {
     try {
       setIsLoadingPreviousJobs(true);
       const response = await axiosInstance.get(
-        `/api/jobposts/recruiter/${recruiterId}/previous-jobs`
+        `/api/jobposts/recruiter/${recruiterId}/last`
       );
       
 

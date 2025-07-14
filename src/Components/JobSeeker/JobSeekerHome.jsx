@@ -19,6 +19,7 @@ import { useDispatch } from "react-redux";
 import "../../Styles/JobSeeker/JobSeekerHome.css";
 import { useEffect } from "react";
 import axios from "axios"; // ✅ Import Axios
+import axiosInstance from "../../axiosInstance";
 
 const url = "http://localhost:9191"; // Base URL for API requests
 const JobSeekerHome = ({ children }) => {
@@ -51,8 +52,8 @@ const JobSeekerHome = ({ children }) => {
   const jobSeekerId = localStorage.getItem("jobSeekerId");
   const fetchJobSeekerInfo = async () => {
     try {
-      const response = await axios.get(
-        `${url}/jobseekers/get-image-name/${jobSeekerId}`
+      const response = await axiosInstance.get(
+        `/api/jobseekers/get-image-name/${jobSeekerId}`
       );
       setJobSeekerInfo({
         fullName: response.data.fullName,

@@ -84,8 +84,8 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${url}/applications/applyjob/${jobSeekerId}/job-post/${jobId}`
+      const response = await axiosInstance.post(
+        `/api/applications/applyjob/${jobSeekerId}/job-post/${jobId}`
       );
       alert("Applied Successfully!");
       const updated = recommendedJobs.map((job) =>
@@ -270,7 +270,7 @@ const [applicationCount, setApplicationCount] = useState(0);
 const fetchApplicationCount = async () => {
   const jobSeekerId = localStorage.getItem("jobSeekerId");
   try {
-    const response = await axios.get(`${url}/applications/jobseeker/${jobSeekerId}/applied-jobs/count`);
+    const response = await axiosInstance.get(`/api/applications/jobseeker/${jobSeekerId}/applied-jobs/count`);
     setApplicationCount(response.data);
     console.log("Application count:", response.data);
   } catch (error) {
@@ -340,7 +340,7 @@ const fetchApplicationCount = async () => {
           </div>
           <button
             className="JobSeeker-dashboard-complete-profile-button"
-            onClick={() => alert("Complete profile clicked")}
+            onClick={() =>  navigate("/JobSeeker-Create-Profile")}
             aria-label="Complete your profile"
             style={{ cursor: "pointer" }}
           >
