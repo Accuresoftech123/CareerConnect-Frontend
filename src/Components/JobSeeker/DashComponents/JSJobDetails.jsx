@@ -8,7 +8,7 @@ import bookmarkBlank from "../../../Images/bookmarkBlank.svg";
 import UiUxDesigner from "../../../Images/UiUxDesigner.svg";
 import UxDesigner from "../../../Images/UxDesigner.svg";
 import send from "../../../Images/send.svg";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 
 import {
   Select,
@@ -42,6 +42,12 @@ const JSJobDetails = () => {
   // Calculate indexes
   const indexOfLastJob = currentPage * jobsPerPage;
   const indexOfFirstJob = indexOfLastJob - jobsPerPage;
+  //search bar
+  const [searchValues, setSearchValues] = useState({
+    keywords: "",
+    location: "",
+    experience: "", // or experience if that's what it really is
+  });
 
   const JSjobDetails = [
     {
@@ -576,26 +582,24 @@ const JSJobDetails = () => {
   const [jobsData, setJobsData] = useState(JSjobDetails);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-// useEffect(() => {
-//   console.log(jobFromDashboard.id)
-//   if (location.state?.jobFromDashboard) {
-//     const jobFromDashboard = location.state.jobFromDashboard;
+  // useEffect(() => {
+  //   console.log(jobFromDashboard.id)
+  //   if (location.state?.jobFromDashboard) {
+  //     const jobFromDashboard = location.state.jobFromDashboard;
 
-//     // Remove it if it already exists to avoid duplication
-//     const filteredJobs = JSjobDetails.filter(j => j.id !== jobFromDashboard.id);
+  //     // Remove it if it already exists to avoid duplication
+  //     const filteredJobs = JSjobDetails.filter(j => j.id !== jobFromDashboard.id);
 
-//     // Add jobFromDashboard at the start
-//     const updatedJobs = [jobFromDashboard, ...filteredJobs];
+  //     // Add jobFromDashboard at the start
+  //     const updatedJobs = [jobFromDashboard, ...filteredJobs];
 
-//     // Update state
-//     setJobsData(updatedJobs);
-//   } else {
-//     // No job passed from dashboard, set normal list
-//     setJobsData(JSjobDetails);
-//   }
-// }, [location.state]);
-
-
+  //     // Update state
+  //     setJobsData(updatedJobs);
+  //   } else {
+  //     // No job passed from dashboard, set normal list
+  //     setJobsData(JSjobDetails);
+  //   }
+  // }, [location.state]);
 
   // Extract unique options for filters
   const experienceOptions = [...new Set(jobsData.map((j) => j.experience))];
@@ -606,14 +610,16 @@ const JSJobDetails = () => {
   const datePostedOptions = [...new Set(jobsData.map((j) => j.time))];
 
   // State for filters
-  const [filters, setFilters] = useState({
-    experience: [],
-    jobType: [],
-    workMode: [],
-    location: [],
-    salary: [],
-    datePosted: [],
-  });
+const [filters, setFilters] = useState({
+  experience: [],
+  jobType: [],
+  workMode: [],
+  location: [],
+  salary: [],
+  datePosted: [],
+  title: "", 
+});
+
 
   // Handle change on filters (multi select)
   const handleFilterChange = (event, key) => {
@@ -628,43 +634,61 @@ const JSJobDetails = () => {
   };
 
   // Reset all filters
-  const resetAllFilters = () => {
-    setFilters({
-      experience: [],
-      jobType: [],
-      workMode: [],
-      location: [],
-      salary: [],
-      datePosted: [],
-    });
-    setSelectedIndex(0);
-  };
+ const resetAllFilters = () => {
+  setFilters({
+    experience: [],
+    jobType: [],
+    workMode: [],
+    location: [],
+    salary: [],
+    datePosted: [],
+    title: "", // clear search input filter
+  });
+  setSearchValues({
+    keywords: "",
+    location: "",
+    experience: "",
+  });
+  setSelectedIndex(0);
+};
+
 
   // Filter jobs based on filters
-  const filteredJobs = jobsData.filter((job) => {
-    const expMatch =
-      filters.experience.length === 0 ||
-      filters.experience.includes(job.experience);
-    const jobTypeMatch =
-      filters.jobType.length === 0 || filters.jobType.includes(job.type);
-    const workModeMatch =
-      filters.workMode.length === 0 || filters.workMode.includes(job.workMode);
-    const locationMatch =
-      filters.location.length === 0 || filters.location.includes(job.location);
-    const salaryMatch =
-      filters.salary.length === 0 || filters.salary.includes(job.salary);
-    const datePostedMatch =
-      filters.datePosted.length === 0 || filters.datePosted.includes(job.time);
+ const filteredJobs = jobsData.filter((job) => {
+  const expMatch =
+    filters.experience.length === 0 || filters.experience.includes(job.experience);
+  const jobTypeMatch =
+    filters.jobType.length === 0 || filters.jobType.includes(job.type);
+  const workModeMatch =
+    filters.workMode.length === 0 || filters.workMode.includes(job.workMode);
+  const locationMatch =
+    filters.location.length === 0 || filters.location.includes(job.location);
+  const salaryMatch =
+    filters.salary.length === 0 || filters.salary.includes(job.salary);
+  const datePostedMatch =
+    filters.datePosted.length === 0 || filters.datePosted.includes(job.time);
+  const titleMatch =
+    filters.title === "" || job.title.toLowerCase().includes(filters.title);
 
-    return (
-      expMatch &&
-      jobTypeMatch &&
-      workModeMatch &&
-      locationMatch &&
-      salaryMatch &&
-      datePostedMatch
-    );
+  return (
+    expMatch &&
+    jobTypeMatch &&
+    workModeMatch &&
+    locationMatch &&
+    salaryMatch &&
+    datePostedMatch &&
+    titleMatch
+  );
+});
+
+useEffect(() => {
+  setSearchValues({
+    ...searchValues,
+    location: filters.location[0] || "",
+    experience: filters.experience[0] || "",
+    keywords: filters.title || "",
   });
+}, [filters]);
 
   //bookmark logic
   const handleBookmarkToggle = (jobId) => {
@@ -673,16 +697,19 @@ const JSJobDetails = () => {
     );
     setJobsData(updatedJobs);
   };
-const currentJobs = useMemo(() => {
-  return filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
-}, [filteredJobs, currentPage]);
+  const currentJobs = useMemo(() => {
+    return filteredJobs.slice(indexOfFirstJob, indexOfLastJob);
+  }, [filteredJobs, currentPage]);
 
-useEffect(() => {
-  // If current selected job is not visible in the currentJobs list
-  if (currentJobs.length > 0 && !currentJobs.some(job => job.id === selectedJob?.id)) {
-    setSelectedJob(currentJobs[0]);
-  }
-}, [currentJobs]);
+  useEffect(() => {
+    // If current selected job is not visible in the currentJobs list
+    if (
+      currentJobs.length > 0 &&
+      !currentJobs.some((job) => job.id === selectedJob?.id)
+    ) {
+      setSelectedJob(currentJobs[0]);
+    }
+  }, [currentJobs]);
 
   // Total pages
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
@@ -695,11 +722,21 @@ useEffect(() => {
   const handleNumberPage = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
-//search function
-const handleSearchSubmit = (e) => {
+  //search function
+  const handleSearchSubmit = (e) => {
   e.preventDefault();
-  // Trigger search logic using input values
+
+  setFilters((prev) => ({
+    ...prev,
+    location: searchValues.location ? [searchValues.location] : [],
+    experience: searchValues.experience ? [searchValues.experience] : [],
+    title: searchValues.keywords ? searchValues.keywords.toLowerCase() : "",
+  }));
+
+  setCurrentPage(1); // Reset to first page
 };
+
+
   return (
     <div>
       {/* === Your Original Search Section === */}
@@ -710,11 +747,21 @@ const handleSearchSubmit = (e) => {
             <input
               type="text"
               name="keywords"
+              value={searchValues.keywords}
+              onChange={(e) =>
+                setSearchValues({ ...searchValues, keywords: e.target.value })
+              }
               placeholder="Search jobs by title"
             />
           </div>
-          <select name="location" placeholder="Location">
-            <option disabled selected>
+          <select
+            name="location"
+            value={searchValues.location}
+            onChange={(e) =>
+              setSearchValues({ ...searchValues, location: e.target.value })
+            }
+          >
+            <option disabled value="">
               Select Location
             </option>
             {locationOptions.map((loc) => (
@@ -723,8 +770,14 @@ const handleSearchSubmit = (e) => {
               </option>
             ))}
           </select>
-          <select name="company" placeholder="Experience">
-            <option disabled selected>
+          <select
+            name="experience"
+            value={searchValues.experience}
+            onChange={(e) =>
+              setSearchValues({ ...searchValues, experience: e.target.value })
+            }
+          >
+            <option disabled value="">
               Select Experience
             </option>
             {experienceOptions.map((exp) => (
@@ -1006,7 +1059,9 @@ const handleSearchSubmit = (e) => {
           {currentJobs.map((job, index) => (
             <div
               key={job.id}
-              className={`jsjd-card ${selectedJob?.id === job.id ? "jsjd-card-active" : "" }`}
+              className={`jsjd-card ${
+                selectedJob?.id === job.id ? "jsjd-card-active" : ""
+              }`}
               onClick={() => setSelectedJob(job)}
             >
               <div className="jsjd-card-header">
@@ -1069,199 +1124,204 @@ const handleSearchSubmit = (e) => {
         </div>
 
         {/* RIGHT DETAILS PANEL */}
-          {selectedJob && (
-        <div className="jsjd-detail">
-          <div className="jsjd-upper-section">
-            <div className="jsjd-detail-header">
-              <div className="jsjd-detail-title-company">
-                <h2 className="jsjd-detail-title">{selectedJob.title}</h2>
+        {selectedJob && (
+          <div className="jsjd-detail">
+            <div className="jsjd-upper-section">
+              <div className="jsjd-detail-header">
+                <div className="jsjd-detail-title-company">
+                  <h2 className="jsjd-detail-title">{selectedJob.title}</h2>
 
-                <div className="jsjd-icon-buttons">
-                  <button
-                    className="jsjd-card-bookmark-button"
-                    onClick={() => handleBookmarkToggle(selectedJob.id)}
-                    aria-label={
-                      selectedJob.bookmarked
-                        ? "Remove bookmark"
-                        : "Bookmark job"
-                    }
-                  >
-                    <img
-                      className={`bookmark-icon ${
-                        selectedJob.bookmarked ? "bookmarked" : ""
-                      }`}
-                      src={send}
-                      alt="Send"
-                    />
-                  </button>
-
-                  <button
-                    className="jsjd-card-bookmark-button"
-                    onClick={() => handleBookmarkToggle(selectedJob.id)}
-                    aria-label={
-                      selectedJob.bookmarked
-                        ? "Remove bookmark"
-                        : "Bookmark job"
-                    }
-                  >
-                    <img
-                      className={`bookmark-icon ${
-                        selectedJob.bookmarked ? "bookmarked" : ""
-                      }`}
-                      src={selectedJob.bookmarked ? bookmark : bookmarkBlank}
-                      alt={
-                        selectedJob.bookmarked ? "Bookmarked" : "Not bookmarked"
+                  <div className="jsjd-icon-buttons">
+                    <button
+                      className="jsjd-card-bookmark-button"
+                      onClick={() => handleBookmarkToggle(selectedJob.id)}
+                      aria-label={
+                        selectedJob.bookmarked
+                          ? "Remove bookmark"
+                          : "Bookmark job"
                       }
-                    />
-                  </button>
+                    >
+                      <img
+                        className={`bookmark-icon ${
+                          selectedJob.bookmarked ? "bookmarked" : ""
+                        }`}
+                        src={send}
+                        alt="Send"
+                      />
+                    </button>
+
+                    <button
+                      className="jsjd-card-bookmark-button"
+                      onClick={() => handleBookmarkToggle(selectedJob.id)}
+                      aria-label={
+                        selectedJob.bookmarked
+                          ? "Remove bookmark"
+                          : "Bookmark job"
+                      }
+                    >
+                      <img
+                        className={`bookmark-icon ${
+                          selectedJob.bookmarked ? "bookmarked" : ""
+                        }`}
+                        src={selectedJob.bookmarked ? bookmark : bookmarkBlank}
+                        alt={
+                          selectedJob.bookmarked
+                            ? "Bookmarked"
+                            : "Not bookmarked"
+                        }
+                      />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="jsjd-detail-company">{selectedJob.company}</div>
+              </div>
+              <hr></hr>
+              <div className="jsjd-card-info">
+                <div className="jsjd-card-info-grid">
+                  <p>
+                    <span className="jsjd-card-info-icon">
+                      <SvgIcon component={MapPin} style={{ fill: "none" }} />
+                    </span>{" "}
+                    {selectedJob.location}
+                  </p>
+                  <p>
+                    <span className="jsjd-card-info-icon">
+                      <SvgIcon component={Building} style={{ fill: "none" }} />
+                    </span>{" "}
+                    {selectedJob.type}
+                  </p>
+                  <p>
+                    <span className="jsjd-card-info-icon">
+                      <SvgIcon
+                        component={IndianRupee}
+                        style={{ fill: "none" }}
+                      />
+                    </span>{" "}
+                    {selectedJob.salary}
+                  </p>
+                  <p>
+                    <span className="jsjd-card-info-icon">
+                      <SvgIcon component={Briefcase} style={{ fill: "none" }} />
+                    </span>{" "}
+                    {selectedJob.experience}
+                  </p>
+                  <div className="apply-button-wrapper">
+                    <button
+                      className="jsjd-apply-button"
+                      disabled={selectedJob.applied}
+                      aria-disabled={selectedJob.applied}
+                      aria-label={
+                        selectedJob.applied ? "Already applied" : "Apply to job"
+                      }
+                      style={{
+                        cursor: selectedJob.applied ? "not-allowed" : "pointer",
+                      }}
+                    >
+                      {selectedJob.applied ? "Applied" : "Apply"}
+                    </button>
+                  </div>
                 </div>
               </div>
-
-              <div className="jsjd-detail-company">{selectedJob.company}</div>
             </div>
-            <hr></hr>
-            <div className="jsjd-card-info">
-              <div className="jsjd-card-info-grid">
+            <hr className="jsjd-divider-section"></hr>
+            <div className="jsjd-lower-section">
+              <div className="jsjd-card-tags">
+                {selectedJob.tags.map((tag, index) => (
+                  <span key={index} className="jsjd-card-tag">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+
+              <section>
+                <h4>Job Summary</h4>
+                <p>{selectedJob.jobSummary}</p>
+              </section>
+
+              {/* Key Responsibilities */}
+              <section>
+                <h4>Key Responsibilities</h4>
+                <ul>
+                  {selectedJob.keyResponsibilities.map((resp, idx) => (
+                    <li key={idx}>{resp}</li>
+                  ))}
+                </ul>
+              </section>
+
+              {/* Qualifications & Skills */}
+              <section>
+                <h4>Qualifications & Skills</h4>
+                <ul>
+                  {selectedJob.qualificationsAndSkills.map((skill, idx) => (
+                    <li key={idx}>{skill}</li>
+                  ))}
+                </ul>
+              </section>
+
+              {/* Perks & Benefits */}
+              <section>
+                <h4>Perks & Benefits</h4>
+                <ul>
+                  {selectedJob.perksAndBenefits.map((perk, idx) => (
+                    <li key={idx}>{perk}</li>
+                  ))}
+                </ul>
+              </section>
+              <div className="jsjd-apply-note">
+                Click on <p className="jsjd-applylink">[Apply Now]</p> to upload
+                your resume and portfolio. Shortlisted candidates will be
+                contacted within 5 working days.
+              </div>
+
+              <hr></hr>
+              {/* Company Overview */}
+              <section>
+                <h4>Company Overview</h4>
                 <p>
-                  <span className="jsjd-card-info-icon">
-                    <SvgIcon component={MapPin} style={{ fill: "none" }} />
-                  </span>{" "}
-                  {selectedJob.location}
+                  <strong>Company Name:</strong>{" "}
+                  {selectedJob.companyOverview.company}
                 </p>
                 <p>
-                  <span className="jsjd-card-info-icon">
-                    <SvgIcon component={Building} style={{ fill: "none" }} />
-                  </span>{" "}
-                  {selectedJob.type}
+                  <strong>Location:</strong>{" "}
+                  {selectedJob.companyOverview.location}
                 </p>
                 <p>
-                  <span className="jsjd-card-info-icon">
-                    <SvgIcon component={IndianRupee} style={{ fill: "none" }} />
-                  </span>{" "}
-                  {selectedJob.salary}
+                  <strong>Industry:</strong>{" "}
+                  {selectedJob.companyOverview.industry}
                 </p>
                 <p>
-                  <span className="jsjd-card-info-icon">
-                    <SvgIcon component={Briefcase} style={{ fill: "none" }} />
-                  </span>{" "}
-                  {selectedJob.experience}
-                </p>
-                <div className="apply-button-wrapper">
-                  <button
-                    className="jsjd-apply-button"
-                    disabled={selectedJob.applied}
-                    aria-disabled={selectedJob.applied}
-                    aria-label={
-                      selectedJob.applied ? "Already applied" : "Apply to job"
-                    }
-                    style={{
-                      cursor: selectedJob.applied ? "not-allowed" : "pointer",
-                    }}
+                  <strong>Website:</strong>{" "}
+                  <a
+                    href={selectedJob.companyOverview.website}
+                    target="_blank"
+                    rel="noreferrer"
                   >
-                    {selectedJob.applied ? "Applied" : "Apply"}
-                  </button>
-                </div>
-              </div>
+                    {selectedJob.companyOverview.website}
+                  </a>
+                </p>
+                <p>{selectedJob.companyOverview.aboutUs}</p>
+              </section>
+
+              {/* Contact Details */}
+              <section>
+                <h4>Contact Details</h4>
+                <p>
+                  <strong>Recruiter:</strong>{" "}
+                  {selectedJob.contactDetails.recruiterName}
+                </p>
+                <p>
+                  <strong>Email:</strong>{" "}
+                  <a href={`mailto:${selectedJob.contactDetails.email}`}>
+                    {selectedJob.contactDetails.email}
+                  </a>
+                </p>
+              </section>
+
+              <button className="jsjd-apply-btn">Apply Now</button>
             </div>
           </div>
-          <hr className="jsjd-divider-section"></hr>
-          <div className="jsjd-lower-section">
-            <div className="jsjd-card-tags">
-              {selectedJob.tags.map((tag, index) => (
-                <span key={index} className="jsjd-card-tag">
-                  {tag}
-                </span>
-              ))}
-            </div>
-
-            <section>
-              <h4>Job Summary</h4>
-              <p>{selectedJob.jobSummary}</p>
-            </section>
-
-            {/* Key Responsibilities */}
-            <section>
-              <h4>Key Responsibilities</h4>
-              <ul>
-                {selectedJob.keyResponsibilities.map((resp, idx) => (
-                  <li key={idx}>{resp}</li>
-                ))}
-              </ul>
-            </section>
-
-            {/* Qualifications & Skills */}
-            <section>
-              <h4>Qualifications & Skills</h4>
-              <ul>
-                {selectedJob.qualificationsAndSkills.map((skill, idx) => (
-                  <li key={idx}>{skill}</li>
-                ))}
-              </ul>
-            </section>
-
-            {/* Perks & Benefits */}
-            <section>
-              <h4>Perks & Benefits</h4>
-              <ul>
-                {selectedJob.perksAndBenefits.map((perk, idx) => (
-                  <li key={idx}>{perk}</li>
-                ))}
-              </ul>
-            </section>
-            <div className="jsjd-apply-note">
-              Click on <p className="jsjd-applylink">[Apply Now]</p> to upload
-              your resume and portfolio. Shortlisted candidates will be
-              contacted within 5 working days.
-            </div>
-
-            <hr></hr>
-            {/* Company Overview */}
-            <section>
-              <h4>Company Overview</h4>
-              <p>
-                <strong>Company Name:</strong>{" "}
-                {selectedJob.companyOverview.company}
-              </p>
-              <p>
-                <strong>Location:</strong>{" "}
-                {selectedJob.companyOverview.location}
-              </p>
-              <p>
-                <strong>Industry:</strong>{" "}
-                {selectedJob.companyOverview.industry}
-              </p>
-              <p>
-                <strong>Website:</strong>{" "}
-                <a
-                  href={selectedJob.companyOverview.website}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  {selectedJob.companyOverview.website}
-                </a>
-              </p>
-              <p>{selectedJob.companyOverview.aboutUs}</p>
-            </section>
-
-            {/* Contact Details */}
-            <section>
-              <h4>Contact Details</h4>
-              <p>
-                <strong>Recruiter:</strong>{" "}
-                {selectedJob.contactDetails.recruiterName}
-              </p>
-              <p>
-                <strong>Email:</strong>{" "}
-                <a href={`mailto:${selectedJob.contactDetails.email}`}>
-                  {selectedJob.contactDetails.email}
-                </a>
-              </p>
-            </section>
-
-            <button className="jsjd-apply-btn">Apply Now</button>
-          </div>
-        </div>
-          )}
+        )}
       </div>
 
       {/* Pagination */}

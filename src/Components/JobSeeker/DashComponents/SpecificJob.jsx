@@ -9,17 +9,9 @@ import send from "../../../Images/send.svg";
 import { useLocation } from 'react-router-dom';
 
 const SpecificJob = () => {
- const location = useLocation();
-
-  // Access the passed state
-  const selectedJobId = location.state?.selectedJob;
-
-  useEffect(() => {
-    console.log("Selected Job ID:", selectedJobId);
-    // You can use this ID to fetch job details from an API, etc.
-  }, [selectedJobId]);
- 
-  const JSjobDetails = [
+    const location = useLocation();
+    const selectedJobId = location.state?.selectedJob;
+    const JSjobDetails = [
     {
       id: 1,
       title: "UI UX Designer",
@@ -548,9 +540,18 @@ const SpecificJob = () => {
         email: "john.doe@technosolutions.com",
       },
     },
-  ];
-  const [jobsData, setJobsData] = useState(JSjobDetails);
-  const selectedJob = JSjobDetails[0];
+    ];
+    // Find the job that matches the ID
+    const selectedJob = JSjobDetails.find((job) => job.id === selectedJobId);
+
+    // State to manage bookmark (optional)
+    const [jobsData, setJobsData] = useState(JSjobDetails);
+
+  useEffect(() => {
+    console.log("Selected Job ID:", selectedJobId);
+    // You can use this ID to fetch job details from an API, etc.
+  }, [selectedJobId]);
+ 
   //bookmark logic
   const handleBookmarkToggle = (jobId) => {
     const updatedJobs = jobsData.map((job) =>

@@ -148,9 +148,8 @@ const Dashboard = () => {
     fetchJobsAndInterviews();
   }, []);
 
-  const handleClick = (job) => {
-    navigate("/JobSeekerHome/SpecificJob", { state: { selectedJob: job.id } });
-    console.log(job);
+  const handleClick = (jobId) => {
+    navigate("/JobSeekerHome/SpecificJob", { state: { selectedJob: jobId } });
   };
 
   const handleBookmarkToggle = (jobId) => {
