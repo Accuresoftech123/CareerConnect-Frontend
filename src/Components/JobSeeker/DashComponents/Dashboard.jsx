@@ -53,7 +53,7 @@ const Dashboard = () => {
       const response = await axiosInstance.post(
         `/api/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
       );
-
+      fetchSavedJobsCount();
     alert("Job saved successfully!");
 
       // Optionally update UI locally (toggle bookmark)
@@ -87,6 +87,7 @@ const Dashboard = () => {
       const response = await axiosInstance.post(
         `/api/applications/applyjob/${jobSeekerId}/job-post/${jobId}`
       );
+       fetchApplicationCount();
       alert("Applied Successfully!");
       const updated = recommendedJobs.map((job) =>
         job.id === jobId ? { ...job, applied: true } : job
@@ -108,8 +109,10 @@ const Dashboard = () => {
   const [count, setCount] = useState(0);
 
   const fetchSavedJobsCount = async () => {
+     const jobSeekerId = localStorage.getItem("jobSeekerId");
     try {
-       const response = await axiosInstance.get(`/api/jobseekers/saved-jobs/count`);
+       const response = await axiosInstance.get(`/api/jobseekers/saved-jobs/count/${jobSeekerId}`);
+     
       setCount(response.data);
       console.log("Saved jobs count:", response.data);
     } catch (error) {
@@ -117,22 +120,43 @@ const Dashboard = () => {
     }
   };
   // Add fetch function for profile completion API
-  const fetchProfileCompletion = async () => {
-    try {
-      // Replace this URL with your actual API endpoint
-      const response = await fetch(
-        "https://api.example.com/profile/completion"
-      );
-      if (!response.ok) throw new Error("Failed to fetch profile completion");
+  // const fetchProfileCompletion = async () => {
+  //    const jobSeekerId = localStorage.getItem("jobSeekerId");
+  //   try {
+  //     // Replace this URL with your actual API endpoint
+  //     const response = axiosInstance.get(
+  //       `/api/jobseekers/${jobSeekerId}/profile-completion`
+  //     );
+  //       console.log(response.data);
+  //     if (!response.ok) throw new Error("Failed to fetch profile completion");
 
-      const data = await response.json();
-      setProfileCompletion(data.profileCompletion || 0);
-    } catch (error) {
-      console.error("Error fetching profile completion:", error);
-      // fallback value if API fails
-      setProfileCompletion(70);
-    }
-  };
+  //     const data =  response.json();
+  //     setProfileCompletion(data.profileCompletion || 0);
+  //   } catch (error) {
+  //     console.error("Error fetching profile completion:", error);
+  //     // fallback value if API fails
+  //     setProfileCompletion(70);
+  //   }
+  // };
+
+  const fetchProfileCompletion = async () => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+  try {
+    const response = await axiosInstance.get(
+      `/api/jobseekers/${jobSeekerId}/profile-completion`
+    );
+
+    console.log("Profile completion response:", response.data);
+
+    // Set the value, fallback to 0 if not found
+    setProfileCompletion(response.data.profileCompletion || 0);
+  } catch (error) {
+    console.error("Error fetching profile completion:", error);
+    // fallback value if API fails
+    setProfileCompletion(70);
+  }
+};
+
 
   const fetchJobsAndInterviews = async () => {
     const jobsFromApi = await initialJobs();
@@ -145,11 +169,11 @@ const Dashboard = () => {
     fetchProfileCompletion();
   };
 
-  useEffect(() => {
-    fetchSavedJobsCount();
+  // useEffect(() => {
+  //   fetchSavedJobsCount();
 
-    fetchJobsAndInterviews();
-  }, []);
+  //   fetchJobsAndInterviews();
+  // }, []);
 
   const handleClick = (job) => {
     navigate("/JobSeekerHome/Job-details", { state: { selectedJob: job } });
@@ -278,24 +302,41 @@ const fetchApplicationCount = async () => {
   }
 };
 
+useEffect(() => {
+  const fetchAllDashboardData = async () => {
+    fetchSavedJobsCount();      // fetch count of saved jobs
+    fetchApplicationCount();    // fetch count of applied jobs
+
+    const jobsFromApi = await initialJobs(); // fetch recommended jobs
+    setRecommendedJobs(jobsFromApi);
+
+    seedInterviews(initialInterviews);      // seed interview list
+    setInterviews(getInterviews());         // get interviews from storage
+
+    fetchProfileCompletion();               // fetch profile completion
+  };
+
+  fetchAllDashboardData(); // run all API/data fetching in one go
+}, []);
 
 
-  useEffect(() => {
-    fetchSavedJobsCount();
-    fetchApplicationCount();
-    const fetchJobsAndInterviews = async () => {
-      const jobsFromApi = await initialJobs();
-      setRecommendedJobs(jobsFromApi);
+
+  // useEffect(() => {
+  //   fetchSavedJobsCount();
+  //   fetchApplicationCount();
+  //   const fetchJobsAndInterviews = async () => {
+  //     const jobsFromApi = await initialJobs();
+  //     setRecommendedJobs(jobsFromApi);
 
 
-      seedInterviews(initialInterviews);
-      setInterviews(getInterviews());
+  //     seedInterviews(initialInterviews);
+  //     setInterviews(getInterviews());
 
-      // Fetch profile completion from API
-      fetchProfileCompletion();
-    };
-    fetchJobsAndInterviews();
-  }, []);
+  //     // Fetch profile completion from API
+  //     fetchProfileCompletion();
+  //   };
+  //   fetchJobsAndInterviews();
+  // }, []);
 
   // const handleClick = () => {
   //   navigate("/JobSeekerHome/Job-details");
