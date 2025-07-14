@@ -61,6 +61,7 @@ const JobSeekerRoutes = () => {
   return (
    <JobSeekerHome>
       <Routes>
+        <Route index element={<Dashboard />} />
         <Route path="Jobseeker-Dashboard" element={<Dashboard/>}/>
         <Route path="Job-details" element={<JSJobDetails/>}/>
       </Routes>
