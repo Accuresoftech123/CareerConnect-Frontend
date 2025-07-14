@@ -32,6 +32,7 @@ const Dashboard = () => {
 
   const initialJobs = async () => {
     try {
+      // const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
       const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
       console.log(response.data);
 
@@ -43,25 +44,37 @@ const Dashboard = () => {
   };
   //save Job Post
   const saveJob = async (jobId) => {
-    const jobSeekerId = localStorage.getItem("jobSeekerId"); // or however you're storing it
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
 
-    try {
-      const response = await axios.post(
-        `${url}/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
-      );
+  handleBookmarkToggle(jobId);
 
-      alert("Job saved successfully!");
+  try {
+    const response = await axios.post(
+     
+      `${url}/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
+    );
+
+    alert("Job saved successfully!");
 
       // Optionally update UI locally (toggle bookmark)
       const updated = recommendedJobs.map((job) =>
-        job.id === jobId ? { ...job, bookmarked: true } : job
-      );
-      setRecommendedJobs(updated);
-    } catch (error) {
-      console.error("Error saving job:", error);
-      alert("Failed to save job");
-    }
-  };
+      job.id === jobId ? { ...job, bookmarked: true } : job
+    );
+    setRecommendedJobs(updated);
+  } catch (error) {
+  if (error.response?.status === 409) {
+    alert("Job is already saved!");
+  } 
+  else if (error.response?.status === 404) {
+    alert("Job or job seeker not found.{jobSeekerId}");
+  } else {
+    alert("Failed to save job.");
+  }
+}
+
+};
+
+
 
   const applyToJob = async (jobId) => {
     const jobSeekerId = localStorage.getItem("jobSeekerId");
@@ -226,6 +239,82 @@ const Dashboard = () => {
   const handleEditInterview = (id) => {
     console.log("Edit interview", id);
   };
+ 
+  //    const fetchSavedJobsCount = async () => {
+  //   try {
+  //     const response = await axios.get(`${url}/jobseekers/saved-jobs/count`);
+  //     setCount(response.data);
+  //     console.log('Saved jobs count:', response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching saved jobs count:', error);
+  //   }
+  // };
+  // Add fetch function for profile completion API
+  // const fetchProfileCompletion = async () => {
+  //   try {
+  //     // Replace this URL with your actual API endpoint
+  //     const response = await fetch("https://api.example.com/profile/completion");
+  //     if (!response.ok) throw new Error("Failed to fetch profile completion");
+
+  //     const data = await response.json();
+  //     setProfileCompletion(data.profileCompletion || 0);
+  //   } catch (error) {
+  //     console.error("Error fetching profile completion:", error);
+  //     // fallback value if API fails
+  //     setProfileCompletion(70);
+  //   }
+  // };
+
+//Application send
+const [applicationCount, setApplicationCount] = useState(0);
+const fetchApplicationCount = async () => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+  try {
+    const response = await axios.get(`${url}/applications/jobseeker/${jobSeekerId}/applied-jobs/count`);
+    setApplicationCount(response.data);
+    console.log("Application count:", response.data);
+  } catch (error) {
+    console.error("Error fetching application count:", error);
+  }
+};
+
+
+
+  useEffect(() => {
+    fetchSavedJobsCount();
+    fetchApplicationCount();
+    const fetchJobsAndInterviews = async () => {
+      const jobsFromApi = await initialJobs();
+      setRecommendedJobs(jobsFromApi);
+
+
+      seedInterviews(initialInterviews);
+      setInterviews(getInterviews());
+
+      // Fetch profile completion from API
+      fetchProfileCompletion();
+    };
+    fetchJobsAndInterviews();
+  }, []);
+
+  // const handleClick = () => {
+  //   navigate("/JobSeekerHome/Job-details");
+  // };
+
+  // const handleBookmarkToggle = (jobId) => {
+  //   const updated = toggleBookmark(jobId);
+  //   setRecommendedJobs(updated);
+  // };
+
+  // const handleApply = (jobId) => {
+  //   const updated = applyToJob(jobId);
+  //   setRecommendedJobs(updated);
+  // };
+
+  // Stats calculations
+  // const applicationsSent = recommendedJobs.filter((job) => job.applied).length;
+  // const savedJobs = recommendedJobs.filter((job) => job.bookmarked).length;
+  // const jobMatches = recommendedJobs.length;
 
   return (
     <>
@@ -268,7 +357,7 @@ const Dashboard = () => {
             {
               label: "Application sent",
               icon: send,
-              value: applicationsSent,
+              value: applicationCount,
               change: "↑ 25% from last month",
             },
             {
