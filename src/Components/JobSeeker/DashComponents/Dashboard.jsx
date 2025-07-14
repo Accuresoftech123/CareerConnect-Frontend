@@ -8,9 +8,6 @@ import eye from "../../../Images/eye.svg";
 import mail from "../../../Images/mail.svg";
 import penLine from "../../../Images/penLine.svg";
 import bookmarkBlank from "../../../Images/bookmarkBlank.svg";
-import productDesigner from "../../../Images/productDesigner.svg";
-import UiUxDesigner from "../../../Images/UiUxDesigner.svg";
-import UxDesigner from "../../../Images/UxDesigner.svg";
 import { SvgIcon } from "@mui/material";
 import { MapPin, Building, IndianRupee } from "lucide-react";
 import axios from "axios";
@@ -152,7 +149,7 @@ const Dashboard = () => {
   }, []);
 
   const handleClick = (job) => {
-    navigate("/JobSeekerHome/Job-details", { state: { selectedJob: job } });
+    navigate("/JobSeekerHome/SpecificJob", { state: { selectedJob: job.id } });
     console.log(job);
   };
 
@@ -514,7 +511,7 @@ const fetchApplicationCount = async () => {
                     {job.applied ? "Applied" : "Apply"}
                   </button>
                   <button
-                    onClick={()=>handleClick(job)}
+                    onClick={()=>handleClick(job.id)}
                     className="JobSeeker-dashboard-details-button"
                     aria-label="View job details"
                     style={{ cursor: "pointer" }}
