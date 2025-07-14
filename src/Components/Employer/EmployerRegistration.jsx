@@ -44,24 +44,34 @@ const Registration = () => {
   }
 
   try {
-    const response = await axios.post(`${url}/api/recruiters/register`, formData);
-const recruiterId = response.data.recruiterId;
+   const response = await axios.post(`${url}/api/recruiters/register`, formData);
+
+  const recruiterId = response.data.recruiterId;
+  localStorage.setItem("recruiterId", recruiterId);
+  console.log("Recruiter ID:", recruiterId);
+
+  alert(response.data.message || "📨 OTP sent to your email.");
+  setShowVerificationPopup(true);
+} catch (error) {
+  const message = error.response?.data?.message || error.message;
+
+  // Check if it’s "already registered but not verified" from status 200
+  if (error.response?.status === 200 && message.includes("not verified")) {
+    const recruiterId = error.response.data.recruiterId;
     localStorage.setItem("recruiterId", recruiterId);
-    console.log("Recruiter ID:", recruiterId);
- 
+    alert(message); // "Email already registered but not verified. OTP re-sent."
     setShowVerificationPopup(true);
-    alert("📨 OTP sent to your email. Please verify your email.");
-  } catch (error) {
-    const message =
-      error.response?.data?.message || JSON.stringify(error.response?.data || error.message);
- 
-     if (message.includes("already registered")) {
-        alert("⚠️ This email is already registered. Please log in instead.");
-        navigate("/EmployerLogin");
-     }else {
-      alert("❌ Error: " + message);
-    }
+    return;
   }
+
+  if (message.includes("already registered")) {
+    alert("⚠️ This email is already registered. Please log in instead.");
+    navigate("/EmployerLogin");
+  } else {
+    alert("❌ Error: " + message);
+  }
+}
+
 };
 
   const handleOtpVerified = () => {

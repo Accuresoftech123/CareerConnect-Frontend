@@ -1,6 +1,6 @@
 // JobSeekerHome.jsx
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   FaBars,
   FaSignOutAlt,
@@ -17,8 +17,12 @@ import {
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import "../../Styles/JobSeeker/JobSeekerHome.css";
+import { useEffect } from "react";
+import axios from "axios"; // ✅ Import Axios
 
+const url = "http://localhost:9191"; // Base URL for API requests
 const JobSeekerHome = ({ children }) => {
+  const navigate = useNavigate();
 
 
   const url = "http://localhost:9191";
@@ -29,7 +33,35 @@ const JobSeekerHome = ({ children }) => {
 
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
-  const isActive = (path) => location.pathname.startsWith(path);
+  const isActive = (path) => {
+    // For default path /JobSeekerHome, manually match Dashboard route
+    if (
+      location.pathname === "/JobSeekerHome" &&
+      path === "/JobSeekerHome/Jobseeker-Dashboard"
+    ) {
+      return true;
+    }
+    return location.pathname.startsWith(path);
+  };
+
+  const [jobSeekerInfo, setJobSeekerInfo] = useState({
+    fullName: "",
+    profileImageUrl: "",
+  });
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+  const fetchJobSeekerInfo = async () => {
+    try {
+      const response = await axios.get(
+        `${url}/jobseekers/get-image-name/${jobSeekerId}`
+      );
+      setJobSeekerInfo({
+        fullName: response.data.fullName,
+        profileImageUrl: response.data.profileImageUrl,
+      });
+    } catch (error) {
+      console.error("Error fetching Job Seeker info:", error);
+    }
+  };
 
   const navItems = [
     {
@@ -43,26 +75,29 @@ const JobSeekerHome = ({ children }) => {
       label: "My Job Applications",
     },
     {
-      path: "/JobSeeker/Recommendations",
+      path: "/JobSeekerHome/Recommendations",
       icon: <FaThumbsUp />,
       label: "Recommendations",
     },
     {
-      path: "/JobSeeker/Messages",
-      icon: <FaEnvelope  />,
+      path: "/JobSeekerHome/Messages",
+      icon: <FaEnvelope />,
       label: "Messages",
     },
     {
-      path: "/JobSeeker/Analysis",
+      path: "/JobSeekerHome/Analysis",
       icon: <FaChartBar />,
       label: "Analysis",
     },
     {
-      path: "/JobSeeker/Settings",
+      path: "/JobSeekerHome/Settings",
       icon: <FaCog />,
       label: "Settings",
     },
   ];
+  useEffect(() => {
+    fetchJobSeekerInfo(); // Fetch job seeker info when component mounts
+  }, []);
 
   return (
     <div className="JobSeekerHome_layout-container">
@@ -79,15 +114,17 @@ const JobSeekerHome = ({ children }) => {
         <div className="JobSeekerHome_logo">
           <span>Career</span> Connect
         </div>
-
+      {location.pathname !== '/JobSeekerHome/Job-details' && (
         <div className="JobSeekerHome_search-container">
           <FaSearch className="JobSeekerHome_search-icon" />
           <input
             type="text"
-            placeholder="Search"
+            placeholder="Search Job"
             className="JobSeekerHome_search-input"
+            onClick={() =>  navigate("/JobSeekerHome/Job-details")}
           />
         </div>
+      )}
         <div className="JobSeekerHome_right-section">
           <div className="JobSeekerHome_user-greeting">Jobs</div>
           <div className="JobSeekerHome_user-greeting">Companies</div>
@@ -97,8 +134,21 @@ const JobSeekerHome = ({ children }) => {
           <div className="JobSeekerHome_Profile">
             <FaBell className="JobSeekerHome_Profile" />
           </div>
-           <div className="JobSeekerHome_Profile">
-            <FaRegUserCircle className="JobSeekerHome-Profile"  size={40} color="#ccc"/>
+          <div className="JobSeekerHome_Profile">
+            {jobSeekerInfo.profileImageUrl ? (
+              <img
+                src={jobSeekerInfo.profileImageUrl}
+                alt="Profile"
+                style={{
+                  width: "40px",
+                  height: "40px",
+                  borderRadius: "50%",
+                  objectFit: "cover",
+                }}
+              />
+            ) : (
+              <FaRegUserCircle size={40} color="#ccc" />
+            )}{" "}
           </div>
         </div>
       </header>
@@ -114,9 +164,7 @@ const JobSeekerHome = ({ children }) => {
       {/* Body section */}
       <div className="JobSeekerHome_layout-body">
         {/* Sidebar */}
-        <nav
-          className={`JobSeekerHome_sidebar ${sidebarOpen ? "active" : ""}`}
-        >
+        <nav className={`JobSeekerHome_sidebar ${sidebarOpen ? "active" : ""}`}>
           {navItems.map((item) => (
             <Link
               key={item.path}
