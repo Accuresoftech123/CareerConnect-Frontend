@@ -17,6 +17,13 @@
 }
 .jsjd-filters {
   justify-content: center;
+  background: "transparent";
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;  
+  border-bottom: 1px solid #999;
+  border-top: 1px solid #999;
 }
 /* === Job Detail Section === */
 .jsjd-detail {
@@ -280,14 +287,14 @@
 }
 
 .jsjd-search input[type="text"] {
-  padding: 10px 60px;
+  padding: 7px 40px;
   margin-right: 10px;
   border: 1px solid #ff6600;
   border-radius: 30px 0 0 30px;
 }
 
 .jsjd-search select {
-  padding: 10px 30px;
+  padding: 8px 12px;
   margin-right: 10px;
   border: 1px solid #ff6600;
   border-radius: 2px;
@@ -297,7 +304,7 @@
   background-color: #ff6600;
   color: #fff;
   border: none;
-  padding: 10px 40px;
+  padding: 7px 12px;
   border-radius: 0 30px 30px 0;
   cursor: pointer;
 }
@@ -374,32 +381,71 @@
   margin-left: auto; /* push it to right */
   align-self: center;
 }
+.jsjd-pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  background-color: #fff;
+  padding: 20px;
+}
+.jsjd-pagination-button {
+  background: #f7f1ec;
+  color: #000;
+  padding: 7px 25px;
+  border: none;
+  border-radius: 5px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.jsjd-pagination-button:hover {
+  background: #b153e5;
+  color:#fff
+}
+.jsjd-pagination-numbers {
+  background: #f7f1ec;
+  color: #000;
+  padding: 7px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.jsjd-pagination-active-page {
+  background: #b153e5;
+  color:#fff;
+  padding: 7px 15px;
+  border: none;
+  border-radius: 5px;
+  font-size: 13px;
+  cursor: pointer;
+}
+.jsjd-pagination-numbers:hover {
+  background: #b153e5;
+  color:#fff
+}
 
 /* === Responsive Layout === */
 @media  screen and (max-width:1280px) {
-  .jsjd-search form {
-    width: 97%;
-    margin-left: 10px;
-    margin-right: 10px;
+    .jsjd-search {
+    width: fit-content;
   }
-  .jsjd-search input[type="text"],
-  .jsjd-search select,
+  .jsjd-search input[type="text"] {
+    width:fit-content;
+    padding: 7px 12px; 
+    padding-left: 40px;
+    margin-left: 12px;
+  }
+  .jsjd-search select {
+    font-size: 12px;
+    width:fit-content;
+    padding: 10px 12px; 
+  }
   .jsjd-search button {
-    width: 80%;
-    padding-right: 20px;
-  }
-}
-@media  screen and (max-width:1024px) {
-  .jsjd-search form {
-    width: 97%;
-    margin-left: 10px;
-    margin-right: 10px;
-  }
-  .jsjd-search input[type="text"],
-  .jsjd-search select,
-  .jsjd-search button {
-    width: 80%;
-    padding-right: 20px;
+    font-size: 12px;
+    width:fit-content;
+    padding: 10px 12px; 
+    margin-right: 12px;
   }
 }
 @media (width:1024px) {
@@ -419,6 +465,20 @@
     margin-left: auto;
     align-self: flex-start;
   }
+  .jsjd-search {
+    width: fit-content;
+  }
+  .jsjd-search input[type="text"] {
+    width:fit-content;
+    padding: 7px 12px; 
+    padding-left: 40px;
+  }
+  .jsjd-search select,
+  .jsjd-search button {
+    font-size: 12px;
+    width:fit-content;
+    padding: 7px 12px; 
+  }
 }
 @media screen and (max-width: 912px) {
   .jsjd-container {
@@ -426,6 +486,15 @@
   }
   .jsjd-search {
     margin-top: 30px;
+  }
+  .jsjd-searchinput-container {
+    width: 100%;
+  }
+  .jsjd-searchinput-container svg {
+    margin-left: 20px;
+  }
+  .jsjd-searchinput-container input {
+    padding-left: 40px;
   }
   .jsjd-detail {
    width: 95%;
@@ -462,6 +531,9 @@
   .jsjd-search {
     margin-top: 30px;
   }
+  .jsjd-searchinput-container {
+    width: 100%;
+  }
   .jsjd-detail {
    width: 97%;
   }
@@ -469,6 +541,9 @@
 @media screen and (max-width:820px) {
   .jsjd-search {
     margin-top: 30px;
+  }
+  .jsjd-searchinput-container {
+    width: 100%;
   }
   .jsjd-detail {
    width: 95%;
@@ -480,6 +555,9 @@
 @media screen and (max-width: 600px) {
   .jsjd-search {
     margin-top: 30px;
+  }
+  .jsjd-searchinput-container {
+    width: 100%;
   }
   .jsjd-detail {
    width: 93%;
@@ -514,6 +592,9 @@
 @media screen and (max-width: 480px) {
   .jsjd-search {
     margin-top: 30px;
+  }
+  .jsjd-searchinput-container {
+    width: 100%;
   }
   .jsjd-detail {
    width: 93%;
