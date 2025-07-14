@@ -10,6 +10,8 @@ import UxDesigner from "../../../Images/UxDesigner.svg";
 import send from "../../../Images/send.svg";
 import { useLocation } from "react-router-dom";
 
+import axios from "axios";
+
 import {
   Select,
   MenuItem,
@@ -21,6 +23,8 @@ import {
   Button,
   Box,
 } from "@mui/material";
+
+const url = "http://localhost:9191"; // Update with your actual API URL
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -49,577 +53,68 @@ const JSJobDetails = () => {
     experience: "", // or experience if that's what it really is
   });
 
-  const JSjobDetails = [
-    {
-      id: 1,
-      title: "UI UX Designer",
-      company: "Techno Solutions Pvt Ltd",
-      location: "Hinjewadi, Pune",
-      type: "Hybrid / Remote",
-      salary: "3.5 Lakhs - 6 Lakhs",
-      experience: "0 - 1 year",
-      tags: ["Figma", "UI", "UX", "Prototyping"],
-      time: "7 hours before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
+  const [jobsData, setJobsData] = useState([]);
 
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        company: "Techno Solutions Pvt Ltd",
-        location: "Hinjewadi, Pune",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-    {
-      id: 2,
-      title: "UI ",
-      company: "Collabera Digital Pvt Ltd",
-      location: "Sector 5, Delhi",
-      type: "Remote",
-      salary: "5 Lakhs - 7.5 Lakhs",
-      experience: "0.6 - 2 years",
-      tags: ["UI design", "Figma", "Adobe", "wireframing"],
-      time: "12 hours before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
-
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        company: "Collabera Digital Pvt Ltd",
-        location: "Sector 5, Delhi",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-    {
-      id: 3,
-      title: "Junior Designer",
-      company: "Surya Technologies",
-      location: "Rajiv Nagar, Indore",
-      type: "In Office",
-      salary: "4 Lakhs - 6.5 Lakhs",
-      experience: "0 - 2 years",
-      tags: ["Figma", "UX research", "UI Design"],
-      time: "1 day before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
-
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        company: "Surya Technologies",
-        location: "Rajiv Nagar, Indore",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-    {
-      id: 4,
-      title: "Researcher",
-      company: "QuantumQube Technologies",
-      location: "Dombivli, Mumbai",
-      type: "Remote",
-      salary: "6 Lakhs - 10 Lakhs",
-      experience: "2 - 4 years",
-      tags: ["UX research", "IA", "Wireframing"],
-      time: "2 days before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
-
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        Company: "QuantumQube Technologies",
-        location: "Dombivli, Mumbai",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-    {
-      id: 5,
-      title: "aaa",
-      company: "Techno Solutions Pvt Ltd",
-      location: "Hinjewadi, Pune",
-      type: "Hybrid / Remote",
-      salary: "3.5 Lakhs - 6 Lakhs",
-      experience: "0 - 1 year",
-      tags: ["Figma", "UI", "UX", "Prototyping"],
-      time: "7 hours before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
-
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        company: "Techno Solutions Pvt Ltd",
-        location: "Hinjewadi, Pune",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-    {
-      id: 6,
-      title: "dddr",
-      company: "Collabera Digital Pvt Ltd",
-      location: "Sector 5, Delhi",
-      type: "Remote",
-      salary: "5 Lakhs - 7.5 Lakhs",
-      experience: "0.6 - 2 years",
-      tags: ["UI design", "Figma", "Adobe", "wireframing"],
-      time: "12 hours before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
-
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        company: "Collabera Digital Pvt Ltd",
-        location: "Sector 5, Delhi",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-    {
-      id: 7,
-      title: "ffffgner",
-      company: "Surya Technologies",
-      location: "Rajiv Nagar, Indore",
-      type: "In Office",
-      salary: "4 Lakhs - 6.5 Lakhs",
-      experience: "0 - 2 years",
-      tags: ["Figma", "UX research", "UI Design"],
-      time: "1 day before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
-
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        company: "Surya Technologies",
-        location: "Rajiv Nagar, Indore",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-    {
-      id: 8,
-      title: "vvvv",
-      company: "QuantumQube Technologies",
-      location: "Dombivli, Mumbai",
-      type: "Remote",
-      salary: "6 Lakhs - 10 Lakhs",
-      experience: "2 - 4 years",
-      tags: ["UX research", "IA", "Wireframing"],
-      time: "2 days before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
-
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        Company: "QuantumQube Technologies",
-        location: "Dombivli, Mumbai",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-    {
-      id: 9,
-      title: "rrrr",
-      company: "Techno Solutions Pvt Ltd",
-      location: "Hinjewadi, Pune",
-      type: "Hybrid / Remote",
-      salary: "3.5 Lakhs - 6 Lakhs",
-      experience: "0 - 1 year",
-      tags: ["Figma", "UI", "UX", "Prototyping"],
-      time: "7 hours before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
-
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        company: "Techno Solutions Pvt Ltd",
-        location: "Hinjewadi, Pune",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-    {
-      id: 10,
-      title: "nnnnnn",
-      company: "Collabera Digital Pvt Ltd",
-      location: "Sector 5, Delhi",
-      type: "Remote",
-      salary: "5 Lakhs - 7.5 Lakhs",
-      experience: "0.6 - 2 years",
-      tags: ["UI design", "Figma", "Adobe", "wireframing"],
-      time: "12 hours before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
-
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        company: "Collabera Digital Pvt Ltd",
-        location: "Sector 5, Delhi",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-    {
-      id: 11,
-      title: "ttttt",
-      company: "Surya Technologies",
-      location: "Rajiv Nagar, Indore",
-      type: "In Office",
-      salary: "4 Lakhs - 6.5 Lakhs",
-      experience: "0 - 2 years",
-      tags: ["Figma", "UX research", "UI Design"],
-      time: "1 day before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
-
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        company: "Surya Technologies",
-        location: "Rajiv Nagar, Indore",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-    {
-      id: 12,
-      title: "hhhhh",
-      company: "QuantumQube Technologies",
-      location: "Dombivli, Mumbai",
-      type: "Remote",
-      salary: "6 Lakhs - 10 Lakhs",
-      experience: "2 - 4 years",
-      tags: ["UX research", "IA", "Wireframing"],
-      time: "2 days before",
-      image: UiUxDesigner,
-      jobSummary: "Design user interfaces and experiences...",
-
-      keyResponsibilities: [
-        "Create wireframes",
-        "Develop prototypes",
-        // more responsibilities
-      ],
-
-      qualificationsAndSkills: [
-        "Knowledge of Figma",
-        "Understanding of UX principles",
-        // more skills
-      ],
-
-      perksAndBenefits: [
-        "Health insurance",
-        "Flexible working hours",
-        // more perks
-      ],
-
-      companyOverview: {
-        Company: "QuantumQube Technologies",
-        location: "Dombivli, Mumbai",
-        industry: "Software Development",
-        website: "https://technosolutions.com",
-        aboutUs: "Leading software solutions provider...",
-      },
-
-      contactDetails: {
-        recruiterName: "John Doe",
-        email: "john.doe@technosolutions.com",
-      },
-    },
-  ];
-  const [jobsData, setJobsData] = useState(JSjobDetails);
+  const initialJobs = async () => {
+    try {
+      // const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
+      const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
+      console.log(response);
+      setJobsData(response.data);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching job posts:", error);
+      setJobsData([]);
+      return [];
+    }
+  };
+  useEffect(() => {
+    initialJobs();
+  }, []);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // useEffect(() => {
-  //   console.log(jobFromDashboard.id)
-  //   if (location.state?.jobFromDashboard) {
-  //     const jobFromDashboard = location.state.jobFromDashboard;
-
-  //     // Remove it if it already exists to avoid duplication
-  //     const filteredJobs = JSjobDetails.filter(j => j.id !== jobFromDashboard.id);
-
-  //     // Add jobFromDashboard at the start
-  //     const updatedJobs = [jobFromDashboard, ...filteredJobs];
-
-  //     // Update state
-  //     setJobsData(updatedJobs);
-  //   } else {
-  //     // No job passed from dashboard, set normal list
-  //     setJobsData(JSjobDetails);
-  //   }
-  // }, [location.state]);
-
   // Extract unique options for filters
-  const experienceOptions = [...new Set(jobsData.map((j) => j.experience))];
-  const jobTypeOptions = [...new Set(jobsData.map((j) => j.type))];
-  const workModeOptions = ["Remote", "In Office", "Hybrid / Remote"]; // predefined
-  const locationOptions = [...new Set(jobsData.map((j) => j.location))];
-  const salaryOptions = [...new Set(jobsData.map((j) => j.salary))];
-  const datePostedOptions = [...new Set(jobsData.map((j) => j.time))];
+  const experienceOptions = [
+    ...new Set(
+      (jobsData || [])
+        .map((j) => `${j.minExperience} - ${j.maxExperience} yrs`)
+        .filter(Boolean)
+    ),
+  ];
+
+  const jobTypeOptions = [
+    ...new Set((jobsData || []).map((j) => j.employmentType).filter(Boolean)),
+  ];
+
+  const workModeOptions = ["Remote", "In Office", "Hybrid / Remote"]; // static
+
+  const locationOptions = [
+    ...new Set((jobsData || []).map((j) => j.location).filter(Boolean)),
+  ];
+
+  const salaryOptions = [
+    ...new Set(
+      (jobsData || [])
+        .map((j) => `${j.minSalary} - ${j.maxSalary}`)
+        .filter(Boolean)
+    ),
+  ];
+
+  const datePostedOptions = [
+    ...new Set((jobsData || []).map((j) => j.postedDate).filter(Boolean)),
+  ];
 
   // State for filters
-const [filters, setFilters] = useState({
-  experience: [],
-  jobType: [],
-  workMode: [],
-  location: [],
-  salary: [],
-  datePosted: [],
-  title: "", 
-});
-
+  const [filters, setFilters] = useState({
+    experience: [],
+    jobType: [],
+    workMode: [],
+    location: [],
+    salary: [],
+    datePosted: [],
+    title: "",
+    skills: [], // NEW
+  });
 
   // Handle change on filters (multi select)
   const handleFilterChange = (event, key) => {
@@ -634,61 +129,75 @@ const [filters, setFilters] = useState({
   };
 
   // Reset all filters
- const resetAllFilters = () => {
-  setFilters({
-    experience: [],
-    jobType: [],
-    workMode: [],
-    location: [],
-    salary: [],
-    datePosted: [],
-    title: "", // clear search input filter
-  });
-  setSearchValues({
-    keywords: "",
-    location: "",
-    experience: "",
-  });
-  setSelectedIndex(0);
-};
-
+  const resetAllFilters = () => {
+    setFilters({
+      experience: [],
+      jobType: [],
+      workMode: [],
+      location: [],
+      salary: [],
+      datePosted: [],
+      title: "", // clear search input filter
+    });
+    setSearchValues({
+      keywords: "",
+      location: "",
+      experience: "",
+    });
+    setSelectedIndex(0);
+  };
 
   // Filter jobs based on filters
- const filteredJobs = jobsData.filter((job) => {
-  const expMatch =
-    filters.experience.length === 0 || filters.experience.includes(job.experience);
-  const jobTypeMatch =
-    filters.jobType.length === 0 || filters.jobType.includes(job.type);
-  const workModeMatch =
-    filters.workMode.length === 0 || filters.workMode.includes(job.workMode);
-  const locationMatch =
-    filters.location.length === 0 || filters.location.includes(job.location);
-  const salaryMatch =
-    filters.salary.length === 0 || filters.salary.includes(job.salary);
-  const datePostedMatch =
-    filters.datePosted.length === 0 || filters.datePosted.includes(job.time);
-  const titleMatch =
-    filters.title === "" || job.title.toLowerCase().includes(filters.title);
+  const filteredJobs = jobsData.filter((job) => {
+    if (filters.experience) {
+      const exp = parseInt(filters.experience);
+      if (
+        parseInt(job.minExperience) > exp ||
+        parseInt(job.maxExperience) < exp
+      )
+        return false;
+    }
 
-  return (
-    expMatch &&
-    jobTypeMatch &&
-    workModeMatch &&
-    locationMatch &&
-    salaryMatch &&
-    datePostedMatch &&
-    titleMatch
-  );
-});
+    const jobTypeMatch =
+      filters.jobType.length === 0 || filters.jobType.includes(job.type);
+    const workModeMatch =
+      filters.workMode.length === 0 || filters.workMode.includes(job.workMode);
+    const locationMatch =
+      filters.location.length === 0 || filters.location.includes(job.location);
+    const salaryMatch =
+      filters.salary.length === 0 || filters.salary.includes(job.salary);
+    const datePostedMatch =
+      filters.datePosted.length === 0 || filters.datePosted.includes(job.time);
+    const titleMatch =
+      filters.title === "" || job.title.toLowerCase().includes(filters.title);
+    if (filters.skills && filters.skills.length > 0) {
+      if (
+        !filters.skills.every((skill) =>
+          job.skills.includes(skill.toLowerCase())
+        )
+      )
+        return false;
+    }
 
-useEffect(() => {
-  setSearchValues({
-    ...searchValues,
-    location: filters.location[0] || "",
-    experience: filters.experience[0] || "",
-    keywords: filters.title || "",
+    return (
+      experienceOptions &&
+      jobTypeMatch &&
+      workModeMatch &&
+      locationMatch &&
+      salaryMatch &&
+      datePostedMatch &&
+      titleMatch
+    );
   });
-}, [filters]);
+
+  useEffect(() => {
+    setSearchValues({
+      ...searchValues,
+      location: filters.location[0] || "",
+      experience: filters.experience[0] || "",
+      keywords: filters.title || "",
+    });
+  }, [filters]);
 
   //bookmark logic
   const handleBookmarkToggle = (jobId) => {
@@ -724,18 +233,17 @@ useEffect(() => {
   };
   //search function
   const handleSearchSubmit = (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  setFilters((prev) => ({
-    ...prev,
-    location: searchValues.location ? [searchValues.location] : [],
-    experience: searchValues.experience ? [searchValues.experience] : [],
-    title: searchValues.keywords ? searchValues.keywords.toLowerCase() : "",
-  }));
+    setFilters((prev) => ({
+      ...prev,
+      location: searchValues.location ? [searchValues.location] : [],
+      experience: searchValues.experience ? [searchValues.experience] : [],
+      title: searchValues.keywords ? searchValues.keywords.toLowerCase() : "",
+    }));
 
-  setCurrentPage(1); // Reset to first page
-};
-
+    setCurrentPage(1); // Reset to first page
+  };
 
   return (
     <div>
@@ -1066,12 +574,12 @@ useEffect(() => {
             >
               <div className="jsjd-card-header">
                 <div className="jsjd-card-icon">
-                  <img src={job.image} alt={`${job.title} icon`} />
+                  <img src={job.companyImageUrl} alt={`${job.title} icon`} />
                 </div>
                 <div className="jsjd-card-details">
                   <div className="jsjd-card-title-company">
                     <h3 className="jsjd-card-title">{job.title}</h3>
-                    <span className="jsjd-card-company">{job.company}</span>
+                    <span className="jsjd-card-company">{job.companyName}</span>
                   </div>
                   <button
                     className="jsjd-card-bookmark-button"
@@ -1102,23 +610,24 @@ useEffect(() => {
                   <span className="jsjd-card-info-icon">
                     <SvgIcon component={Building} style={{ fill: "none" }} />
                   </span>{" "}
-                  {job.type}
+                  {job.employmentType}
                 </p>
                 <p>
                   <span className="jsjd-card-info-icon">
                     <SvgIcon component={IndianRupee} style={{ fill: "none" }} />
                   </span>{" "}
-                  {job.salary}
+                  {`${job.minSalary} - ${job.maxSalary}`}
                 </p>
               </div>
               <div className="jsjd-card-tags">
-                {job.tags.map((tag, index) => (
-                  <span key={index} className="jsjd-card-tag">
-                    {tag}
-                  </span>
-                ))}
+                {job.skills &&
+                  job.skills.map((skill, index) => (
+                    <span key={index} className="jsjd-card-tag">
+                      {skill}
+                    </span>
+                  ))}
               </div>
-              <p className="jsjd-card-time">{job.time}</p>
+              <p className="jsjd-card-time">{job.postedDate}</p>
             </div>
           ))}
         </div>
@@ -1174,7 +683,7 @@ useEffect(() => {
                   </div>
                 </div>
 
-                <div className="jsjd-detail-company">{selectedJob.company}</div>
+                <div className="jsjd-detail-company">{selectedJob.companyName}</div>
               </div>
               <hr></hr>
               <div className="jsjd-card-info">
@@ -1189,7 +698,7 @@ useEffect(() => {
                     <span className="jsjd-card-info-icon">
                       <SvgIcon component={Building} style={{ fill: "none" }} />
                     </span>{" "}
-                    {selectedJob.type}
+                    {selectedJob.employmentType}
                   </p>
                   <p>
                     <span className="jsjd-card-info-icon">
@@ -1198,13 +707,13 @@ useEffect(() => {
                         style={{ fill: "none" }}
                       />
                     </span>{" "}
-                    {selectedJob.salary}
+                    {`${selectedJob.minSalary} - ${selectedJob.maxSalary}`}
                   </p>
                   <p>
                     <span className="jsjd-card-info-icon">
                       <SvgIcon component={Briefcase} style={{ fill: "none" }} />
                     </span>{" "}
-                    {selectedJob.experience}
+                    {`${selectedJob.minExperience} - ${selectedJob.maxExperience} Years`}
                   </p>
                   <div className="apply-button-wrapper">
                     <button
@@ -1227,7 +736,7 @@ useEffect(() => {
             <hr className="jsjd-divider-section"></hr>
             <div className="jsjd-lower-section">
               <div className="jsjd-card-tags">
-                {selectedJob.tags.map((tag, index) => (
+                {selectedJob.skills?.map((tag, index) => (
                   <span key={index} className="jsjd-card-tag">
                     {tag}
                   </span>
@@ -1243,77 +752,73 @@ useEffect(() => {
               <section>
                 <h4>Key Responsibilities</h4>
                 <ul>
-                  {selectedJob.keyResponsibilities.map((resp, idx) => (
-                    <li key={idx}>{resp}</li>
+                  {selectedJob.description?.split("\n").map((line, idx) => (
+                    <li key={idx}>{line}</li>
                   ))}
                 </ul>
               </section>
 
               {/* Qualifications & Skills */}
-              <section>
+              {/* <section>
                 <h4>Qualifications & Skills</h4>
                 <ul>
-                  {selectedJob.qualificationsAndSkills.map((skill, idx) => (
+                  {selectedJob.skills?.map((skill, idx) => (
                     <li key={idx}>{skill}</li>
                   ))}
                 </ul>
-              </section>
+              </section> */}
 
               {/* Perks & Benefits */}
               <section>
                 <h4>Perks & Benefits</h4>
                 <ul>
-                  {selectedJob.perksAndBenefits.map((perk, idx) => (
+                  {selectedJob.benefits?.map((perk, idx) => (
                     <li key={idx}>{perk}</li>
                   ))}
                 </ul>
               </section>
-              <div className="jsjd-apply-note">
+              {/* <div className="jsjd-apply-note">
                 Click on <p className="jsjd-applylink">[Apply Now]</p> to upload
                 your resume and portfolio. Shortlisted candidates will be
                 contacted within 5 working days.
-              </div>
+              </div> */}
 
               <hr></hr>
               {/* Company Overview */}
               <section>
                 <h4>Company Overview</h4>
                 <p>
-                  <strong>Company Name:</strong>{" "}
-                  {selectedJob.companyOverview.company}
+                  <strong>Company Name:</strong> {selectedJob.companyName}
                 </p>
                 <p>
-                  <strong>Location:</strong>{" "}
-                  {selectedJob.companyOverview.location}
+                  <strong>Location:</strong> {selectedJob?.location}
                 </p>
                 <p>
-                  <strong>Industry:</strong>{" "}
-                  {selectedJob.companyOverview.industry}
+                  <strong>Industry:</strong> {selectedJob?.companyIndustry}
                 </p>
                 <p>
                   <strong>Website:</strong>{" "}
                   <a
-                    href={selectedJob.companyOverview.website}
+                    href={selectedJob.companyWebsite}
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {selectedJob.companyOverview.website}
+                    {selectedJob.companyWebsite}
                   </a>
                 </p>
-                <p>{selectedJob.companyOverview.aboutUs}</p>
+                <p>{selectedJob.aboutUs}</p>
               </section>
 
               {/* Contact Details */}
               <section>
                 <h4>Contact Details</h4>
                 <p>
-                  <strong>Recruiter:</strong>{" "}
-                  {selectedJob.contactDetails.recruiterName}
+                  <strong>Recruiter:</strong> {selectedJob.companyHr}
                 </p>
                 <p>
                   <strong>Email:</strong>{" "}
-                  <a href={`mailto:${selectedJob.contactDetails.email}`}>
-                    {selectedJob.contactDetails.email}
+                  <a href={`mailto:${selectedJob.companyMail}`}>
+                    {selectedJob.companyMail}
                   </a>
                 </p>
               </section>
