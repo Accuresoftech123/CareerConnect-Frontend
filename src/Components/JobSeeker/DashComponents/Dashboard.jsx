@@ -32,7 +32,7 @@ const Dashboard = () => {
 
   const initialJobs = async () => {
     try {
-      const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
+      // const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
       const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
       console.log(response.data);
 
@@ -239,47 +239,38 @@ const Dashboard = () => {
   const handleEditInterview = (id) => {
     console.log("Edit interview", id);
   };
-
-  // States
-  const [recommendedJobs, setRecommendedJobs] = useState([]);
-  const [interviews, setInterviews] = useState([]);
-
-  // Add profile completion state
-  const [profileCompletion, setProfileCompletion] = useState(0);
-
-const [count, setCount] = useState(0);
  
-     const fetchSavedJobsCount = async () => {
-    try {
-      const response = await axios.get(`${url}/jobseekers/saved-jobs/count`);
-      setCount(response.data);
-      console.log('Saved jobs count:', response.data);
-    } catch (error) {
-      console.error('Error fetching saved jobs count:', error);
-    }
-  };
+  //    const fetchSavedJobsCount = async () => {
+  //   try {
+  //     const response = await axios.get(`${url}/jobseekers/saved-jobs/count`);
+  //     setCount(response.data);
+  //     console.log('Saved jobs count:', response.data);
+  //   } catch (error) {
+  //     console.error('Error fetching saved jobs count:', error);
+  //   }
+  // };
   // Add fetch function for profile completion API
-  const fetchProfileCompletion = async () => {
-    try {
-      // Replace this URL with your actual API endpoint
-      const response = await fetch("https://api.example.com/profile/completion");
-      if (!response.ok) throw new Error("Failed to fetch profile completion");
+  // const fetchProfileCompletion = async () => {
+  //   try {
+  //     // Replace this URL with your actual API endpoint
+  //     const response = await fetch("https://api.example.com/profile/completion");
+  //     if (!response.ok) throw new Error("Failed to fetch profile completion");
 
-      const data = await response.json();
-      setProfileCompletion(data.profileCompletion || 0);
-    } catch (error) {
-      console.error("Error fetching profile completion:", error);
-      // fallback value if API fails
-      setProfileCompletion(70);
-    }
-  };
+  //     const data = await response.json();
+  //     setProfileCompletion(data.profileCompletion || 0);
+  //   } catch (error) {
+  //     console.error("Error fetching profile completion:", error);
+  //     // fallback value if API fails
+  //     setProfileCompletion(70);
+  //   }
+  // };
 
 //Application send
 const [applicationCount, setApplicationCount] = useState(0);
 const fetchApplicationCount = async () => {
   const jobSeekerId = localStorage.getItem("jobSeekerId");
   try {
-    const response = await axios.get(`${url}/applications//jobseeker/${jobSeekerId}/applied-jobs/count`);
+    const response = await axios.get(`${url}/applications/jobseeker/${jobSeekerId}/applied-jobs/count`);
     setApplicationCount(response.data);
     console.log("Application count:", response.data);
   } catch (error) {
@@ -306,24 +297,24 @@ const fetchApplicationCount = async () => {
     fetchJobsAndInterviews();
   }, []);
 
-  const handleClick = () => {
-    navigate("/JobSeekerHome/Job-details");
-  };
+  // const handleClick = () => {
+  //   navigate("/JobSeekerHome/Job-details");
+  // };
 
-  const handleBookmarkToggle = (jobId) => {
-    const updated = toggleBookmark(jobId);
-    setRecommendedJobs(updated);
-  };
+  // const handleBookmarkToggle = (jobId) => {
+  //   const updated = toggleBookmark(jobId);
+  //   setRecommendedJobs(updated);
+  // };
 
-  const handleApply = (jobId) => {
-    const updated = applyToJob(jobId);
-    setRecommendedJobs(updated);
-  };
+  // const handleApply = (jobId) => {
+  //   const updated = applyToJob(jobId);
+  //   setRecommendedJobs(updated);
+  // };
 
   // Stats calculations
-  const applicationsSent = recommendedJobs.filter((job) => job.applied).length;
-  const savedJobs = recommendedJobs.filter((job) => job.bookmarked).length;
-  const jobMatches = recommendedJobs.length;
+  // const applicationsSent = recommendedJobs.filter((job) => job.applied).length;
+  // const savedJobs = recommendedJobs.filter((job) => job.bookmarked).length;
+  // const jobMatches = recommendedJobs.length;
 
   return (
     <>
