@@ -15,7 +15,6 @@ import { SvgIcon } from "@mui/material";
 import { MapPin, Building, IndianRupee } from "lucide-react";
 import axios from "axios";
 
-
 import "../../../Styles/JobSeeker/DashComponents/Dashboard.css";
 
 const STORAGE_KEY = "recommendedJobs";
@@ -24,14 +23,20 @@ const INTERVIEWS_KEY = "upcomingInterviews";
 const Dashboard = () => {
   const url = "http://localhost:9191";
   const navigate = useNavigate();
+  // States
+  const [recommendedJobs, setRecommendedJobs] = useState([]);
+  const [interviews, setInterviews] = useState([]);
+
+  // Add profile completion state
+  const [profileCompletion, setProfileCompletion] = useState(0);
 
   const initialJobs = async () => {
     try {
       const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
+      const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
       console.log(response.data);
 
       return response.data;
-
     } catch (error) {
       console.error("Error fetching job posts:", error);
       return [];
@@ -51,7 +56,8 @@ const Dashboard = () => {
 
     alert("Job saved successfully!");
 
-    const updated = recommendedJobs.map((job) =>
+      // Optionally update UI locally (toggle bookmark)
+      const updated = recommendedJobs.map((job) =>
       job.id === jobId ? { ...job, bookmarked: true } : job
     );
     setRecommendedJobs(updated);
@@ -69,6 +75,101 @@ const Dashboard = () => {
 };
 
 
+
+  const applyToJob = async (jobId) => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
+    if (!jobSeekerId) {
+      alert("Please log in first.");
+      return;
+    }
+
+    try {
+      const response = await axios.post(
+        `${url}/applications/applyjob/${jobSeekerId}/job-post/${jobId}`
+      );
+      alert("Applied Successfully!");
+      const updated = recommendedJobs.map((job) =>
+        job.id === jobId ? { ...job, applied: true } : job
+      );
+      setRecommendedJobs(updated);
+    } catch (error) {
+      const errorMessage =
+        error.response?.data?.message || error.response?.data || error.message;
+      console.error("Application failed:", errorMessage);
+
+      if (errorMessage.includes("already applied")) {
+        alert("You have already applied for this job.");
+      } else {
+        alert("Failed to apply for the job.");
+      }
+    }
+  };
+
+  const [count, setCount] = useState(0);
+
+  const fetchSavedJobsCount = async () => {
+    try {
+      const response = await axios.get(`${url}/jobseekers/saved-jobs/count`);
+      setCount(response.data);
+      console.log("Saved jobs count:", response.data);
+    } catch (error) {
+      console.error("Error fetching saved jobs count:", error);
+    }
+  };
+  // Add fetch function for profile completion API
+  const fetchProfileCompletion = async () => {
+    try {
+      // Replace this URL with your actual API endpoint
+      const response = await fetch(
+        "https://api.example.com/profile/completion"
+      );
+      if (!response.ok) throw new Error("Failed to fetch profile completion");
+
+      const data = await response.json();
+      setProfileCompletion(data.profileCompletion || 0);
+    } catch (error) {
+      console.error("Error fetching profile completion:", error);
+      // fallback value if API fails
+      setProfileCompletion(70);
+    }
+  };
+
+  const fetchJobsAndInterviews = async () => {
+    const jobsFromApi = await initialJobs();
+    setRecommendedJobs(jobsFromApi);
+
+    seedInterviews(initialInterviews);
+    setInterviews(getInterviews());
+
+    // Fetch profile completion from API
+    fetchProfileCompletion();
+  };
+
+  useEffect(() => {
+    fetchSavedJobsCount();
+
+    fetchJobsAndInterviews();
+  }, []);
+
+  const handleClick = (job) => {
+    navigate("/JobSeekerHome/Job-details", { state: { selectedJob: job } });
+    console.log(job);
+  };
+
+  const handleBookmarkToggle = (jobId) => {
+    const updated = toggleBookmark(jobId);
+    setRecommendedJobs(updated);
+  };
+
+  const handleApply = (jobId) => {
+    const updated = applyToJob(jobId);
+    setRecommendedJobs(updated);
+  };
+
+  // Stats calculations
+  const applicationsSent = recommendedJobs.filter((job) => job.applied).length;
+  const savedJobs = recommendedJobs.filter((job) => job.bookmarked).length;
+  const jobMatches = recommendedJobs.length;
 
   const initialInterviews = [
     {
@@ -113,15 +214,6 @@ const Dashboard = () => {
     );
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     return updated;
-  };
-
-  const applyToJob = (jobId) => {
-    // const jobs = getJobs();
-    // const updated = jobs.map((job) =>
-    //   job.id === jobId ? { ...job, applied: true } : job
-    // );
-    // localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
-    // return updated;
   };
 
   const getInterviews = () => {
@@ -245,8 +337,8 @@ const fetchApplicationCount = async () => {
               {profileCompletion >= 100
                 ? "All done!"
                 : profileCompletion >= 80
-                  ? "Almost there"
-                  : "Keep going"}
+                ? "Almost there"
+                : "Keep going"}
             </p>
             <div className="JobSeeker-dashboard-progress-bar-container">
               <div
@@ -266,7 +358,10 @@ const fetchApplicationCount = async () => {
         </section>
 
         {/* Stats Section */}
-        <section className="JobSeeker-dashboard-stats" aria-label="Dashboard statistics">
+        <section
+          className="JobSeeker-dashboard-stats"
+          aria-label="Dashboard statistics"
+        >
           {[
             {
               label: "Application sent",
@@ -302,9 +397,14 @@ const fetchApplicationCount = async () => {
                 <img src={icon} alt={label} />
                 <p className="JobSeeker-dashboard-stat-value">{value}</p>
               </div>
-              {change && <p className="JobSeeker-dashboard-stat-change">{change}</p>}
+              {change && (
+                <p className="JobSeeker-dashboard-stat-change">{change}</p>
+              )}
               {link && (
-                <p className="JobSeeker-dashboard-stat-link" style={{ cursor: "pointer" }}>
+                <p
+                  className="JobSeeker-dashboard-stat-link"
+                  style={{ cursor: "pointer" }}
+                >
                   {link}
                 </p>
               )}
@@ -314,32 +414,63 @@ const fetchApplicationCount = async () => {
 
         {/* Recommended Jobs */}
         <section className="JobSeeker-dashboard-JobSeeker-recommended-jobs">
-          <h3>Recommended for your</h3>
+          <div className="JobSeeker-dashboard-header">
+            <h3>Recommended for your</h3>
+            <button
+              className="JobSeeker-dashboard-view-all-button"
+              style={{
+                backgroundColor: "transparent",
+                paddingRight: "5px",
+                paddingBottom: "0px",
+              }}
+              onClick={() => navigate("/JobSeekerHome/Job-details")}
+            >
+              See More ...
+            </button>
+          </div>
           <div className="JobSeeker-dashboard-cards-container">
-            {recommendedJobs.map((job) => (
+            {recommendedJobs.slice(0,3).map((job) => (
               <article
                 key={job.id}
                 className="JobSeeker-dashboard-card"
-                aria-label={`${job.title} at ${job.company}`}
+                aria-label={`${job.title} at ${job.companyName}`}
               >
                 <div className="JobSeeker-dashboard-header">
                   <div className="JobSeeker-dashboard-icon">
-                    <img src={job.image ? job.image : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/Wipro_Primary_Logo_Color_RGB.svg/2560px-Wipro_Primary_Logo_Color_RGB.svg.png"} alt={`${job.title} icon`} />
+                    {job.companyImageUrl &&
+                    job.companyImageUrl.trim() !== "" ? (
+                      <img
+                        src={job.companyImageUrl}
+                        alt="Company"
+                        className="w-12 h-12 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-full bg-blue-500 text-black flex items-center justify-center text-lg font-bold">
+                        {job.companyName?.charAt(0).toUpperCase() || "?"}
+                      </div>
+                    )}
                   </div>
                   <div className="JobSeeker-dashboard-details">
                     <div className="JobSeeker-dashboard-title-company">
-                      <span className="JobSeeker-dashboard-title">{job.title}</span>
-                      <span className="JobSeeker-dashboard-company">{job.company}</span>
-
+                      <span className="JobSeeker-dashboard-title">
+                        {job.title}
+                      </span>
+                      <span className="JobSeeker-dashboard-company">
+                        {job.companyName}
+                      </span>
                     </div>
                     <button
                       className="JobSeeker-dashboard-bookmark-button"
                       onClick={() => saveJob(job.id)}
-                      aria-label={job.bookmarked ? "Remove bookmark" : "Bookmark job"}
+                      aria-label={
+                        job.bookmarked ? "Remove bookmark" : "Bookmark job"
+                      }
                       style={{ cursor: "pointer" }}
                     >
                       <img
-                        className={`bookmark-icon ${job.bookmarked ? "bookmarked" : ""}`}
+                        className={`bookmark-icon ${
+                          job.bookmarked ? "bookmarked" : ""
+                        }`}
                         src={job.bookmarked ? bookmark : bookmarkBlank}
                         alt={job.bookmarked ? "Bookmarked" : "Not bookmarked"}
                       />
@@ -349,19 +480,22 @@ const fetchApplicationCount = async () => {
                 <div className="JobSeeker-dashboard-info">
                   <p>
                     <span className="JobSeeker-dashboard-info-icon">
-                      <SvgIcon component={MapPin} />
+                      <SvgIcon component={MapPin} style={{ fill: "none" }} />
                     </span>{" "}
                     {job.location}
                   </p>
                   <p>
                     <span className="JobSeeker-dashboard-info-icon">
-                      <Building />
+                      <SvgIcon component={Building} style={{ fill: "none" }} />
                     </span>{" "}
                     {job.employmentType}
                   </p>
                   <p>
                     <span className="JobSeeker-dashboard-info-icon">
-                      <IndianRupee />
+                      <SvgIcon
+                        component={IndianRupee}
+                        style={{ fill: "none" }}
+                      />
                     </span>{" "}
                     {job.minSalary} to {job.maxSalary}
                   </p>
@@ -375,20 +509,21 @@ const fetchApplicationCount = async () => {
                     ))}
                 </div>
 
-
                 <div className="JobSeeker-dashboard-button-group">
                   <button
                     className="JobSeeker-dashboard-apply-button"
                     disabled={job.applied}
-                    // onClick={() => handleApply(job.id)}
+                    onClick={() => applyToJob(job.id)}
                     aria-disabled={job.applied}
-                    aria-label={job.applied ? "Already applied" : "Apply to job"}
+                    aria-label={
+                      job.applied ? "Already applied" : "Apply to job"
+                    }
                     style={{ cursor: job.applied ? "not-allowed" : "pointer" }}
                   >
                     {job.applied ? "Applied" : "Apply"}
                   </button>
                   <button
-                    onClick={handleClick}
+                    onClick={()=>handleClick(job)}
                     className="JobSeeker-dashboard-details-button"
                     aria-label="View job details"
                     style={{ cursor: "pointer" }}
@@ -402,19 +537,19 @@ const fetchApplicationCount = async () => {
         </section>
 
         {/* Upcoming Interviews */}
-        <section className="JobSeeker-dashboard-upcoming-interviews" aria-label="Upcoming interviews">
-          <div className="JobSeeker-dashboard-icon">
-            <img src={calendarDays} alt="Calendar icon" />
+        <section
+          className="JobSeeker-dashboard-upcoming-interviews"
+          aria-label="Upcoming interviews"
+        >
+          <div className="JobSeeker-dashboard-header">
+            <div className="JobSeeker-dashboard-tableicon">
+              <img src={calendarDays} alt="Calender-icon" />
+              <h3>Upcoming Interviews</h3>
+            </div>
+            <button className="JobSeeker-dashboard-view-all-button">
+              View All
+            </button>
           </div>
-          <h3>Upcoming Interviews</h3>
-          <button
-            className="JobSeeker-dashboard-view-all-button"
-            onClick={() => navigate("/interviews")}
-            aria-label="View all interviews"
-            style={{ cursor: "pointer" }}
-          >
-            View all
-          </button>
           <table>
             <thead>
               <tr>
@@ -457,7 +592,8 @@ const fetchApplicationCount = async () => {
                         tabIndex={0}
                         aria-label="View interview details"
                         onKeyPress={(e) => {
-                          if (e.key === "Enter") handleViewInterview(interview.id);
+                          if (e.key === "Enter")
+                            handleViewInterview(interview.id);
                         }}
                       >
                         <img src={eye} alt="View" />
@@ -470,7 +606,8 @@ const fetchApplicationCount = async () => {
                         tabIndex={0}
                         aria-label="Message about interview"
                         onKeyPress={(e) => {
-                          if (e.key === "Enter") handleMessageInterview(interview.id);
+                          if (e.key === "Enter")
+                            handleMessageInterview(interview.id);
                         }}
                       >
                         <img src={mail} alt="Message" />
@@ -483,7 +620,8 @@ const fetchApplicationCount = async () => {
                         tabIndex={0}
                         aria-label="Edit interview details"
                         onKeyPress={(e) => {
-                          if (e.key === "Enter") handleEditInterview(interview.id);
+                          if (e.key === "Enter")
+                            handleEditInterview(interview.id);
                         }}
                       >
                         <img src={penLine} alt="Edit" />
@@ -501,4 +639,3 @@ const fetchApplicationCount = async () => {
 };
 
 export default Dashboard;
-
