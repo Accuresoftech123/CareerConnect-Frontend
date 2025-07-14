@@ -27,7 +27,7 @@ const Dashboard = () => {
 
   const initialJobs = async () => {
     try {
-      const response = await axios.get("http://localhost:9191/jobposts/recruiters/jobposts");
+      const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
       console.log(response.data);
 
       return response.data;
@@ -39,25 +39,35 @@ const Dashboard = () => {
   };
   //save Job Post
   const saveJob = async (jobId) => {
-    const jobSeekerId = localStorage.getItem("jobSeekerId"); // or however you're storing it
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
 
-    try {
-      const response = await axios.post(
-        `http://localhost:9191/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
-      );
+  handleBookmarkToggle(jobId);
 
-      alert("Job saved successfully!");
+  try {
+    const response = await axios.post(
+     
+      `${url}/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
+    );
 
-      // Optionally update UI locally (toggle bookmark)
-      const updated = recommendedJobs.map((job) =>
-        job.id === jobId ? { ...job, bookmarked: true } : job
-      );
-      setRecommendedJobs(updated);
-    } catch (error) {
-      console.error("Error saving job:", error);
-      alert("Failed to save job");
-    }
-  };
+    alert("Job saved successfully!");
+
+    const updated = recommendedJobs.map((job) =>
+      job.id === jobId ? { ...job, bookmarked: true } : job
+    );
+    setRecommendedJobs(updated);
+  } catch (error) {
+  if (error.response?.status === 409) {
+    alert("Job is already saved!");
+  } 
+  else if (error.response?.status === 404) {
+    alert("Job or job seeker not found.{jobSeekerId}");
+  } else {
+    alert("Failed to save job.");
+  }
+}
+
+};
+
 
 
   const initialInterviews = [
@@ -172,8 +182,24 @@ const [count, setCount] = useState(0);
     }
   };
 
+//Application send
+const [applicationCount, setApplicationCount] = useState(0);
+const fetchApplicationCount = async () => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+  try {
+    const response = await axios.get(`${url}/applications//jobseeker/${jobSeekerId}/applied-jobs/count`);
+    setApplicationCount(response.data);
+    console.log("Application count:", response.data);
+  } catch (error) {
+    console.error("Error fetching application count:", error);
+  }
+};
+
+
+
   useEffect(() => {
     fetchSavedJobsCount();
+    fetchApplicationCount();
     const fetchJobsAndInterviews = async () => {
       const jobsFromApi = await initialJobs();
       setRecommendedJobs(jobsFromApi);
@@ -245,7 +271,7 @@ const [count, setCount] = useState(0);
             {
               label: "Application sent",
               icon: send,
-              value: applicationsSent,
+              value: applicationCount,
               change: "↑ 25% from last month",
             },
             {
