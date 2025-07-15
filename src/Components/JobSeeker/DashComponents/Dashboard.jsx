@@ -11,6 +11,8 @@ import bookmarkBlank from "../../../Images/bookmarkBlank.svg";
 import { SvgIcon } from "@mui/material";
 import { MapPin, Building, IndianRupee } from "lucide-react";
 import axios from "axios";
+import axiosInstance from "../../../axiosInstance";
+
 
 import "../../../Styles/JobSeeker/DashComponents/Dashboard.css";
 
@@ -34,8 +36,7 @@ const Dashboard = () => {
 
   const initialJobs = async () => {
     try {
-      // const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
-      const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
+      const response = await axiosInstance.get(`/api/jobposts/recruiter`);
       console.log(response.data);
 
       return response.data;
@@ -48,18 +49,20 @@ const Dashboard = () => {
  const saveJob = async (jobId) => {
   const jobSeekerId = localStorage.getItem("jobSeekerId");
 
-  setSavingJobId(jobId);
+  handleBookmarkToggle(jobId);
 
-  // Optimistic UI update (toggle bookmark)
-  setRecommendedJobs((prevJobs) =>
-    prevJobs.map((job) =>
-      job.id === jobId ? { ...job, bookmarked: !job.bookmarked } : job
-    )
-  );
+    try {
+      const response = await axiosInstance.post(
+        `/api/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
+      );
+      fetchSavedJobsCount();
+    alert("Job saved successfully!");
 
-  try {
-    await axios.post(`${url}/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`);
-    console.log("Job saved successfully!");
+      // Optionally update UI locally (toggle bookmark)
+      const updated = recommendedJobs.map((job) =>
+      job.id === jobId ? { ...job, bookmarked: true } : job
+    );
+    setRecommendedJobs(updated);
   } catch (error) {
     console.error("Save Job Error:", error);
 
@@ -90,20 +93,28 @@ const Dashboard = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${url}/applications/applyjob/${jobSeekerId}/job-post/${jobId}`
+      const response = await axiosInstance.post(
+        `/api/applications/applyjob/${jobSeekerId}/job-post/${jobId}`
       );
+       fetchApplicationCount();
       alert("Applied Successfully!");
       const updated = recommendedJobs.map((job) =>
         job.id === jobId ? { ...job, applied: true } : job
       );
       setRecommendedJobs(updated);
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.response?.data || error.message;
+
+      console.error("Full error object:", error);
+     let errorMessage = error.response?.data?.message 
+      || (typeof error.response?.data === 'string' ? error.response.data : null)
+      || error.message;
+
       console.error("Application failed:", errorMessage);
 
-      if (errorMessage.includes("already applied")) {
+       // ✅ Null-safe and case-insensitive
+  const normalizedMessage = errorMessage?.toLowerCase() || "";
+
+      if (normalizedMessage.includes("already applied")) {
         alert("You have already applied for this job.");
       } else {
         alert("Failed to apply for the job.");
@@ -114,8 +125,10 @@ const Dashboard = () => {
   const [count, setCount] = useState(0);
 
   const fetchSavedJobsCount = async () => {
+     const jobSeekerId = localStorage.getItem("jobSeekerId");
     try {
-      const response = await axios.get(`${url}/jobseekers/saved-jobs/count`);
+       const response = await axiosInstance.get(`/api/jobseekers/saved-jobs/count/${jobSeekerId}`);
+     
       setCount(response.data);
       console.log("Saved jobs count:", response.data);
     } catch (error) {
@@ -123,22 +136,43 @@ const Dashboard = () => {
     }
   };
   // Add fetch function for profile completion API
-  const fetchProfileCompletion = async () => {
-    try {
-      // Replace this URL with your actual API endpoint
-      const response = await fetch(
-        "https://api.example.com/profile/completion"
-      );
-      if (!response.ok) throw new Error("Failed to fetch profile completion");
+  // const fetchProfileCompletion = async () => {
+  //    const jobSeekerId = localStorage.getItem("jobSeekerId");
+  //   try {
+  //     // Replace this URL with your actual API endpoint
+  //     const response = axiosInstance.get(
+  //       `/api/jobseekers/${jobSeekerId}/profile-completion`
+  //     );
+  //       console.log(response.data);
+  //     if (!response.ok) throw new Error("Failed to fetch profile completion");
 
-      const data = await response.json();
-      setProfileCompletion(data.profileCompletion || 0);
-    } catch (error) {
-      console.error("Error fetching profile completion:", error);
-      // fallback value if API fails
-      setProfileCompletion(70);
-    }
-  };
+  //     const data =  response.json();
+  //     setProfileCompletion(data.profileCompletion || 0);
+  //   } catch (error) {
+  //     console.error("Error fetching profile completion:", error);
+  //     // fallback value if API fails
+  //     setProfileCompletion(70);
+  //   }
+  // };
+
+  const fetchProfileCompletion = async () => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+  try {
+    const response = await axiosInstance.get(
+      `/api/jobseekers/${jobSeekerId}/profile-completion`
+    );
+
+    console.log("Profile completion response:", response.data);
+
+    // Set the value, fallback to 0 if not found
+    setProfileCompletion(response.data.profileCompletion || 0);
+  } catch (error) {
+    console.error("Error fetching profile completion:", error);
+    // fallback value if API fails
+    setProfileCompletion(70);
+  }
+};
+
 
   const fetchJobsAndInterviews = async () => {
     const jobsFromApi = await initialJobs();
@@ -151,11 +185,11 @@ const Dashboard = () => {
     fetchProfileCompletion();
   };
 
-  useEffect(() => {
-    fetchSavedJobsCount();
+  // useEffect(() => {
+  //   fetchSavedJobsCount();
 
-    fetchJobsAndInterviews();
-  }, []);
+  //   fetchJobsAndInterviews();
+  // }, []);
 
   const handleClick = (jobId) => {
     navigate("/JobSeekerHome/SpecificJob", { state: { selectedJob: jobId } });
@@ -251,7 +285,7 @@ const [applicationCount, setApplicationCount] = useState(0);
 const fetchApplicationCount = async () => {
   const jobSeekerId = localStorage.getItem("jobSeekerId");
   try {
-    const response = await axios.get(`${url}/applications/jobseeker/${jobSeekerId}/applied-jobs/count`);
+    const response = await axiosInstance.get(`/api/applications/jobseeker/${jobSeekerId}/applied-jobs/count`);
     setApplicationCount(response.data);
     
   } catch (error) {
@@ -264,7 +298,7 @@ const [jobMatchCount, setJobMatchCount]= useState(0);
 const fetchMatchJobCount = async () => {
   const jobSeekerId = localStorage.getItem("jobSeekerId");
   try {
-    const response = await axios.get(`${url}/jobposts/today-matches-count/${jobSeekerId}`);
+    const response = await axiosInstance.get(`/api/jobposts/today-matches-count/${jobSeekerId}`);
     setJobMatchCount(response.data);
     
   } catch (error) {
@@ -272,23 +306,24 @@ const fetchMatchJobCount = async () => {
   }
 };
 
-  useEffect(() => {
-    fetchSavedJobsCount();
-    fetchApplicationCount();
-    fetchMatchJobCount();
-    const fetchJobsAndInterviews = async () => {
-      const jobsFromApi = await initialJobs();
-      setRecommendedJobs(jobsFromApi);
+useEffect(() => {
+  const fetchAllDashboardData = async () => {
+    fetchSavedJobsCount();      // fetch count of saved jobs
+    fetchApplicationCount();    // fetch count of applied jobs
+     fetchMatchJobCount();
+    const jobsFromApi = await initialJobs(); // fetch recommended jobs
+    setRecommendedJobs(jobsFromApi);
+
+    seedInterviews(initialInterviews);      // seed interview list
+    setInterviews(getInterviews());         // get interviews from storage
+
+    fetchProfileCompletion();               // fetch profile completion
+  };
+
+  fetchAllDashboardData(); // run all API/data fetching in one go
+}, []);
 
 
-      seedInterviews(initialInterviews);
-      setInterviews(getInterviews());
-
-      // Fetch profile completion from API
-      fetchProfileCompletion();
-    };
-    fetchJobsAndInterviews();
-  }, []);
 
   
   return (
@@ -315,7 +350,7 @@ const fetchMatchJobCount = async () => {
           </div>
           <button
             className="JobSeeker-dashboard-complete-profile-button"
-            onClick={() => alert("Complete profile clicked")}
+            onClick={() =>  navigate("/JobSeeker-Create-Profile")}
             aria-label="Complete your profile"
             style={{ cursor: "pointer" }}
           >

@@ -12,6 +12,8 @@ import Recommendation from "../../Images/Recommendation.svg";
 import Messages from "../../Images/Messages.svg";
 import Analysis from "../../Images/Analysis.svg";
 import settings from "../../Images/settings.svg";
+import axiosInstance from "../../axiosInstance";
+
 
 const EmployerDashboard = () => {
   const [prefillEnabled, setPrefillEnabled] = useState(false);
@@ -58,8 +60,8 @@ const EmployerDashboard = () => {
   const fetchPreviousJobs = async () => {
     try {
       setIsLoadingPreviousJobs(true);
-      const response = await axios.get(
-        `${url}/recruiters/${recruiterId}/last-post`
+      const response = await axiosInstance.get(
+        `/api/jobposts/recruiter/${recruiterId}/last`
       );
       
 
@@ -142,8 +144,8 @@ const EmployerDashboard = () => {
     try {
       console.log("Recruiter ID:", recruiterId);
 
-      const response = await axios.post(
-        `${url}/recruiter/${recruiterId}/jobposts`,
+      const response = await axiosInstance.post(
+        `/api/jobposts/recruiter/${recruiterId}`,
         JobProfileData
       );
       console.log("Job posted successfully", response.data);

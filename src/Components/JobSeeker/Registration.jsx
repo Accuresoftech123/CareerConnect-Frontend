@@ -37,7 +37,7 @@ const Registration = () => {
   e.preventDefault();
 
   try {
-    const response = await axios.post(`${url}/jobseekers/register`, formData);
+    const response = await axios.post(`${url}/api/jobseekers/register`, formData);
 
     const { message, jobSeekerId } = response.data;
 

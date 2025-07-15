@@ -11,6 +11,8 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
   const inputRefs = useRef([]); // Refs for input focus
   const navigate = useNavigate();
 
+  const url = "http://localhost:9191";
+
   // Start countdown on mount
   useEffect(() => {
     startCountdown();
@@ -58,11 +60,24 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
     if (otpValue.length === 6) {
       try {
         const response = await axios.post(
-          "http://localhost:9191/jobseekers/verifyOtp",
+          `${url}/api/jobseekers/verify-otp`,
           { email, otp: otpValue },
           { headers: { "Content-Type": "application/json" } }
         );
+console.log(response.data);
 
+
+        // set token
+        const token = response.data.token;
+       localStorage.setItem("token", token);
+
+      // Decode token to extract role
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const role = payload.role[0].authority;
+      console.log(role);
+
+
+      
         const { success, message } = response.data;
         alert(message);
         if (success) {

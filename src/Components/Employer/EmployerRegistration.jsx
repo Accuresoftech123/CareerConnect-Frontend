@@ -9,13 +9,13 @@ import LockIcon from "@mui/icons-material/Lock";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
 import EmailVerificationPopup from "./EmailVerification.jsx";
-
 const Registration = () => {
-   const url = "http://localhost:9191";
+  const url = "http://localhost:9191";
   const navigate = useNavigate();
-  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
 
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -23,27 +23,28 @@ const Registration = () => {
     password: "",
     confirmPassword: "",
   });
+
   const [agreed, setAgreed] = useState(false);
- 
+
   const handleChange = (e) => {
-    e.preventDefault();
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
- 
+
   const handleSubmit = async (e) => {
   e.preventDefault();
 
   if (!agreed) {
-    alert("You must agree to the Terms and Conditions.");
+    alert("⚠️ You must agree to the Terms and Conditions.");
     return;
   }
-   if (formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match.");
-      return;
-    }
+
+  if (formData.password !== formData.confirmPassword) {
+    alert("⚠️ Passwords do not match.");
+    return;
+  }
 
   try {
-  const response = await axios.post(`${url}/recruiters/register`, formData);
+   const response = await axios.post(`${url}/api/recruiters/register`, formData);
 
   const recruiterId = response.data.recruiterId;
   localStorage.setItem("recruiterId", recruiterId);
@@ -73,11 +74,10 @@ const Registration = () => {
 
 };
 
- 
   const handleOtpVerified = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
-    alert("Email Verified Successfully!");
+    alert("✅ Email Verified Successfully!");
     navigate("/EmployerCreateProfile");
   };
  
@@ -213,6 +213,7 @@ const Registration = () => {
             {showVerificationPopup && (
               <div className="popup-backdrop">
                 <EmailVerificationPopup
+                // key={formData.email} // 🔑 Add key to prevent stale rendering
                   email={formData.email}
                   onVerify={handleOtpVerified}
                 />

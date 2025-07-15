@@ -22,6 +22,7 @@ import JobPreferences from "../../Images/JobPreferferences.svg";
 import "../../Styles/JobSeeker/JobSeekerCreateProfile.css";
 import plusIcon from "../../Images/plusIcon.svg";
 import axios from "axios";
+import axiosInstance from "../../axiosInstance";
 
 const TOTAL_STEPS = 6;
 
@@ -176,8 +177,8 @@ const JobSeekerCreateProfile = () => {
     );
 
     try {
-      const response = await axios.put(
-        `${url}/jobseekers/${jobSeekerId}/profile`,
+      const response = await axiosInstance.put(
+        `/api/jobseekers/${jobSeekerId}/profile`,
         formData,
         {
           headers: {
@@ -308,7 +309,6 @@ const JobSeekerCreateProfile = () => {
                       id="companyImageInput"
                       accept="image/*"
                       onChange={(e) => setImageFile(e.target.files[0])}
-                    
                       style={{ display: "none" }}
                       // onChange={handleImageUpload}
                     />
@@ -416,6 +416,7 @@ const JobSeekerCreateProfile = () => {
                       type="file"
                       style={{ display: "none" }}
                       onChange={(e) => setResumeFile(e.target.files[0])}
+                      required
                     />
                     <label htmlFor="resume" className="jscp-browse-button">
                       Browse files
@@ -423,6 +424,11 @@ const JobSeekerCreateProfile = () => {
                     <p className="jscp-supported-formats">
                       Supported: PDF, DOC, DOCX (Max 5 MB)
                     </p>
+                    {resumeFile && (
+                      <p className="jscp-selected-file">
+                        Selected: {resumeFile.name}
+                      </p>
+                    )}
                   </div>
                 </div>
               </section>
@@ -459,6 +465,11 @@ const JobSeekerCreateProfile = () => {
                     <p className="jscp-supported-formats">
                       Supported: MP4, AVI, MOV (Max 50MB)
                     </p>
+                     {videoFile && (
+                      <p className="jscp-selected-file">
+                        Selected: {videoFile.name}
+                      </p>
+                    )}
                   </div>
                 </div>
               </section>
