@@ -11,6 +11,7 @@ import send from "../../../Images/send.svg";
 import { useLocation } from "react-router-dom";
 
 import axios from "axios";
+import axiosInstance from "../../../axiosInstance";
 
 import {
   Select,
@@ -58,7 +59,7 @@ const JSJobDetails = () => {
   const initialJobs = async () => {
     try {
       // const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
-      const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
+      const response = await axiosInstance.get(`/api/jobposts/recruiter`);
       console.log(response);
       setJobsData(response.data);
       return response.data;
@@ -243,6 +244,43 @@ const JSJobDetails = () => {
     }));
 
     setCurrentPage(1); // Reset to first page
+  };
+
+ const applyToJob = async (jobId) => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
+    if (!jobSeekerId) {
+      alert("Please log in first.");
+      return;
+    }
+
+    try {
+      const response = await axiosInstance.post(
+        `/api/applications/applyjob/${jobSeekerId}/job-post/${jobId}`
+      );
+      //  fetchApplicationCount();
+      alert("Applied Successfully!");
+      // const updated = recommendedJobs.map((job) =>
+      //   job.id === jobId ? { ...job, applied: true } : job
+      // );
+      // setRecommendedJobs(updated);
+    } catch (error) {
+
+      console.error("Full error object:", error);
+     let errorMessage = error.response?.data?.message 
+      || (typeof error.response?.data === 'string' ? error.response.data : null)
+      || error.message;
+
+      console.error("Application failed:", errorMessage);
+
+       // ✅ Null-safe and case-insensitive
+  const normalizedMessage = errorMessage?.toLowerCase() || "";
+
+      if (normalizedMessage.includes("already applied")) {
+        alert("You have already applied for this job.");
+      } else {
+        alert("Failed to apply for the job.");
+      }
+    }
   };
 
   return (
@@ -718,6 +756,7 @@ const JSJobDetails = () => {
                   <div className="apply-button-wrapper">
                     <button
                       className="jsjd-apply-button"
+                      onClick={() => applyToJob(selectedJob.id)}
                       disabled={selectedJob.applied}
                       aria-disabled={selectedJob.applied}
                       aria-label={
@@ -823,7 +862,7 @@ const JSJobDetails = () => {
                 </p>
               </section>
 
-              <button className="jsjd-apply-btn">Apply Now</button>
+              <button className="jsjd-apply-btn"   onClick={() => applyToJob(selectedJob.id)} >Apply Now</button>
             </div>
           </div>
         )}

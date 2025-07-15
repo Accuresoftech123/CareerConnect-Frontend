@@ -8,6 +8,7 @@ import UiUxDesigner from "../../../Images/UiUxDesigner.svg";
 import send from "../../../Images/send.svg";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
+import axiosInstance from "../../../axiosInstance";
 
 const url = "http://localhost:9191";
 
@@ -26,9 +27,10 @@ const SpecificJob = () => {
     }
 
     try {
-      const response = await axios.post(
-        `${url}/applications/applyjob/${jobSeekerId}/job-post/${selectedJobId}`
-      );
+       const response = await axiosInstance.post(
+              `/api/applications/applyjob/${jobSeekerId}/job-post/${selectedJobId}`
+            );
+     
       alert("Applied Successfully!");
       // const updated = recommendedJobs.map((job) =>
       //   job.id === selectedJobId ? { ...job, applied: true } : job
@@ -50,8 +52,8 @@ const SpecificJob = () => {
   useEffect(() => {
     const fetchJobDetails = async () => {
       try {
-        const response = await axios.get(
-          `${url}/jobposts/jobposts/${selectedJobId}`
+        const response = await axiosInstance.get(
+          `/api/jobposts/jobposts/${selectedJobId}`
         );
         setJobData(response.data);
         console.log("Fetched job post:", response.data);

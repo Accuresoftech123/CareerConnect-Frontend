@@ -91,11 +91,18 @@ const Dashboard = () => {
       );
       setRecommendedJobs(updated);
     } catch (error) {
-      const errorMessage =
-        error.response?.data?.message || error.response?.data || error.message;
+
+      console.error("Full error object:", error);
+     let errorMessage = error.response?.data?.message 
+      || (typeof error.response?.data === 'string' ? error.response.data : null)
+      || error.message;
+
       console.error("Application failed:", errorMessage);
 
-      if (errorMessage.includes("already applied")) {
+       // ✅ Null-safe and case-insensitive
+  const normalizedMessage = errorMessage?.toLowerCase() || "";
+
+      if (normalizedMessage.includes("already applied")) {
         alert("You have already applied for this job.");
       } else {
         alert("Failed to apply for the job.");
@@ -303,7 +310,7 @@ const [jobMatchCount, setJobMatchCount]= useState(0);
 const fetchMatchJobCount = async () => {
   const jobSeekerId = localStorage.getItem("jobSeekerId");
   try {
-    const response = await axios.get(`${url}/jobposts/today-matches-count/${jobSeekerId}`);
+    const response = await axiosInstance.get(`/api/jobposts/today-matches-count/${jobSeekerId}`);
     setJobMatchCount(response.data);
     
   } catch (error) {
