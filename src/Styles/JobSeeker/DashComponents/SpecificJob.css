@@ -1,0 +1,292 @@
+/* === Container Layout === */
+.jsjd-container {
+  display: flex;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin: 0 auto;
+  background-color: #fff;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* === Job Detail Section === */
+.jsjd-detail {
+  flex: 1 1 65%;
+  min-width: 260px;
+  border: 1px solid #ff6600;
+  border-radius: 6px;
+  padding: 20px;
+  margin: 25px;
+  margin-left: 10px;
+  background: #fff;
+}
+.jsjd-detail-title-company {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap; /* allow wrapping if needed */
+  gap: 8px;
+}
+
+.jsjd-detail-title {
+  margin: 0;
+  font-size: 1.5rem;
+  flex-grow: 1;
+  min-width: 0;
+}
+
+.jsjd-icon-buttons {
+  display: flex;
+  gap: 4px; /* Reduce gap between icons */
+  flex-shrink: 0;
+}
+
+.jsjd-card-bookmark-button {
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: var(--text-light);
+  cursor: pointer;
+  transition: filter 0.2s ease;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+}
+
+.bookmark-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.jsjd-detail-title-company button {
+  align-items: end;
+}
+.jsjd-detail-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin-right: 200px;
+  color: #000;
+  margin-bottom: 4px;
+}
+
+.jsjd-detail-company {
+  font-size: 18px;
+  /* font-weight: 600; */
+  color: #000;
+  margin-bottom: 4px;
+}
+
+.jsjd-detail p {
+  font-size: 14px;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.jsjd-detail section h4 {
+  margin-top: 20px;
+  color: #000;
+}
+
+/* === Apply Button === */
+.apply-button-wrapper {
+  grid-column: 3;
+  grid-row: 2;
+  justify-self: end;
+  align-self: center;
+  padding-right: 1rem;
+}
+
+.jsjd-apply-button {
+  border: none;
+  padding: 5px 30px;
+  background-color: #b153e5;
+  color: #fff;
+  width: 100%;
+  margin-bottom: 10px;
+ justify-self: end;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.jsjd-apply-button:hover {
+  background-color: #842cc0;
+}
+
+.jsjd-apply-btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #b153e5;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  font-size: 15px;
+  cursor: pointer;
+  width: 100%;
+}
+
+/* === Apply Note === */
+.jsjd-apply-note {
+  margin-top: 10px;
+  font-size: 14px;
+  color: #555;
+}
+
+.jsjd-applylink {
+  display: inline;
+  color: #0d6efd;
+  cursor: pointer;
+}
+
+/* === Divider === */
+.jsjd-divider-section {
+  border-top: 2px solid #da5802;
+  width: 106%;
+  margin-left: -19px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+}
+ 
+.jsjd-card-bookmark-button {
+    background: none;
+    border: none;
+    font-size: 24px;
+   
+    color: var(--text-light);
+    cursor: pointer;
+    align-self: flex-start;
+    transition: filter 0.2s ease;
+    -ms-flex-item-align: end;
+    justify-content: end;
+}
+
+/* Optional: Add slight scale or color tint if desired */
+.jsjd-card-bookmark-button:hover {
+  transform: scale(1.1);
+  filter: brightness(0.8);
+}
+/* icon image*/
+.jsjd-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* ensures icon+title and bookmark are spaced apart */
+  gap: 12px;
+}
+
+.jsjd-card-icon {
+  flex-shrink: 0;
+  width: 50px;
+    height: 50px;
+     object-fit: contain;
+   /* box-shadow: 4px 4px 20px rgba(0.4, 0.4, 0.4, 0.4); */
+}
+
+.jsjd-card-header-main {
+  display: flex;
+  align-items: center;
+  /* gap: 12px; */
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.jsjd-card-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.jsjd-card-company {
+  font-size: 14px;
+  color: var(--text-medium);
+}
+.jsjd-card-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+.jsjd-card-bookmark-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  margin-left: auto; /* push it to right */
+  align-self: center;
+}
+
+/* === Responsive Layout === */
+@media  screen and (max-width:1280px) {
+   
+}
+@media (width:1024px) {
+    .jsjd-card-header {
+    flex-wrap: wrap; /* Allow wrapping on small screens */
+    align-items: flex-start;
+  }
+
+  .jsjd-card-details {
+    flex: 1 1 100%;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 8px;
+  }
+
+  .jsjd-card-bookmark-button {
+    margin-left: auto;
+    align-self: flex-start;
+  }
+}
+@media screen and (max-width: 912px) {
+  .jsjd-container {
+    flex-direction: column;
+  }
+  .jsjd-detail {
+   width: 95%;
+  }
+}
+@media screen and (max-width:768px) {
+  .jsjd-detail {
+   width: 97%;
+  }
+}
+@media screen and (max-width:820px) {
+  .jsjd-detail {
+   width: 95%;
+  }
+  .jsjd-card-info-grid {
+            display: contents;
+    }
+}
+@media screen and (max-width: 600px) {
+  .jsjd-detail {
+   width: 93%;
+  }
+  .jsjd-apply-btn {
+    padding: 10px 10px;
+    font-size: 14px;
+  }
+
+  .jsjd-card h3 {
+    font-size: 20px;
+  }
+
+  .jsjd-detail-title {
+    font-size: 22px;
+  }
+  .jsjd-card-info-grid {
+            display: contents;
+    }
+}
+
+@media screen and (max-width: 480px) {
+  .jsjd-detail {
+   width: 93%;
+  }
+  .jsjd-card-info-grid {
+            display: contents;
+    }
+}
+@media  screen and (max-width: 344px) {
+  .jsjd-card-info-grid {
+            display: contents;
+    }
+  }

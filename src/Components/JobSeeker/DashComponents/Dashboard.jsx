@@ -8,9 +8,6 @@ import eye from "../../../Images/eye.svg";
 import mail from "../../../Images/mail.svg";
 import penLine from "../../../Images/penLine.svg";
 import bookmarkBlank from "../../../Images/bookmarkBlank.svg";
-import productDesigner from "../../../Images/productDesigner.svg";
-import UiUxDesigner from "../../../Images/UiUxDesigner.svg";
-import UxDesigner from "../../../Images/UxDesigner.svg";
 import { SvgIcon } from "@mui/material";
 import { MapPin, Building, IndianRupee } from "lucide-react";
 import axios from "axios";
@@ -175,9 +172,8 @@ const Dashboard = () => {
   //   fetchJobsAndInterviews();
   // }, []);
 
-  const handleClick = (job) => {
-    navigate("/JobSeekerHome/Job-details", { state: { selectedJob: job } });
-    console.log(job);
+  const handleClick = (jobId) => {
+    navigate("/JobSeekerHome/SpecificJob", { state: { selectedJob: jobId } });
   };
 
   const handleBookmarkToggle = (jobId) => {
@@ -296,7 +292,20 @@ const fetchApplicationCount = async () => {
   try {
     const response = await axiosInstance.get(`/api/applications/jobseeker/${jobSeekerId}/applied-jobs/count`);
     setApplicationCount(response.data);
-    console.log("Application count:", response.data);
+    
+  } catch (error) {
+    console.error("Error fetching application count:", error);
+  }
+};
+
+// Todays matche JobPosts
+const [jobMatchCount, setJobMatchCount]= useState(0);
+const fetchMatchJobCount = async () => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+  try {
+    const response = await axios.get(`${url}/jobposts/today-matches-count/${jobSeekerId}`);
+    setJobMatchCount(response.data);
+    
   } catch (error) {
     console.error("Error fetching application count:", error);
   }
@@ -306,7 +315,7 @@ useEffect(() => {
   const fetchAllDashboardData = async () => {
     fetchSavedJobsCount();      // fetch count of saved jobs
     fetchApplicationCount();    // fetch count of applied jobs
-
+     fetchMatchJobCount();
     const jobsFromApi = await initialJobs(); // fetch recommended jobs
     setRecommendedJobs(jobsFromApi);
 
@@ -416,7 +425,7 @@ useEffect(() => {
             {
               label: "Today's job matches",
               icon: zap,
-              value: jobMatches,
+              value: jobMatchCount,
               change: null,
               link: "View all matches",
             },
@@ -555,7 +564,7 @@ useEffect(() => {
                     {job.applied ? "Applied" : "Apply"}
                   </button>
                   <button
-                    onClick={()=>handleClick(job)}
+                    onClick={()=>handleClick(job.id)}
                     className="JobSeeker-dashboard-details-button"
                     aria-label="View job details"
                     style={{ cursor: "pointer" }}

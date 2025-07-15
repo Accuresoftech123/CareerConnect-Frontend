@@ -19,6 +19,7 @@ import AdminHome from "./Components/Admin/AdminHome";
 
 // ✅ Import Google OAuth Provider
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import SpecificJob from "./Components/JobSeeker/DashComponents/SpecificJob";
 
 function App() {
   return (
@@ -64,6 +65,7 @@ const JobSeekerRoutes = () => {
         <Route index element={<Dashboard />} />
         <Route path="Jobseeker-Dashboard" element={<Dashboard/>}/>
         <Route path="Job-details" element={<JSJobDetails/>}/>
+        <Route path="SpecificJob" element={<SpecificJob/>}/>
       </Routes>
     </JobSeekerHome>
   );

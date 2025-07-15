@@ -95,6 +95,11 @@ const JobSeekerHome = ({ children }) => {
       icon: <FaCog />,
       label: "Settings",
     },
+    {
+      path: "/Login",
+      icon: <FaSignOutAlt />,
+      label: "Logout",
+    },
   ];
   useEffect(() => {
     fetchJobSeekerInfo(); // Fetch job seeker info when component mounts
