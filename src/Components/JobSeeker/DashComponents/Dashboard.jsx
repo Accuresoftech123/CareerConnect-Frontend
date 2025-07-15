@@ -29,6 +29,11 @@ const Dashboard = () => {
   // Add profile completion state
   const [profileCompletion, setProfileCompletion] = useState(0);
 
+  const [savingJobId, setSavingJobId] = useState(null);
+  
+
+
+
   const initialJobs = async () => {
     try {
       const response = await axiosInstance.get(`/api/jobposts/recruiter`);
@@ -41,7 +46,7 @@ const Dashboard = () => {
     }
   };
   //save Job Post
-  const saveJob = async (jobId) => {
+ const saveJob = async (jobId) => {
   const jobSeekerId = localStorage.getItem("jobSeekerId");
 
   handleBookmarkToggle(jobId);
@@ -59,16 +64,23 @@ const Dashboard = () => {
     );
     setRecommendedJobs(updated);
   } catch (error) {
-  if (error.response?.status === 409) {
-    alert("Job is already saved!");
-  } 
-  else if (error.response?.status === 404) {
-    alert("Job or job seeker not found.{jobSeekerId}");
-  } else {
-    alert("Failed to save job.");
-  }
-}
+    console.error("Save Job Error:", error);
 
+    // If 409 Conflict (already saved), do nothing — we still want to show it as bookmarked
+    if (error.response?.status === 409) {
+      console.warn("Job is already saved. Keeping bookmark icon active.");
+    } else {
+      // For other errors, rollback the UI
+      alert("Something went wrong while saving the job.");
+      setRecommendedJobs((prevJobs) =>
+        prevJobs.map((job) =>
+          job.id === jobId ? { ...job, bookmarked: !job.bookmarked } : job
+        )
+      );
+    }
+  } finally {
+    setSavingJobId(null);
+  }
 };
 
 
@@ -183,10 +195,10 @@ const Dashboard = () => {
     navigate("/JobSeekerHome/SpecificJob", { state: { selectedJob: jobId } });
   };
 
-  const handleBookmarkToggle = (jobId) => {
-    const updated = toggleBookmark(jobId);
-    setRecommendedJobs(updated);
-  };
+  
+
+  const handleBookmarkToggle = (jobId, forceValue) =>
+  setRecommendedJobs((prev) => toggleBookmark(prev, jobId, forceValue));
 
   const handleApply = (jobId) => {
     const updated = applyToJob(jobId);
@@ -234,14 +246,15 @@ const Dashboard = () => {
     }
   };
 
-  const toggleBookmark = (jobId) => {
-    const jobs = getJobs();
+  const toggleBookmark = (jobs, jobId, value) => {
+    
     const updated = jobs.map((job) =>
       job.id === jobId ? { ...job, bookmarked: !job.bookmarked } : job
     );
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     return updated;
   };
+ 
 
   const getInterviews = () => {
     const data = localStorage.getItem(INTERVIEWS_KEY);
@@ -267,32 +280,7 @@ const Dashboard = () => {
     console.log("Edit interview", id);
   };
  
-  //    const fetchSavedJobsCount = async () => {
-  //   try {
-  //     const response = await axios.get(`${url}/jobseekers/saved-jobs/count`);
-  //     setCount(response.data);
-  //     console.log('Saved jobs count:', response.data);
-  //   } catch (error) {
-  //     console.error('Error fetching saved jobs count:', error);
-  //   }
-  // };
-  // Add fetch function for profile completion API
-  // const fetchProfileCompletion = async () => {
-  //   try {
-  //     // Replace this URL with your actual API endpoint
-  //     const response = await fetch("https://api.example.com/profile/completion");
-  //     if (!response.ok) throw new Error("Failed to fetch profile completion");
-
-  //     const data = await response.json();
-  //     setProfileCompletion(data.profileCompletion || 0);
-  //   } catch (error) {
-  //     console.error("Error fetching profile completion:", error);
-  //     // fallback value if API fails
-  //     setProfileCompletion(70);
-  //   }
-  // };
-
-//Application send
+ 
 const [applicationCount, setApplicationCount] = useState(0);
 const fetchApplicationCount = async () => {
   const jobSeekerId = localStorage.getItem("jobSeekerId");
@@ -337,42 +325,7 @@ useEffect(() => {
 
 
 
-  // useEffect(() => {
-  //   fetchSavedJobsCount();
-  //   fetchApplicationCount();
-  //   const fetchJobsAndInterviews = async () => {
-  //     const jobsFromApi = await initialJobs();
-  //     setRecommendedJobs(jobsFromApi);
-
-
-  //     seedInterviews(initialInterviews);
-  //     setInterviews(getInterviews());
-
-  //     // Fetch profile completion from API
-  //     fetchProfileCompletion();
-  //   };
-  //   fetchJobsAndInterviews();
-  // }, []);
-
-  // const handleClick = () => {
-  //   navigate("/JobSeekerHome/Job-details");
-  // };
-
-  // const handleBookmarkToggle = (jobId) => {
-  //   const updated = toggleBookmark(jobId);
-  //   setRecommendedJobs(updated);
-  // };
-
-  // const handleApply = (jobId) => {
-  //   const updated = applyToJob(jobId);
-  //   setRecommendedJobs(updated);
-  // };
-
-  // Stats calculations
-  // const applicationsSent = recommendedJobs.filter((job) => job.applied).length;
-  // const savedJobs = recommendedJobs.filter((job) => job.bookmarked).length;
-  // const jobMatches = recommendedJobs.length;
-
+  
   return (
     <>
       <div className="JobSeeker-dashboard-content">
@@ -510,17 +463,14 @@ useEffect(() => {
                     <button
                       className="JobSeeker-dashboard-bookmark-button"
                       onClick={() => saveJob(job.id)}
-                      aria-label={
-                        job.bookmarked ? "Remove bookmark" : "Bookmark job"
-                      }
+                     aria-label={job.bookmarked ? "Remove bookmark" : "Bookmark job"}
+  disabled={savingJobId === job.id}
                       style={{ cursor: "pointer" }}
                     >
                       <img
-                        className={`bookmark-icon ${
-                          job.bookmarked ? "bookmarked" : ""
-                        }`}
-                        src={job.bookmarked ? bookmark : bookmarkBlank}
-                        alt={job.bookmarked ? "Bookmarked" : "Not bookmarked"}
+                       className={`bookmark-icon ${job.bookmarked ? "bookmarked" : ""}`}
+    src={job.bookmarked ? bookmark : bookmarkBlank}
+    alt={job.bookmarked ? "Bookmarked" : "Not bookmarked"}
                       />
                     </button>
                   </div>
