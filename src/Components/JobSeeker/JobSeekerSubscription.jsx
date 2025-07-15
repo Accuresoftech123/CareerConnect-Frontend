@@ -23,7 +23,7 @@ const JobSeekerSubscription = () => {
   const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
 
   const url = "http://localhost:9191";
- 
+  // Function to load Razorpay script dynamically
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
       const script = document.createElement("script");
@@ -34,11 +34,13 @@ const JobSeekerSubscription = () => {
     });
   };
  
- 
+  // Function to handle form submission
+  // This function will be called when the user clicks on "Continue with Free plan"
   const handleSubmit = () => {
     navigate("/JobSeeker-Create-Profile");
   };
- 
+  // Function to handle payment
+  // This function will be called when the user clicks on a plan's "Continue" button
  const handlePayment = async (amount) => {
   const res = await loadRazorpayScript();
   if (!res) {
@@ -122,7 +124,7 @@ const starterFeatures = [
     "Priority application placement",
     "Career Connect badge on your profile",
   ];
- 
+  
   const eliteFeatures = [
     "Upload your CV",
     "Apply to unlimited jobs",
@@ -133,7 +135,7 @@ const starterFeatures = [
     "Priority application placement",
     "Career Connect badge on your profile",
   ];
- 
+  {/* Function to render features list */}
   const renderFeatures = (features) =>
     features.map((feature, index) => (
       <li key={index}>

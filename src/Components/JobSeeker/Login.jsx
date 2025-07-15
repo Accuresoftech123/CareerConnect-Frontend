@@ -12,13 +12,13 @@ import { GoogleLogin } from "@react-oauth/google";
 const Login = () => {
   const url = "http://localhost:9191";
   const navigate = useNavigate();
-
+  // State for email and password
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   // Validation errors state
   const [errors, setErrors] = useState({});
-
+  // Validation function
   const validate = () => {
     const newErrors = {};
 
@@ -37,7 +37,7 @@ const Login = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!validate()) return;
@@ -62,8 +62,8 @@ const Login = () => {
         alert("Login Failed: " + (error.response?.data || error.message));
       });
   };
-
-  const handleGoogleError = () => {
+// Handle Google login error
+const handleGoogleError = () => {
     console.error("Google login failed");
     alert("Google login failed. Please try again.");
   };
@@ -191,7 +191,7 @@ const Login = () => {
                 <img src={linkedin} alt="LinkedIn" /> Continue with LinkedIn
               </button>
             </div>
-
+            {/* Register Link */}
             <div className="jobseeker_optionlogin">
               <p>
                 Don't have an account?{" "}

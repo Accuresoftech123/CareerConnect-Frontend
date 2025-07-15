@@ -18,7 +18,11 @@ import "../../../Styles/JobSeeker/DashComponents/Dashboard.css";
 
 const STORAGE_KEY = "recommendedJobs";
 const INTERVIEWS_KEY = "upcomingInterviews";
-
+//Child component of jobseeker dashboard
+//1. Complete Profile progress bar
+//2. Stat cards for display count
+//3. Recommended JOb cards
+//4. upcoming interview table
 const Dashboard = () => {
   const url = "http://localhost:9191";
   const navigate = useNavigate();
@@ -28,12 +32,8 @@ const Dashboard = () => {
 
   // Add profile completion state
   const [profileCompletion, setProfileCompletion] = useState(0);
-
   const [savingJobId, setSavingJobId] = useState(null);
   
-
-
-
   const initialJobs = async () => {
     try {
       const response = await axiosInstance.get(`/api/jobposts/recruiter`);
@@ -368,26 +368,26 @@ useEffect(() => {
               label: "Application sent",
               icon: send,
               value: applicationCount,
-              change: "↑ 25% from last month",
+              // change: "↑ 25% from last month",
             },
             {
               label: "Saved jobs",
               icon: bookmark,
               value: count,
-              change: "↑ 5 new for this week",
+              // change: "↑ 5 new for this week",
             },
             {
               label: "Interview scheduled",
               icon: calendarDays,
               value: interviews.length,
-              change: "↑ 2 more than last week",
+              // change: "↑ 2 more than last week",
             },
             {
               label: "Today's job matches",
               icon: zap,
               value: jobMatchCount,
               change: null,
-              link: "View all matches",
+              // link: "View all matches",
             },
           ].map(({ label, icon, value, change, link }, i) => (
             <div key={i} className="JobSeeker-dashboard-stat-card">
@@ -538,8 +538,9 @@ useEffect(() => {
         <section
           className="JobSeeker-dashboard-upcoming-interviews"
           aria-label="Upcoming interviews"
+          style={{backgroundColor:"#e3e368ff"}}
         >
-          <div className="JobSeeker-dashboard-header">
+          <div className="JobSeeker-dashboard-header" >
             <div className="JobSeeker-dashboard-tableicon">
               <img src={calendarDays} alt="Calender-icon" />
               <h3>Upcoming Interviews</h3>
@@ -567,7 +568,7 @@ useEffect(() => {
                 </tr>
               ) : (
                 interviews.map((interview) => (
-                  <tr key={interview.id}>
+                  <tr key={interview.id} style={{color:"#e3e368ff"}}>
                     <td>{interview.company}</td>
                     <td>{interview.role}</td>
                     <td>

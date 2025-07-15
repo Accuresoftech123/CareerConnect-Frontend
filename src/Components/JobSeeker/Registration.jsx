@@ -19,7 +19,7 @@ const Registration = () => {
   const [isVerified, setIsVerified] = useState(false);
 
   const url = "http://localhost:9191";
-
+  // State to hold form data
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -30,7 +30,7 @@ const Registration = () => {
 
   // New state to hold validation error messages
   const [errors, setErrors] = useState({});
-
+  // Function to validate form data
   const validate = (data) => {
     const newErrors = {};
 
@@ -73,7 +73,7 @@ const Registration = () => {
 
     return newErrors;
   };
-
+  // Handle input changes
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
@@ -91,7 +91,7 @@ const Registration = () => {
       return updatedErrors;
     });
   };
-
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -134,7 +134,7 @@ const Registration = () => {
       setShowVerificationPopup(false);
     }
   };
-
+  // Function to handle OTP verification
   const handleOtpVerified = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
@@ -193,7 +193,7 @@ const Registration = () => {
                 />
               </div>
               {errors.fullName && <p className="error-text">{errors.fullName}</p>}
-
+              { /* Email - required and valid email format */}
               <label>Email Id</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={LocalPostOfficeIcon} />
@@ -207,7 +207,7 @@ const Registration = () => {
                 />
               </div>
               {errors.email && <p className="error-text">{errors.email}</p>}
-
+              { /* Mobile Number - required and 10 digits only */}
               <label>Mobile Number</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={PhoneIcon} />
@@ -221,7 +221,7 @@ const Registration = () => {
                 />
               </div>
               {errors.mobileNumber && <p className="error-text">{errors.mobileNumber}</p>}
-
+              { /* Password - required and min 6 chars */}
               <label>Create Password</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={LockIcon} />
@@ -235,7 +235,7 @@ const Registration = () => {
                 />
               </div>
               {errors.password && <p className="error-text">{errors.password}</p>}
-
+              { /* Confirm Password - must match password */}
               <label>Confirm Password</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={LockIcon} />
@@ -249,12 +249,12 @@ const Registration = () => {
                 />
               </div>
               {errors.confirmPassword && <p className="error-text">{errors.confirmPassword}</p>}
-
+              { /* Submit Button */}
               <button className="jobseeker_register-btn-submit" type="submit">
                 Register
               </button>
             </form>
-
+            {/* Conditional rendering for email verification popup */}
             {showVerificationPopup && (
               <div className="popup-backdrop">
                 <EmailVerificationPopup
@@ -263,11 +263,11 @@ const Registration = () => {
                 />
               </div>
             )}
-
+            {/* Display success message if email is verified */}
             {isVerified && (
               <p style={{ color: "green" }}>Email Verified Successfully!</p>
             )}
-
+            {/* Link to login page */}
             <div className="jobseeker_register-option">
               <p>
                 Already have an account? <a href="/Login">Log In</a>
