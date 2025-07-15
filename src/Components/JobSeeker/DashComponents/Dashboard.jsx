@@ -269,17 +269,29 @@ const fetchApplicationCount = async () => {
   try {
     const response = await axios.get(`${url}/applications/jobseeker/${jobSeekerId}/applied-jobs/count`);
     setApplicationCount(response.data);
-    console.log("Application count:", response.data);
+    
   } catch (error) {
     console.error("Error fetching application count:", error);
   }
 };
 
-
+// Todays matche JobPosts
+const [jobMatchCount, setJobMatchCount]= useState(0);
+const fetchMatchJobCount = async () => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+  try {
+    const response = await axios.get(`${url}/jobposts/today-matches-count/${jobSeekerId}`);
+    setJobMatchCount(response.data);
+    
+  } catch (error) {
+    console.error("Error fetching application count:", error);
+  }
+};
 
   useEffect(() => {
     fetchSavedJobsCount();
     fetchApplicationCount();
+    fetchMatchJobCount();
     const fetchJobsAndInterviews = async () => {
       const jobsFromApi = await initialJobs();
       setRecommendedJobs(jobsFromApi);
@@ -372,7 +384,7 @@ const fetchApplicationCount = async () => {
             {
               label: "Today's job matches",
               icon: zap,
-              value: jobMatches,
+              value: jobMatchCount,
               change: null,
               link: "View all matches",
             },
