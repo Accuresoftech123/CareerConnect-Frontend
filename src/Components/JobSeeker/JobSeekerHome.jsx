@@ -1,19 +1,8 @@
 // JobSeekerHome.jsx
 import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import {
-  FaBars,
-  FaSignOutAlt,
-  FaEnvelope,
-  FaBell,
-  FaSearch,
-  FaTachometerAlt,
-  FaMapMarkedAlt,
-  FaUserFriends,
-  FaChartBar,
-  FaRegUserCircle,
-  FaCog,
-  FaThumbsUp,
+import { FaBars, FaSignOutAlt, FaEnvelope, FaBell, FaSearch, FaTachometerAlt, FaMapMarkedAlt,
+  FaUserFriends, FaChartBar, FaRegUserCircle, FaCog, FaThumbsUp,
 } from "react-icons/fa";
 import { useDispatch } from "react-redux";
 import "../../Styles/JobSeeker/JobSeekerHome.css";
@@ -21,10 +10,9 @@ import { useEffect } from "react";
 import axios from "axios"; // ✅ Import Axios
 import axiosInstance from "../../axiosInstance";
 
-const url = "http://localhost:9191"; // Base URL for API requests
+//Parent component of JobSeeker Dashboard
 const JobSeekerHome = ({ children }) => {
   const navigate = useNavigate();
-
 
   const url = "http://localhost:9191";
 
@@ -50,6 +38,7 @@ const JobSeekerHome = ({ children }) => {
     profileImageUrl: "",
   });
   const jobSeekerId = localStorage.getItem("jobSeekerId");
+  // Fetch job seeker info from the backend
   const fetchJobSeekerInfo = async () => {
     try {
       const response = await axiosInstance.get(
@@ -63,7 +52,7 @@ const JobSeekerHome = ({ children }) => {
       console.error("Error fetching Job Seeker info:", error);
     }
   };
-
+  // Navigation items for the sidebar
   const navItems = [
     {
       path: "/JobSeekerHome/Jobseeker-Dashboard",
@@ -74,26 +63,31 @@ const JobSeekerHome = ({ children }) => {
       path: "/JobSeekerHome/MyJobApplications",
       icon: <FaMapMarkedAlt />,
       label: "My Job Applications",
+      style: { color: "#FFFF00" },
     },
     {
       path: "/JobSeekerHome/Recommendations",
       icon: <FaThumbsUp />,
       label: "Recommendations",
+      style: { color: "#FFFF00" },
     },
     {
       path: "/JobSeekerHome/Messages",
       icon: <FaEnvelope />,
       label: "Messages",
+      style: { color: "#FFFF00" },
     },
     {
       path: "/JobSeekerHome/Analysis",
       icon: <FaChartBar />,
       label: "Analysis",
+      style: { color: "#FFFF00" },
     },
     {
       path: "/JobSeekerHome/Settings",
       icon: <FaCog />,
       label: "Settings",
+      style: { color: "#FFFF00" },
     },
     {
       path: "/Login",
@@ -171,18 +165,20 @@ const JobSeekerHome = ({ children }) => {
       <div className="JobSeekerHome_layout-body">
         {/* Sidebar */}
         <nav className={`JobSeekerHome_sidebar ${sidebarOpen ? "active" : ""}`}>
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={isActive(item.path) ? "active-link" : "link"}
-              onClick={closeSidebar}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </Link>
-          ))}
-        </nav>
+  {navItems.map((item) => (
+    <Link
+      key={item.path}
+      to={item.path}
+      className={isActive(item.path) ? "active-link" : "link"}
+      onClick={closeSidebar}
+      style={isActive(item.path) ? { color: "#000" } : item.style} // white for active, yellow otherwise
+    >
+      {item.icon}
+      <span>{item.label}</span>
+    </Link>
+  ))}
+</nav>
+
 
         {/* ✅ Main content now scrollable */}
         <main className="JobSeekerHome_main-content">{children}</main>

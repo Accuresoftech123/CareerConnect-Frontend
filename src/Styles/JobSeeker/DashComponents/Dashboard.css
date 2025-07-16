@@ -587,3 +587,8 @@
     height: 400px;
   }
 }
+
+
+.JobSeeker-dashboard-upcoming-interviews table{
+  background-color: #FFFFE0;
+}

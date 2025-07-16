@@ -51,11 +51,13 @@ const JobSeekerCreateProfile = () => {
   const [resumeFile, setResumeFile] = useState(null);
   const [videoFile, setVideoFile] = useState(null);
   const [imageFile, setImageFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [personalInfo, setPersonalInfos] = useState({
     city: "",
     state: "",
     country: "",
     resumeUrl: "",
+    profileImageUrl: "",
     introVideoUrl: null,
     autoParse: false,
   });
@@ -127,16 +129,12 @@ const JobSeekerCreateProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+     if (!agreeTerms) {
+    alert("Please agree to the Terms and Conditions before submitting.");
+    return;
+  }
     const formData = new FormData();
     const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
-
-    if (!agreeTerms) {
-      window.alert(
-        "Please agree to the terms and conditions before submitting."
-      );
-      return;
-    }
 
     const profileData = {
       fullName: fullName,
@@ -289,8 +287,9 @@ const JobSeekerCreateProfile = () => {
                   <div className="jscp-logo-upload">
                     {/* Preview uploaded image or default */}
                     <img
-                      src={user}
+                      
                       alt="preview"
+                       src={previewUrl || user} 
                       className="jscp-upload-image"
                     />
 
@@ -308,8 +307,15 @@ const JobSeekerCreateProfile = () => {
                       type="file"
                       id="companyImageInput"
                       accept="image/*"
-                      onChange={(e) => setImageFile(e.target.files[0])}
+                      onChange={(e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setPreviewUrl(URL.createObjectURL(file)); // Set preview
+    }
+  }}
                       style={{ display: "none" }}
+                      
                       // onChange={handleImageUpload}
                     />
                   </div>
@@ -330,7 +336,7 @@ const JobSeekerCreateProfile = () => {
                   </div>
 
                   <div className="jscp-form-row">
-                    <div className="jscp-input-group jscp-half">
+                    {/* <div className="jscp-input-group jscp-half">
                       <label htmlFor="email">Email Address</label>
                       <input
                         type="email"
@@ -339,7 +345,7 @@ const JobSeekerCreateProfile = () => {
                         onChange={(e) => setEmail(e.target.value)}
                         placeholder="Enter your email"
                       />
-                    </div>
+                    </div> */}
                     <div className="jscp-input-group jscp-half">
                       <label htmlFor="phone">Phone Number</label>
                       <input
@@ -425,9 +431,7 @@ const JobSeekerCreateProfile = () => {
                       Supported: PDF, DOC, DOCX (Max 5 MB)
                     </p>
                     {resumeFile && (
-                      <p className="jscp-selected-file">
-                        Selected: {resumeFile.name}
-                      </p>
+                      <p className="jscp-selected-file">{resumeFile.name}</p>
                     )}
                   </div>
                 </div>
@@ -465,10 +469,8 @@ const JobSeekerCreateProfile = () => {
                     <p className="jscp-supported-formats">
                       Supported: MP4, AVI, MOV (Max 50MB)
                     </p>
-                     {videoFile && (
-                      <p className="jscp-selected-file">
-                        Selected: {videoFile.name}
-                      </p>
+                    {videoFile && (
+                      <p className="jscp-selected-file">{videoFile.name}</p>
                     )}
                   </div>
                 </div>
@@ -487,9 +489,9 @@ const JobSeekerCreateProfile = () => {
 
               {/* Buttons */}
               <div className="jscp-form-row jscp-buttons-row">
-                <button type="button" className="jscp-btn-secondary">
+                {/* <button type="button" className="jscp-btn-secondary">
                   Save as draft
-                </button>
+                </button> */}
                 <button
                   type="button"
                   className="jscp-btn-primary"
@@ -627,9 +629,9 @@ const JobSeekerCreateProfile = () => {
               </section>
 
               <div className="jscp-form-row jscp-buttons-row">
-                <button type="button" className="jscp-btn-secondary">
+                {/* <button type="button" className="jscp-btn-secondary">
                   Save as draft
-                </button>
+                </button> */}
                 <button
                   type="button"
                   className="jscp-btn-secondary"
@@ -705,17 +707,14 @@ const JobSeekerCreateProfile = () => {
                             Start Date
                           </label>
                           <input
-                            type="month"
+                            type="date"
                             id={`startDate-${index}`}
-                            //changes
-                            value={
-                              exp.startDate ? exp.startDate.slice(0, 7) : ""
-                            }
+                            value={exp.startDate || ""}
                             onChange={(e) =>
                               handleExperienceChange(
                                 index,
                                 "startDate",
-                                e.target.value + "-01"
+                                e.target.value
                               )
                             }
                           />
@@ -723,18 +722,17 @@ const JobSeekerCreateProfile = () => {
                         <div className="jscp-input-group jscp-half">
                           <label htmlFor={`endDate-${index}`}>End Date</label>
                           <input
-                            type="month"
+                            type="date"
                             id={`endDate-${index}`}
-                            // changes
-                            value={exp.endDate ? exp.endDate.slice(0, 7) : ""}
+                            value={exp.endDate || ""}
                             onChange={(e) =>
                               handleExperienceChange(
                                 index,
                                 "endDate",
-                                e.target.value + "-01"
+                                e.target.value
                               )
                             }
-                            disabled={exp.currentlyWorking}
+                             disabled={exp.currentlyWorking}
                           />
                         </div>
                       </div>
@@ -802,9 +800,9 @@ const JobSeekerCreateProfile = () => {
               </section>
 
               <div className="jscp-form-row jscp-buttons-row">
-                <button type="button" className="jscp-btn-secondary">
+                {/* <button type="button" className="jscp-btn-secondary">
                   Save as draft
-                </button>
+                </button> */}
                 <button
                   type="button"
                   className="jscp-btn-secondary"
@@ -874,9 +872,9 @@ const JobSeekerCreateProfile = () => {
                 </div>
               </section>
               <div className="jscp-form-row jscp-buttons-row">
-                <button type="button" className="jscp-btn-secondary">
+                {/* <button type="button" className="jscp-btn-secondary">
                   Save as draft
-                </button>
+                </button> */}
                 <button
                   type="button"
                   className="jscp-btn-secondary"
@@ -950,9 +948,9 @@ const JobSeekerCreateProfile = () => {
                 </div>
               </section>
               <div className="jscp-form-row jscp-buttons-row">
-                <button type="button" className="jscp-btn-secondary">
+                {/* <button type="button" className="jscp-btn-secondary">
                   Save as draft
-                </button>
+                </button> */}
                 <button
                   type="button"
                   className="jscp-btn-secondary"
@@ -1027,7 +1025,7 @@ const JobSeekerCreateProfile = () => {
 
                   <div className="jscp-form-row">
                     <div className="jscp-input-group jscp-half">
-                      <label htmlFor="expectedSalary">Expected Salary</label>
+                      <label htmlFor="expectedSalary">Expected Salary (₹ Lakhs per Annum)</label>
                       <input
                         type="text"
                         id="expectedSalary"
@@ -1073,9 +1071,9 @@ const JobSeekerCreateProfile = () => {
               </label>
 
               <div className="jscp-form-row jscp-buttons-row">
-                <button type="button" className="jscp-btn-secondary">
+                {/* <button type="button" className="jscp-btn-secondary">
                   Save as draft
-                </button>
+                </button> */}
                 <button
                   type="button"
                   className="jscp-btn-secondary"
@@ -1086,7 +1084,7 @@ const JobSeekerCreateProfile = () => {
                 <button
                   type="submit"
                   className="jscp-btn-primary"
-                  disabled={!agreeTerms} // Optionally disable confirm if terms not agreed
+                  // disabled={!agreeTerms} // Optionally disable confirm if terms not agreed
                 >
                   Confirm
                 </button>

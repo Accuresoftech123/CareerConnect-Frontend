@@ -872,8 +872,9 @@ const JSJobDetails = () => {
               </div>
 
               <section>
-                <h4>Job Summary</h4>
-                <p>{selectedJob.jobSummary}</p>
+                <h4>About Us</h4>
+                <p>{selectedJob.
+companyAbout}</p>
               </section>
 
               {/* Key Responsibilities */}
@@ -941,7 +942,8 @@ const JSJobDetails = () => {
               <section>
                 <h4>Contact Details</h4>
                 <p>
-                  <strong>Recruiter:</strong> {selectedJob.companyHr}
+                  <strong>Recruiter:</strong> {selectedJob.
+hrName}
                 </p>
                 <p>
                   <strong>Email:</strong>{" "}

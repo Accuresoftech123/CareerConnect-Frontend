@@ -67,7 +67,7 @@ const HomePage = () => {
               <span className="Homepage_span-logo">all in one place</span>
             </p>
           </div>
-
+          {/* Search Bar */}
           <Card className="Homepage_search-bar">
             <div className="Homepage_searchinput-container">
               <SvgIcon component={SearchIcon} />
@@ -88,7 +88,7 @@ const HomePage = () => {
             </div>
             <button className="Homepage_btn-primary">Explore Jobs</button>
           </Card>
-
+          {/* Main Image */}
           <div className="Homepage_main-image">
             <img src={JobPortalHome} alt="HandShake" />
           </div>

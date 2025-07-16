@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import "../../Styles/JobSeeker/Registerstyle.css";
@@ -19,7 +19,7 @@ const Registration = () => {
   const [isVerified, setIsVerified] = useState(false);
 
   const url = "http://localhost:9191";
-
+  // State to hold form data
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -28,48 +28,113 @@ const Registration = () => {
     confirmPassword: ''
   });
 
+  // New state to hold validation error messages
+  const [errors, setErrors] = useState({});
+  // Function to validate form data
+  const validate = (data) => {
+    const newErrors = {};
+
+    // Full Name - required and min 3 chars
+    if (!data.fullName.trim()) {
+      newErrors.fullName = "Full Name is required";
+    } else if (data.fullName.trim().length < 3) {
+      newErrors.fullName = "Full Name must be at least 3 characters";
+    }
+
+    // Email - required and valid email format
+    if (!data.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(data.email.trim())
+    ) {
+      newErrors.email = "Email is invalid";
+    }
+
+    // Mobile Number - required and 10 digits only
+    if (!data.mobileNumber.trim()) {
+      newErrors.mobileNumber = "Mobile Number is required";
+    } else if (!/^\d{10}$/.test(data.mobileNumber.trim())) {
+      newErrors.mobileNumber = "Mobile Number must be 10 digits";
+    }
+
+    // Password - required and min 6 chars
+    if (!data.password) {
+      newErrors.password = "Password is required";
+    } else if (data.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    // Confirm Password - must match password
+    if (!data.confirmPassword) {
+      newErrors.confirmPassword = "Confirm your password";
+    } else if (data.confirmPassword !== data.password) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    return newErrors;
+  };
+  // Handle input changes
   const handleChange = (e) => {
     e.preventDefault();
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+
+    // Validate on the fly when user changes input
+    setErrors((prevErrors) => {
+      const updatedErrors = { ...prevErrors };
+      const validationErrors = validate({ ...formData, [name]: value });
+      if (validationErrors[name]) {
+        updatedErrors[name] = validationErrors[name];
+      } else {
+        delete updatedErrors[name];
+      }
+      return updatedErrors;
+    });
   };
-
+  // Handle form submission
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const response = await axios.post(`${url}/api/jobseekers/register`, formData);
+    const validationErrors = validate(formData);
+    setErrors(validationErrors);
 
-    const { message, jobSeekerId } = response.data;
-
-    if (response.status === 201 || response.status === 200) {
-      localStorage.setItem("jobSeekerId", jobSeekerId);
-      alert(message);
-      setShowVerificationPopup(true);
-    } else {
-      alert("Unexpected response from server.");
+    if (Object.keys(validationErrors).length > 0) {
+      // Don't submit if there are errors
+      return;
     }
 
-  } catch (error) {
-    const res = error.response;
-    const msg = res?.data?.message || error.message;
+    try {
+      const response = await axios.post(`${url}/api/jobseekers/register`, formData);
 
-    if (res?.status === 200 && msg.includes("not verified")) {
-      const jobSeekerId = res.data.jobSeekerId;
-      localStorage.setItem("jobSeekerId", jobSeekerId);
-      alert(msg);
-      setShowVerificationPopup(true);
-    } else if (res?.status === 409) {
-      alert("⚠️ This email is already registered and verified. Please log in.");
-      navigate("/Login");
-    } else {
-      alert("❌ Error: " + msg);
+      const { message, jobSeekerId } = response.data;
+
+      if (response.status === 201 || response.status === 200) {
+        localStorage.setItem("jobSeekerId", jobSeekerId);
+        alert(message);
+        setShowVerificationPopup(true);
+      } else {
+        alert("Unexpected response from server.");
+      }
+    } catch (error) {
+      const res = error.response;
+      const msg = res?.data?.message || error.message;
+
+      if (res?.status === 200 && msg.includes("not verified")) {
+        const jobSeekerId = res.data.jobSeekerId;
+        localStorage.setItem("jobSeekerId", jobSeekerId);
+        alert(msg);
+        setShowVerificationPopup(true);
+      } else if (res?.status === 409) {
+        alert("⚠️ This email is already registered and verified. Please log in.");
+        navigate("/Login");
+      } else {
+        alert("❌ Error: " + msg);
+      }
+
+      setShowVerificationPopup(false);
     }
-
-    setShowVerificationPopup(false);
-  }
-};
-
-
+  };
+  // Function to handle OTP verification
   const handleOtpVerified = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
@@ -85,17 +150,11 @@ const Registration = () => {
           <span>Career</span> Connect
         </div>
         <nav className="jobseeker_register-nav">
-            <Link to="/" >
-            Home
-          </Link>
-          <Link to="/jobs" >
-            Jobs
-          </Link>
-          <Link to="/companies" >
-            Companies
-          </Link>
+          <Link to="/">Home</Link>
+          <Link to="/jobs">Jobs</Link>
+          <Link to="/companies">Companies</Link>
           <Link to="/Login">
-          <button className="jobseeker_register-btn-primary">Log In</button>
+            <button className="jobseeker_register-btn-primary">Log In</button>
           </Link>
         </nav>
       </header>
@@ -106,7 +165,8 @@ const Registration = () => {
           {/* Left side: welcome and illustration */}
           <div className="jobseeker_register-text">
             <h1>
-              Welcome Back, to <br></br><span>Career Connect</span>
+              Welcome Back, to <br />
+              <span>Career Connect</span>
             </h1>
             <p>Your gateway to professional opportunities</p>
             <div className="jobseeker_register-illustration">
@@ -116,7 +176,7 @@ const Registration = () => {
 
           {/* Right side: Registration form */}
           <div className="jobseeker_register-form">
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} noValidate>
               <h3>Register</h3>
               <p>Please enter your details</p>
 
@@ -132,7 +192,8 @@ const Registration = () => {
                   required
                 />
               </div>
-
+              {errors.fullName && <p className="error-text">{errors.fullName}</p>}
+              { /* Email - required and valid email format */}
               <label>Email Id</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={LocalPostOfficeIcon} />
@@ -145,7 +206,8 @@ const Registration = () => {
                   required
                 />
               </div>
-
+              {errors.email && <p className="error-text">{errors.email}</p>}
+              { /* Mobile Number - required and 10 digits only */}
               <label>Mobile Number</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={PhoneIcon} />
@@ -158,7 +220,8 @@ const Registration = () => {
                   required
                 />
               </div>
-
+              {errors.mobileNumber && <p className="error-text">{errors.mobileNumber}</p>}
+              { /* Password - required and min 6 chars */}
               <label>Create Password</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={LockIcon} />
@@ -171,7 +234,8 @@ const Registration = () => {
                   required
                 />
               </div>
-
+              {errors.password && <p className="error-text">{errors.password}</p>}
+              { /* Confirm Password - must match password */}
               <label>Confirm Password</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={LockIcon} />
@@ -184,12 +248,13 @@ const Registration = () => {
                   required
                 />
               </div>
-
+              {errors.confirmPassword && <p className="error-text">{errors.confirmPassword}</p>}
+              { /* Submit Button */}
               <button className="jobseeker_register-btn-submit" type="submit">
                 Register
               </button>
             </form>
-
+            {/* Conditional rendering for email verification popup */}
             {showVerificationPopup && (
               <div className="popup-backdrop">
                 <EmailVerificationPopup
@@ -198,11 +263,11 @@ const Registration = () => {
                 />
               </div>
             )}
-
+            {/* Display success message if email is verified */}
             {isVerified && (
               <p style={{ color: "green" }}>Email Verified Successfully!</p>
             )}
-
+            {/* Link to login page */}
             <div className="jobseeker_register-option">
               <p>
                 Already have an account? <a href="/Login">Log In</a>
