@@ -186,16 +186,17 @@ const SpecificJob = () => {
               </div>
 
               <section>
-                <h4>Job Summary</h4>
-                <p>{jobData.jobSummary}</p>
+                <h4>About Us</h4>
+                <p>{jobData.
+companyAbout}</p>
               </section>
 
               {/* Key Responsibilities */}
               <section>
                 <h4>Key Responsibilities</h4>
                 <ul>
-                  {(jobData.responsibilities || []).map((resp, idx) => (
-                    <li key={idx}>{resp}</li>
+                  {jobData.description?.split("\n").map((line, idx) => (
+                    <li key={idx}>{line}</li>
                   ))}
                 </ul>
               </section>
@@ -255,7 +256,8 @@ const SpecificJob = () => {
               <section>
                 <h4>Contact Details</h4>
                 <p>
-                  <strong>Recruiter:</strong> {jobData.companyHr}
+                  <strong>Recruiter:</strong> {jobData.
+hrName}
                 </p>
                 <p>
                   <strong>Email:</strong>{" "}
