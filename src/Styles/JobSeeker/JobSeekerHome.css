@@ -251,3 +251,10 @@
     padding-top: 140px;
   }
 }
+
+.logout-btn {
+  cursor: pointer;
+  width: 100%;
+  padding: 10px;
+  text-align: left;
+}

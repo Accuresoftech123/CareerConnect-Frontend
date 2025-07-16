@@ -37,7 +37,12 @@ const Dashboard = () => {
   const initialJobs = async () => {
     const jobSeekerId = localStorage.getItem("jobSeekerId");
     try {
-      const response = await axiosInstance.get(`/api/jobposts/all-jobs/${jobSeekerId}`);
+      // const response = await axiosInstance.get(`/api/jobposts/all-jobs/${jobSeekerId}`);
+      // console.log(response.data);
+      const response = await axiosInstance.get(
+         `/api/jobposts/jobseeker/${jobSeekerId}/recommended`
+       );
+
       console.log(response.data);
 
       return response.data;

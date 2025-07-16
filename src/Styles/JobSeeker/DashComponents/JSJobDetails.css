@@ -286,14 +286,14 @@
   color: #888;
 }
 
-.jsjd-search input[type="text"] {
+.searchbyjob {
   padding: 7px 40px;
   margin-right: 10px;
   border: 1px solid #ff6600;
   border-radius: 30px 0 0 30px;
 }
 
-.jsjd-search select {
+.searchby {
   padding: 8px 12px;
   margin-right: 10px;
   border: 1px solid #ff6600;
@@ -436,13 +436,13 @@
     .jsjd-search {
     width: fit-content;
   }
-  .jsjd-search input[type="text"] {
+  .searchbyjob {
     width:fit-content;
     padding: 7px 12px; 
     padding-left: 40px;
     margin-left: 12px;
   }
-  .jsjd-search select {
+  .searchby {
     font-size: 12px;
     width:fit-content;
     padding: 10px 12px; 
@@ -474,12 +474,12 @@
   .jsjd-search {
     width: fit-content;
   }
-  .jsjd-search input[type="text"] {
+  .searchbyjob {
     width:fit-content;
     padding: 7px 12px; 
     padding-left: 40px;
   }
-  .jsjd-search select,
+  .searchby,
   .jsjd-search button {
     font-size: 12px;
     width:fit-content;
@@ -520,8 +520,8 @@
     gap: 10px;
   }
 
-  .jsjd-search input[type="text"],
-  .jsjd-search select,
+  .searchbyjob,
+  .searchby,
   .jsjd-search button {
     width: 90%;
     border-radius: 30px !important;
@@ -568,8 +568,8 @@
   .jsjd-detail {
    width: 93%;
   }
-  .jsjd-search input,
-  .jsjd-search select {
+  .searchbyjob,
+  .searchby {
     padding: 10px 7px;
     width: 95%;
   }
