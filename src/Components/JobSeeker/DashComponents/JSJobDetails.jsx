@@ -56,10 +56,14 @@ const JSJobDetails = () => {
 
   const [jobsData, setJobsData] = useState([]);
 
+   const [recommendedJobs, setRecommendedJobs] = useState([]);
+    const [savingJobId, setSavingJobId] = useState(null);
+
   const initialJobs = async () => {
+      const jobSeekerId = localStorage.getItem("jobSeekerId");
     try {
       // const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
-      const response = await axiosInstance.get(`/api/jobposts/recruiter`);
+      const response = await axiosInstance.get(`/api/jobposts/all-jobs/${jobSeekerId}`);
       console.log(response);
       setJobsData(response.data);
       return response.data;
@@ -69,6 +73,102 @@ const JSJobDetails = () => {
       return [];
     }
   };
+
+
+    //save Job Post
+   const saveJob = async (jobId) => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
+  
+    handleBookmarkToggle(jobId);
+  
+      try {
+        const response = await axiosInstance.post(
+          `/api/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
+        );
+       // fetchSavedJobsCount();
+      alert("Job saved successfully!");
+
+
+      setJobsData((prevJobs) => {
+  const updatedJobs = prevJobs.map((job) =>
+    job.id === jobId ? { ...job, bookmarked: true } : job
+  );
+
+  // ✅ Also update selectedJob if it matches
+  const updatedSelected = updatedJobs.find((job) => job.id === selectedJob?.id);
+  if (updatedSelected) {
+    setSelectedJob(updatedSelected);
+  }
+
+  return updatedJobs;
+});
+
+    } catch (error) {
+      
+      // If 409 Conflict (already saved), do nothing — we still want to show it as bookmarked
+      if (error.response?.status === 409) {
+  
+         setRecommendedJobs((prevJobs) =>
+          prevJobs.map((job) =>
+            job.id === jobId ? { ...job, bookmarked: true } : job
+          )
+        );
+        console.warn("Job is already saved. Keeping bookmark icon active.");
+        alert("Job is already saved!");
+      } else {
+        // For other errors, rollback the UI
+        alert("Something went wrong while saving the job.");
+       
+      }
+    } finally {
+      setSavingJobId(null);
+    }
+  };
+
+ 
+  // unsaved job
+  const unsaveJob = async (jobId) => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
+    setSavingJobId(jobId);
+  
+    try {
+      await axiosInstance.delete(`/api/jobseekers/saved-jobs/remove/${jobSeekerId}/${jobId}`);
+      //console.log("Job removed from saved list");
+      alert("unsaved successfully!");
+     
+     setJobsData((prevJobs) => {
+  const updatedJobs = prevJobs.map((job) =>
+    job.id === jobId ? { ...job, bookmarked: false } : job
+  );
+
+  // ✅ Also update selectedJob if it matches
+  const updatedSelected = updatedJobs.find((job) => job.id === selectedJob?.id);
+  if (updatedSelected) {
+    setSelectedJob(updatedSelected);
+  }
+
+  return updatedJobs;
+});
+
+    } catch (error) {
+      console.error("Unsave Job Error:", error);
+      alert("Something went wrong while removing the job.");
+    } finally {
+      setSavingJobId(null);
+    }
+  };
+  
+  const handleBookmarkClick = (jobId, isBookmarked) => {
+    if (isBookmarked) {
+      unsaveJob(jobId);
+    } else {
+      saveJob(jobId);
+    }
+  };
+  
+
+
+
   useEffect(() => {
     initialJobs();
   }, []);
@@ -212,14 +312,16 @@ const JSJobDetails = () => {
   }, [filteredJobs, currentPage]);
 
   useEffect(() => {
-    // If current selected job is not visible in the currentJobs list
-    if (
-      currentJobs.length > 0 &&
-      !currentJobs.some((job) => job.id === selectedJob?.id)
-    ) {
-      setSelectedJob(currentJobs[0]);
-    }
-  }, [currentJobs]);
+  if (
+    currentJobs.length > 0 &&
+    !currentJobs.some((job) => job.id === selectedJob?.id)
+  ) {
+    setSelectedJob(currentJobs[0]);
+  } else if (currentJobs.length === 0) {
+    setSelectedJob(null); // ✅ Clear when no jobs available
+  }
+}, [currentJobs]);
+
 
   // Total pages
   const totalPages = Math.ceil(filteredJobs.length / jobsPerPage);
@@ -259,10 +361,6 @@ const JSJobDetails = () => {
       );
       //  fetchApplicationCount();
       alert("Applied Successfully!");
-      // const updated = recommendedJobs.map((job) =>
-      //   job.id === jobId ? { ...job, applied: true } : job
-      // );
-      // setRecommendedJobs(updated);
     } catch (error) {
 
       console.error("Full error object:", error);
@@ -619,22 +717,20 @@ const JSJobDetails = () => {
                     <h3 className="jsjd-card-title">{job.title}</h3>
                     <span className="jsjd-card-company">{job.companyName}</span>
                   </div>
-                  <button
-                    className="jsjd-card-bookmark-button"
-                    onClick={() => handleBookmarkToggle(job.id)}
-                    aria-label={
-                      job.bookmarked ? "Remove bookmark" : "Bookmark job"
-                    }
-                    style={{ cursor: "pointer" }}
-                  >
-                    <img
-                      className={`bookmark-icon ${
-                        job.bookmarked ? "bookmarked" : ""
-                      }`}
-                      src={job.bookmarked ? bookmark : bookmarkBlank}
-                      alt={job.bookmarked ? "Bookmarked" : "Not bookmarked"}
-                    />
-                  </button>
+                 <button
+  className="JobSeeker-dashboard-bookmark-button"
+  onClick={() => handleBookmarkClick(job.id, job.bookmarked)}
+  aria-label={job.bookmarked ? "Remove bookmark" : "Bookmark job"}
+  disabled={savingJobId === job.id}
+  style={{ cursor: "pointer", border: "none", background: "transparent" }}
+>
+  <img
+    className={`bookmark-icon ${job.bookmarked ? "bookmarked" : ""}`}
+    src={job.bookmarked ? bookmark : bookmarkBlank}
+    alt={job.bookmarked ? "Bookmarked" : "Not bookmarked"}
+    style={{ width: "24px", height: "24px" }}
+  />
+</button>
                 </div>
               </div>
               <div className="jsjd-card-info">
@@ -697,27 +793,20 @@ const JSJobDetails = () => {
                       />
                     </button>
 
-                    <button
-                      className="jsjd-card-bookmark-button"
-                      onClick={() => handleBookmarkToggle(selectedJob.id)}
-                      aria-label={
-                        selectedJob.bookmarked
-                          ? "Remove bookmark"
-                          : "Bookmark job"
-                      }
-                    >
-                      <img
-                        className={`bookmark-icon ${
-                          selectedJob.bookmarked ? "bookmarked" : ""
-                        }`}
-                        src={selectedJob.bookmarked ? bookmark : bookmarkBlank}
-                        alt={
-                          selectedJob.bookmarked
-                            ? "Bookmarked"
-                            : "Not bookmarked"
-                        }
-                      />
-                    </button>
+                     <button
+  className="JobSeeker-dashboard-bookmark-button"
+  onClick={() => handleBookmarkClick(selectedJob.id, selectedJob.bookmarked)}
+  aria-label={selectedJob.bookmarked ? "Remove bookmark" : "Bookmark job"}
+  disabled={savingJobId === selectedJob.id}
+  style={{ cursor: "pointer", border: "none", background: "transparent" }}
+>
+  <img
+    className={`bookmark-icon ${selectedJob.bookmarked ? "bookmarked" : ""}`}
+    src={selectedJob.bookmarked ? bookmark : bookmarkBlank}
+    alt={selectedJob.bookmarked ? "Bookmarked" : "Not bookmarked"}
+    style={{ width: "24px", height: "24px" }}
+  />
+</button>
                   </div>
                 </div>
 
@@ -783,8 +872,9 @@ const JSJobDetails = () => {
               </div>
 
               <section>
-                <h4>Job Summary</h4>
-                <p>{selectedJob.jobSummary}</p>
+                <h4>About Us</h4>
+                <p>{selectedJob.
+companyAbout}</p>
               </section>
 
               {/* Key Responsibilities */}
@@ -852,7 +942,8 @@ const JSJobDetails = () => {
               <section>
                 <h4>Contact Details</h4>
                 <p>
-                  <strong>Recruiter:</strong> {selectedJob.companyHr}
+                  <strong>Recruiter:</strong> {selectedJob.
+hrName}
                 </p>
                 <p>
                   <strong>Email:</strong>{" "}
