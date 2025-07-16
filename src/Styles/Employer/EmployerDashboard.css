@@ -363,11 +363,14 @@ background-color: #842cc0;
   /* blue on hover */
   background-color: #f5faff;
 }
-
+.Employer_Dashboard-experience-range-group-abc select {
+    width: 358px;
+    padding: 10px 10px;
+}
 
 .Employer_Dashboard-text-input-half {
-  width: 48%;
-  padding: 12px 15px;
+  width: 358px;
+  padding: 10px 10px;
   border: 2px solid #ccc;
   border-radius: 6px;
   font-size: 15px;
