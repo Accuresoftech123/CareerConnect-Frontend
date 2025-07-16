@@ -461,7 +461,7 @@ const EmployerDashboard = () => {
                   </option>
                 ))}
               </select>
-              <span className="experience-separator">to</span>
+              <span className="experience-separator" style={{paddingLeft:"10px", paddingRight:"10px"}}>to</span>
               <select
                 id="maxExperience"
                 name="maxExperience"
@@ -506,9 +506,9 @@ const EmployerDashboard = () => {
                 htmlFor="salaryRange"
                 className="Employer_Dashboard-input-label"
               >
-                Salary range{" "}
+                Salary range (LPA)
                 <span className="Employer_Dashboard-label-optional">
-                  (optional)
+                  [optional]
                 </span>
               </label>
               <div className="Employer_Dashboard-salary-range-group">
@@ -520,7 +520,7 @@ const EmployerDashboard = () => {
                   className="Employer_Dashboard-text-input-half"
                   placeholder="Minimum"
                 />
-                <span className="salary-separator">to</span>
+                <span className="salary-separator" style={{paddingRight:"10px", paddingLeft:"10px"}}>to</span>
                 <input
                   type="number"
                   name="maxSalary"
