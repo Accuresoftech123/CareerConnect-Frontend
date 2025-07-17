@@ -145,12 +145,24 @@
 }
 
 .JobSeeker-dashboard-cards-container {
-  display: flex;
-  overflow: hidden; /* or auto if needed */
-  flex-wrap: wrap; /* if using flex */
-  gap: 16px;
-  padding-bottom: 10px;
+ display: flex;
+ flex-direction: row;
+ overflow-x: auto;
+ overflow-y: hidden;
+ gap: 7px;
+ scroll-behavior: smooth;
+ padding-bottom: 10px;
+  flex-wrap: nowrap;
 }
+.JobSeeker-dashboard-cards-container::-webkit-scrollbar {
+ height: 6px;
+}
+
+.JobSeeker-dashboard-cards-container::-webkit-scrollbar-thumb {
+ background: #ccc;
+ border-radius: 4px;
+}
+
 
 .JobSeeker-dashboard-card {
   flex: 0 0 auto;
