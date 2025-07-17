@@ -275,17 +275,17 @@ const EmployerDashboard = () => {
 
         <div className="Employer_Dashboard-sidebar-footer">
           <div className="Employer_Dashboard-user-profile">
-            <img
+            {/* <img
               src="Employer_Dashboard-user-profile-pic.jpg"
               alt="User Profile"
               className="profile-pic"
-            />
-            <div className="user-info">
+            /> */}
+            {/* <div className="user-info">
               <span className="Employer_Dashboard-user-name">
                 Shruti Punewar
               </span>
               <span className="Employer_Dashboard-user-role">HR Executive</span>
-            </div>
+            </div> */}
             <i className="icon-arrow-right"></i>
           </div>
         </div>

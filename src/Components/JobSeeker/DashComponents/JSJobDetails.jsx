@@ -714,7 +714,14 @@ const JSJobDetails = () => {
             >
               <div className="jsjd-card-header">
                 <div className="jsjd-card-icon">
-                  <img src={job.companyImageUrl} alt={`${job.title} icon`} />
+                 {job.companyImageUrl ? (
+  <img src={job.companyImageUrl} alt={`${job.title} icon`} />
+) : (
+  <div className="company-placeholder">
+    {job.companyName.charAt(0).toUpperCase()}
+  </div>
+)}
+
                 </div>
                 <div className="jsjd-card-details">
                   <div className="jsjd-card-title-company">

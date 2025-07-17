@@ -15,6 +15,7 @@ const url = "http://localhost:9191";
 const SpecificJob = () => {
   const location = useLocation();
   const selectedJobId = location.state?.selectedJob;
+  const [savingJobId, setSavingJobId] = useState(null);
 
   const [jobData, setJobData] = useState(null);
   //const [recommendedJobs, setRecommendedJobs] = useState([]);
@@ -75,6 +76,59 @@ const SpecificJob = () => {
   if (!jobData) {
     return <div>Loading job details...</div>;
   }
+  const fetchSavedJobsCount = () => {
+  // You can implement or remove this as needed
+};
+
+const saveJob = async (jobId) => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+
+  setSavingJobId(jobId);
+  try {
+    await axiosInstance.post(
+      `/api/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
+    );
+    alert("Job saved successfully!");
+    setJobData((prevJob) => ({ ...prevJob, bookmarked: true }));
+    fetchSavedJobsCount();
+  } catch (error) {
+    if (error.response?.status === 409) {
+      alert("Job is already saved!");
+      setJobData((prevJob) => ({ ...prevJob, bookmarked: true }));
+    } else {
+      alert("Something went wrong while saving the job.");
+    }
+  } finally {
+    setSavingJobId(null);
+  }
+};
+
+const unsaveJob = async (jobId) => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+
+  setSavingJobId(jobId);
+  try {
+    await axiosInstance.delete(
+      `/api/jobseekers/saved-jobs/remove/${jobSeekerId}/${jobId}`
+    );
+    alert("Job removed from saved!");
+    setJobData((prevJob) => ({ ...prevJob, bookmarked: false }));
+    fetchSavedJobsCount();
+  } catch (error) {
+    alert("Something went wrong while removing the job.");
+  } finally {
+    setSavingJobId(null);
+  }
+};
+
+const handleBookmarkClick = (jobId, isBookmarked) => {
+  if (isBookmarked) {
+    unsaveJob(jobId);
+  } else {
+    saveJob(jobId);
+  }
+};
+
   return (
     <div>
       {/*  Details Section === */}
@@ -104,23 +158,21 @@ const SpecificJob = () => {
                       />
                     </button>
 
-                    <button
-                      className="jsjd-card-bookmark-button"
-                      onClick={() => handleBookmarkToggle(jobData.id)}
-                      aria-label={
-                        jobData.bookmarked ? "Remove bookmark" : "Bookmark job"
-                      }
-                    >
-                      <img
-                        className={`bookmark-icon ${
-                          jobData.bookmarked ? "bookmarked" : ""
-                        }`}
-                        src={jobData.bookmarked ? bookmark : bookmarkBlank}
-                        alt={
-                          jobData.bookmarked ? "Bookmarked" : "Not bookmarked"
-                        }
-                      />
-                    </button>
+                   <button
+  className="jsjd-card-bookmark-button"
+  onClick={() => handleBookmarkClick(jobData.id, jobData.bookmarked)}
+  aria-label={jobData.bookmarked ? "Remove bookmark" : "Bookmark job"}
+  disabled={savingJobId === jobData.id}
+  style={{ cursor: "pointer", border: "none", background: "transparent" }}
+>
+  <img
+    className={`bookmark-icon ${jobData.bookmarked ? "bookmarked" : ""}`}
+    src={jobData.bookmarked ? bookmark : bookmarkBlank}
+    alt={jobData.bookmarked ? "Bookmarked" : "Not bookmarked"}
+    style={{ width: "24px", height: "24px" }}
+  />
+</button>
+
                   </div>
                 </div>
 
