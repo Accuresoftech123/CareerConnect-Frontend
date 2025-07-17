@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState ,useEffect,useRef} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import facebook from "../../Images/facebook.svg";
 import instagram from "../../Images/instagram.svg";
@@ -27,6 +27,7 @@ import axiosInstance from "../../axiosInstance";
 const TOTAL_STEPS = 6;
 
 const JobSeekerCreateProfile = () => {
+  const resumeInputRef = useRef(null);
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [skillInput, setSkillInput] = React.useState("");
@@ -129,6 +130,7 @@ const JobSeekerCreateProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
      if (!agreeTerms) {
     alert("Please agree to the Terms and Conditions before submitting.");
     return;
@@ -156,8 +158,9 @@ const JobSeekerCreateProfile = () => {
     };
 
     if (resumeFile) {
-      formData.append("resumeFile", resumeFile);
-    }
+  console.log("Resume File: ", resumeFile);  // <-- Add this
+  formData.append("resumeFile", resumeFile);
+}
     if (videoFile) {
       formData.append("videoFile", videoFile);
     }
@@ -173,6 +176,12 @@ const JobSeekerCreateProfile = () => {
         type: "application/json",
       })
     );
+     formData.append("parseResume", personalInfo.autoParse);
+
+     for (let pair of formData.entries()) {
+  console.log(`${pair[0]}:`, pair[1]);
+}
+     
 
     try {
       const response = await axiosInstance.put(
@@ -186,6 +195,9 @@ const JobSeekerCreateProfile = () => {
       );
       if (response.status === 200) {
         alert("Job Seeker profile updated successfully!");
+         if (resumeInputRef.current) {
+    console.log(resumeInputRef.current.value);
+  }
         navigate("/JobSeekerHome");
       }
     } catch (error) {
@@ -420,6 +432,9 @@ const JobSeekerCreateProfile = () => {
                     <input
                       id="resume"
                       type="file"
+                       
+  accept=".pdf,.doc,.docx"
+  ref={resumeInputRef}
                       style={{ display: "none" }}
                       onChange={(e) => setResumeFile(e.target.files[0])}
                       required
@@ -483,6 +498,7 @@ const JobSeekerCreateProfile = () => {
                   id="autoParse"
                   checked={personalInfo.autoParse}
                   onChange={handlePersonalInfoChange}
+                  //formData.append("parseResume", parseResumeCheckbox.checked);
                 />
                 <label htmlFor="autoParse">Auto‑parse resume data</label>
               </div>
