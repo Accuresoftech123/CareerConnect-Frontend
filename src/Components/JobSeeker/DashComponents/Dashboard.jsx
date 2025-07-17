@@ -477,7 +477,7 @@ useEffect(() => {
             </button>
           </div>
           <div className="JobSeeker-dashboard-cards-container">
-            {recommendedJobs.slice(0,3).map((job) => (
+            {recommendedJobs.slice(0,8).map((job) => (
               <article
                 key={job.id}
                 className="JobSeeker-dashboard-card"
