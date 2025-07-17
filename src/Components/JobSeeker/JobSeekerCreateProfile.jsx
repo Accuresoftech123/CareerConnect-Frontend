@@ -130,11 +130,10 @@ const JobSeekerCreateProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-     if (!agreeTerms) {
-    alert("Please agree to the Terms and Conditions before submitting.");
-    return;
-  }
+    if (!agreeTerms) {
+      alert("Please agree to the Terms and Conditions before submitting.");
+      return;
+    }
     const formData = new FormData();
     const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
 
@@ -299,9 +298,8 @@ const JobSeekerCreateProfile = () => {
                   <div className="jscp-logo-upload">
                     {/* Preview uploaded image or default */}
                     <img
-                      
                       alt="preview"
-                       src={previewUrl || user} 
+                      src={previewUrl || user}
                       className="jscp-upload-image"
                     />
 
@@ -320,14 +318,14 @@ const JobSeekerCreateProfile = () => {
                       id="companyImageInput"
                       accept="image/*"
                       onChange={(e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setPreviewUrl(URL.createObjectURL(file)); // Set preview
-    }
-  }}
+                        const file = e.target.files[0];
+                        if (file) {
+                          setImageFile(file);
+                          setPreviewUrl(URL.createObjectURL(file)); // Set preview
+                        }
+                      }}
                       style={{ display: "none" }}
-                      
+
                       // onChange={handleImageUpload}
                     />
                   </div>
@@ -511,7 +509,13 @@ const JobSeekerCreateProfile = () => {
                 <button
                   type="button"
                   className="jscp-btn-primary"
-                  onClick={handleNext}
+                  onClick={() => {
+                    if (!resumeFile) {
+                      alert("Please upload your resume before proceeding.");
+                      return;
+                    }
+                    handleNext(); // proceed to next step if resume is uploaded
+                  }}
                 >
                   Next
                 </button>
@@ -748,7 +752,7 @@ const JobSeekerCreateProfile = () => {
                                 e.target.value
                               )
                             }
-                             disabled={exp.currentlyWorking}
+                            disabled={exp.currentlyWorking}
                           />
                         </div>
                       </div>
@@ -1041,7 +1045,9 @@ const JobSeekerCreateProfile = () => {
 
                   <div className="jscp-form-row">
                     <div className="jscp-input-group jscp-half">
-                      <label htmlFor="expectedSalary">Expected Salary (₹ Lakhs per Annum)</label>
+                      <label htmlFor="expectedSalary">
+                        Expected Salary (₹ Lakhs per Annum)
+                      </label>
                       <input
                         type="text"
                         id="expectedSalary"

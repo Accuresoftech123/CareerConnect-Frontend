@@ -56,10 +56,19 @@ const JSJobDetails = () => {
 
   const [jobsData, setJobsData] = useState([]);
 
+  const [recommendedJobs, setRecommendedJobs] = useState([]);
+  const [savingJobId, setSavingJobId] = useState(null);
+
   const initialJobs = async () => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
     try {
       // const response = await axios.get(`${url}/jobposts/recruiters/jobposts`);
-      const response = await axiosInstance.get(`/api/jobposts/recruiter`);
+      const response = await axiosInstance.get(
+        `/api/jobposts/all-jobs/${jobSeekerId}`
+      );
+      //       const response = await axiosInstance.get(
+      //   `/api/jobposts/jobseeker/${jobSeekerId}/recommended`
+      // );
       console.log(response);
       setJobsData(response.data);
       return response.data;
@@ -69,6 +78,97 @@ const JSJobDetails = () => {
       return [];
     }
   };
+
+  //save Job Post
+  const saveJob = async (jobId) => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
+
+    handleBookmarkToggle(jobId);
+
+    try {
+      const response = await axiosInstance.post(
+        `/api/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
+      );
+      // fetchSavedJobsCount();
+      alert("Job saved successfully!");
+
+      setJobsData((prevJobs) => {
+        const updatedJobs = prevJobs.map((job) =>
+          job.id === jobId ? { ...job, bookmarked: true } : job
+        );
+
+        // ✅ Also update selectedJob if it matches
+        const updatedSelected = updatedJobs.find(
+          (job) => job.id === selectedJob?.id
+        );
+        if (updatedSelected) {
+          setSelectedJob(updatedSelected);
+        }
+
+        return updatedJobs;
+      });
+    } catch (error) {
+      // If 409 Conflict (already saved), do nothing — we still want to show it as bookmarked
+      if (error.response?.status === 409) {
+        setRecommendedJobs((prevJobs) =>
+          prevJobs.map((job) =>
+            job.id === jobId ? { ...job, bookmarked: true } : job
+          )
+        );
+        console.warn("Job is already saved. Keeping bookmark icon active.");
+        alert("Job is already saved!");
+      } else {
+        // For other errors, rollback the UI
+        alert("Something went wrong while saving the job.");
+      }
+    } finally {
+      setSavingJobId(null);
+    }
+  };
+
+  // unsaved job
+  const unsaveJob = async (jobId) => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
+    setSavingJobId(jobId);
+
+    try {
+      await axiosInstance.delete(
+        `/api/jobseekers/saved-jobs/remove/${jobSeekerId}/${jobId}`
+      );
+      //console.log("Job removed from saved list");
+      alert("unsaved successfully!");
+
+      setJobsData((prevJobs) => {
+        const updatedJobs = prevJobs.map((job) =>
+          job.id === jobId ? { ...job, bookmarked: false } : job
+        );
+
+        // ✅ Also update selectedJob if it matches
+        const updatedSelected = updatedJobs.find(
+          (job) => job.id === selectedJob?.id
+        );
+        if (updatedSelected) {
+          setSelectedJob(updatedSelected);
+        }
+
+        return updatedJobs;
+      });
+    } catch (error) {
+      console.error("Unsave Job Error:", error);
+      alert("Something went wrong while removing the job.");
+    } finally {
+      setSavingJobId(null);
+    }
+  };
+
+  const handleBookmarkClick = (jobId, isBookmarked) => {
+    if (isBookmarked) {
+      unsaveJob(jobId);
+    } else {
+      saveJob(jobId);
+    }
+  };
+
   useEffect(() => {
     initialJobs();
   }, []);
@@ -212,12 +312,13 @@ const JSJobDetails = () => {
   }, [filteredJobs, currentPage]);
 
   useEffect(() => {
-    // If current selected job is not visible in the currentJobs list
     if (
       currentJobs.length > 0 &&
       !currentJobs.some((job) => job.id === selectedJob?.id)
     ) {
       setSelectedJob(currentJobs[0]);
+    } else if (currentJobs.length === 0) {
+      setSelectedJob(null); // ✅ Clear when no jobs available
     }
   }, [currentJobs]);
 
@@ -246,7 +347,7 @@ const JSJobDetails = () => {
     setCurrentPage(1); // Reset to first page
   };
 
- const applyToJob = async (jobId) => {
+  const applyToJob = async (jobId) => {
     const jobSeekerId = localStorage.getItem("jobSeekerId");
     if (!jobSeekerId) {
       alert("Please log in first.");
@@ -259,21 +360,19 @@ const JSJobDetails = () => {
       );
       //  fetchApplicationCount();
       alert("Applied Successfully!");
-      // const updated = recommendedJobs.map((job) =>
-      //   job.id === jobId ? { ...job, applied: true } : job
-      // );
-      // setRecommendedJobs(updated);
     } catch (error) {
-
       console.error("Full error object:", error);
-     let errorMessage = error.response?.data?.message 
-      || (typeof error.response?.data === 'string' ? error.response.data : null)
-      || error.message;
+      let errorMessage =
+        error.response?.data?.message ||
+        (typeof error.response?.data === "string"
+          ? error.response.data
+          : null) ||
+        error.message;
 
       console.error("Application failed:", errorMessage);
 
-       // ✅ Null-safe and case-insensitive
-  const normalizedMessage = errorMessage?.toLowerCase() || "";
+      // ✅ Null-safe and case-insensitive
+      const normalizedMessage = errorMessage?.toLowerCase() || "";
 
       if (normalizedMessage.includes("already applied")) {
         alert("You have already applied for this job.");
@@ -291,6 +390,7 @@ const JSJobDetails = () => {
           <div className="jsjd-searchinput-container">
             <SvgIcon component={SearchIcon} />
             <input
+            className="searchbyjob"
               type="text"
               name="keywords"
               value={searchValues.keywords}
@@ -300,38 +400,40 @@ const JSJobDetails = () => {
               placeholder="Search jobs by title"
             />
           </div>
-          <select
+          <input
+          className="searchby"
+            type="text"
+            list="location-options"
             name="location"
             value={searchValues.location}
             onChange={(e) =>
               setSearchValues({ ...searchValues, location: e.target.value })
             }
-          >
-            <option disabled value="">
-              Select Location
-            </option>
+            placeholder="Select or type location"
+          />
+          <datalist id="location-options">
             {locationOptions.map((loc) => (
-              <option key={loc} value={loc}>
-                {loc}
-              </option>
+              <option key={loc} value={loc} />
             ))}
-          </select>
-          <select
+          </datalist>
+
+          <input
+          className="searchby"
+            type="text"
+            list="experience-options"
             name="experience"
             value={searchValues.experience}
             onChange={(e) =>
               setSearchValues({ ...searchValues, experience: e.target.value })
             }
-          >
-            <option disabled value="">
-              Select Experience
-            </option>
+            placeholder="Select or type experience"
+          />
+          <datalist id="experience-options">
             {experienceOptions.map((exp) => (
-              <option key={exp} value={exp}>
-                {exp}
-              </option>
+              <option key={exp} value={exp} />
             ))}
-          </select>
+          </datalist>
+
           <button type="submit">Search</button>
         </form>
       </section>
@@ -612,7 +714,14 @@ const JSJobDetails = () => {
             >
               <div className="jsjd-card-header">
                 <div className="jsjd-card-icon">
-                  <img src={job.companyImageUrl} alt={`${job.title} icon`} />
+                 {job.companyImageUrl ? (
+  <img src={job.companyImageUrl} alt={`${job.title} icon`} />
+) : (
+  <div className="company-placeholder">
+    {job.companyName.charAt(0).toUpperCase()}
+  </div>
+)}
+
                 </div>
                 <div className="jsjd-card-details">
                   <div className="jsjd-card-title-company">
@@ -620,12 +729,17 @@ const JSJobDetails = () => {
                     <span className="jsjd-card-company">{job.companyName}</span>
                   </div>
                   <button
-                    className="jsjd-card-bookmark-button"
-                    onClick={() => handleBookmarkToggle(job.id)}
+                    className="JobSeeker-dashboard-bookmark-button"
+                    onClick={() => handleBookmarkClick(job.id, job.bookmarked)}
                     aria-label={
                       job.bookmarked ? "Remove bookmark" : "Bookmark job"
                     }
-                    style={{ cursor: "pointer" }}
+                    disabled={savingJobId === job.id}
+                    style={{
+                      cursor: "pointer",
+                      border: "none",
+                      background: "transparent",
+                    }}
                   >
                     <img
                       className={`bookmark-icon ${
@@ -633,6 +747,7 @@ const JSJobDetails = () => {
                       }`}
                       src={job.bookmarked ? bookmark : bookmarkBlank}
                       alt={job.bookmarked ? "Bookmarked" : "Not bookmarked"}
+                      style={{ width: "24px", height: "24px" }}
                     />
                   </button>
                 </div>
@@ -698,13 +813,24 @@ const JSJobDetails = () => {
                     </button>
 
                     <button
-                      className="jsjd-card-bookmark-button"
-                      onClick={() => handleBookmarkToggle(selectedJob.id)}
+                      className="JobSeeker-dashboard-bookmark-button"
+                      onClick={() =>
+                        handleBookmarkClick(
+                          selectedJob.id,
+                          selectedJob.bookmarked
+                        )
+                      }
                       aria-label={
                         selectedJob.bookmarked
                           ? "Remove bookmark"
                           : "Bookmark job"
                       }
+                      disabled={savingJobId === selectedJob.id}
+                      style={{
+                        cursor: "pointer",
+                        border: "none",
+                        background: "transparent",
+                      }}
                     >
                       <img
                         className={`bookmark-icon ${
@@ -716,12 +842,15 @@ const JSJobDetails = () => {
                             ? "Bookmarked"
                             : "Not bookmarked"
                         }
+                        style={{ width: "24px", height: "24px" }}
                       />
                     </button>
                   </div>
                 </div>
 
-                <div className="jsjd-detail-company">{selectedJob.companyName}</div>
+                <div className="jsjd-detail-company">
+                  {selectedJob.companyName}
+                </div>
               </div>
               <hr></hr>
               <div className="jsjd-card-info">
@@ -784,8 +913,7 @@ const JSJobDetails = () => {
 
               <section>
                 <h4>About Us</h4>
-                <p>{selectedJob.
-companyAbout}</p>
+                <p>{selectedJob.companyAbout}</p>
               </section>
 
               {/* Key Responsibilities */}
@@ -853,8 +981,7 @@ companyAbout}</p>
               <section>
                 <h4>Contact Details</h4>
                 <p>
-                  <strong>Recruiter:</strong> {selectedJob.
-hrName}
+                  <strong>Recruiter:</strong> {selectedJob.hrName}
                 </p>
                 <p>
                   <strong>Email:</strong>{" "}
@@ -864,7 +991,12 @@ hrName}
                 </p>
               </section>
 
-              <button className="jsjd-apply-btn"   onClick={() => applyToJob(selectedJob.id)} >Apply Now</button>
+              <button
+                className="jsjd-apply-btn"
+                onClick={() => applyToJob(selectedJob.id)}
+              >
+                Apply Now
+              </button>
             </div>
           </div>
         )}

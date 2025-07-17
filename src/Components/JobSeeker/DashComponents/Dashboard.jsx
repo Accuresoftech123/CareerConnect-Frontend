@@ -35,8 +35,14 @@ const Dashboard = () => {
   const [savingJobId, setSavingJobId] = useState(null);
   
   const initialJobs = async () => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
     try {
-      const response = await axiosInstance.get(`/api/jobposts/recruiter`);
+      // const response = await axiosInstance.get(`/api/jobposts/all-jobs/${jobSeekerId}`);
+      // console.log(response.data);
+      const response = await axiosInstance.get(
+         `/api/jobposts/jobseeker/${jobSeekerId}/recommended`
+       );
+
       console.log(response.data);
 
       return response.data;
@@ -45,6 +51,9 @@ const Dashboard = () => {
       return [];
     }
   };
+
+
+
   //save Job Post
  const saveJob = async (jobId) => {
   const jobSeekerId = localStorage.getItem("jobSeekerId");
@@ -64,22 +73,60 @@ const Dashboard = () => {
     );
     setRecommendedJobs(updated);
   } catch (error) {
-    console.error("Save Job Error:", error);
-
+    
     // If 409 Conflict (already saved), do nothing — we still want to show it as bookmarked
     if (error.response?.status === 409) {
+
+       setRecommendedJobs((prevJobs) =>
+        prevJobs.map((job) =>
+          job.id === jobId ? { ...job, bookmarked: true } : job
+        )
+      );
       console.warn("Job is already saved. Keeping bookmark icon active.");
+      alert("Job is already saved!");
     } else {
       // For other errors, rollback the UI
       alert("Something went wrong while saving the job.");
-      setRecommendedJobs((prevJobs) =>
-        prevJobs.map((job) =>
-          job.id === jobId ? { ...job, bookmarked: !job.bookmarked } : job
-        )
-      );
+     
     }
   } finally {
     setSavingJobId(null);
+  }
+};
+
+// unsaved job
+const unsaveJob = async (jobId) => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+  setSavingJobId(jobId);
+
+  try {
+    await axiosInstance.delete(`/api/jobseekers/saved-jobs/remove/${jobSeekerId}/${jobId}`);
+
+    
+    //console.log("Job removed from saved list");
+    alert("unsaved successfully!");
+   
+    // fetch saved job 
+    fetchSavedJobsCount();
+    // Update UI immediately
+    setRecommendedJobs((prevJobs) =>
+      prevJobs.map((job) =>
+        job.id === jobId ? { ...job, bookmarked: false } : job
+      )
+    );
+  } catch (error) {
+    console.error("Unsave Job Error:", error);
+    alert("Something went wrong while removing the job.");
+  } finally {
+    setSavingJobId(null);
+  }
+};
+
+const handleBookmarkClick = (jobId, isBookmarked) => {
+  if (isBookmarked) {
+    unsaveJob(jobId);
+  } else {
+    saveJob(jobId);
   }
 };
 
@@ -430,7 +477,7 @@ useEffect(() => {
             </button>
           </div>
           <div className="JobSeeker-dashboard-cards-container">
-            {recommendedJobs.slice(0,3).map((job) => (
+            {recommendedJobs.slice(0,8).map((job) => (
               <article
                 key={job.id}
                 className="JobSeeker-dashboard-card"
@@ -460,19 +507,20 @@ useEffect(() => {
                         {job.companyName}
                       </span>
                     </div>
-                    <button
-                      className="JobSeeker-dashboard-bookmark-button"
-                      onClick={() => saveJob(job.id)}
-                     aria-label={job.bookmarked ? "Remove bookmark" : "Bookmark job"}
+                   <button
+  className="JobSeeker-dashboard-bookmark-button"
+  onClick={() => handleBookmarkClick(job.id, job.bookmarked)}
+  aria-label={job.bookmarked ? "Remove bookmark" : "Bookmark job"}
   disabled={savingJobId === job.id}
-                      style={{ cursor: "pointer" }}
-                    >
-                      <img
-                       className={`bookmark-icon ${job.bookmarked ? "bookmarked" : ""}`}
+  style={{ cursor: "pointer", border: "none", background: "transparent" }}
+>
+  <img
+    className={`bookmark-icon ${job.bookmarked ? "bookmarked" : ""}`}
     src={job.bookmarked ? bookmark : bookmarkBlank}
     alt={job.bookmarked ? "Bookmarked" : "Not bookmarked"}
-                      />
-                    </button>
+    style={{ width: "24px", height: "24px" }}
+  />
+</button>
                   </div>
                 </div>
                 <div className="JobSeeker-dashboard-info">

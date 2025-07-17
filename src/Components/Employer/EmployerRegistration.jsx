@@ -9,13 +9,11 @@ import LockIcon from "@mui/icons-material/Lock";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
 import EmailVerificationPopup from "./EmailVerification.jsx";
+
 const Registration = () => {
   const url = "http://localhost:9191";
   const navigate = useNavigate();
-
-  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
-  const [isVerified, setIsVerified] = useState(false);
-
+  // State to hold form data
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -23,25 +21,66 @@ const Registration = () => {
     password: "",
     confirmPassword: "",
   });
-
+  // New state to hold validation error messages
+  const [errors, setErrors] = useState({});
   const [agreed, setAgreed] = useState(false);
+    // New state to hold verification popup and verified
+  const [showVerificationPopup, setShowVerificationPopup] = useState(false);
+  const [isVerified, setIsVerified] = useState(false);
+  //validation function
+  const validate = () => {
+    const newErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    const phoneRegex = /^[6-9]\d{9}$/;
 
+    if (!formData.fullName.trim()) {
+      newErrors.fullName = "Full name is required";
+    }
+
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!emailRegex.test(formData.email.trim())) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!formData.mobileNumber.trim()) {
+      newErrors.mobileNumber = "Mobile number is required";
+    } else if (!phoneRegex.test(formData.mobileNumber.trim())) {
+      newErrors.mobileNumber = "Invalid mobile number";
+    }
+
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+    } else if (formData.password.length < 6) {
+      newErrors.password = "Password must be at least 6 characters";
+    }
+
+    if (!formData.confirmPassword) {
+      newErrors.confirmPassword = "Please confirm your password";
+    } else if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+
+    if (!agreed) {
+      newErrors.agreed = "You must agree to the Terms and Conditions";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+  //handle input changes
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+
+    // Clear error on field change
+    if (errors[e.target.name]) {
+      setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
+    }
   };
-
+  //handle submit function
   const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  if (!agreed) {
-    alert("⚠️ You must agree to the Terms and Conditions.");
-    return;
-  }
-
-  if (formData.password !== formData.confirmPassword) {
-    alert("⚠️ Passwords do not match.");
-    return;
-  }
+    e.preventDefault();
+    if (!validate()) return;
 
   try {
    const response = await axios.post(`${url}/api/recruiters/register`, formData);
@@ -73,14 +112,14 @@ const Registration = () => {
 }
 
 };
-
+//handle otp verificatiion function
   const handleOtpVerified = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
     alert("✅ Email Verified Successfully!");
     navigate("/EmployerCreateProfile");
   };
- 
+
   return (
     <div className="employer_register-container">
       {/* Header */}
@@ -90,7 +129,7 @@ const Registration = () => {
         </div>
         <nav className="employer_register-nav">
           <Link to="/">Home</Link>
-          <Link to="/candida  tes">Candidates</Link>
+          <Link to="/candidates">Candidates</Link>
           <Link to="/companies">Companies</Link>
           <Link to="/EmployerLogin">
             <button className="employer_register-btn-primary">Log In</button>
@@ -104,14 +143,12 @@ const Registration = () => {
           {/* Left side: welcome and illustration */}
           <div className="employer_register-text">
             <h1>
-              Welcome Back, to <br></br>
+              Welcome Back, to <br />
               <span className="employerregister_logomain">Career Connect</span>
             </h1>
             <p>
               Post jobs, review applications, and schedule interviews —{" "}
-              <span className="employerregister_span-plogo">
-                all in one place
-              </span>
+              <span className="employerregister_span-plogo">all in one place</span>
             </p>
             <div className="employer_register-illustration">
               <img src={EmployerRegistrationImage} alt="Welcome" />
@@ -124,7 +161,8 @@ const Registration = () => {
               <h3>Register</h3>
               <p>Please enter your details</p>
 
-              <label>Full Name</label>
+              {/* Full Name */}
+              <label>Company Name</label>
               <div className="employer_register-input-container">
                 <SvgIcon component={PersonIcon} />
                 <input
@@ -133,10 +171,12 @@ const Registration = () => {
                   placeholder="Enter your full name"
                   value={formData.fullName}
                   onChange={handleChange}
-                  required
                 />
               </div>
+              {errors.fullName && <span className="error-text">{errors.fullName}</span>}
 
+              {/* Email */}
+              <br></br>
               <label>Email Id</label>
               <div className="employer_register-input-container">
                 <SvgIcon component={LocalPostOfficeIcon} />
@@ -146,10 +186,12 @@ const Registration = () => {
                   placeholder="Enter your email"
                   value={formData.email}
                   onChange={handleChange}
-                  required
                 />
               </div>
+              {errors.email && <span className="error-text">{errors.email}</span>}
 
+              {/* Mobile Number */}
+              <br></br>
               <label>Mobile Number</label>
               <div className="employer_register-input-container">
                 <SvgIcon component={PhoneIcon} />
@@ -159,10 +201,12 @@ const Registration = () => {
                   placeholder="Enter your mobile number"
                   value={formData.mobileNumber}
                   onChange={handleChange}
-                  required
                 />
               </div>
+              {errors.mobileNumber && <span className="error-text">{errors.mobileNumber}</span>}
 
+              {/* Password */}
+              <br></br>
               <label>Create Password</label>
               <div className="employer_register-input-container">
                 <SvgIcon component={LockIcon} />
@@ -172,10 +216,12 @@ const Registration = () => {
                   placeholder="Create a password"
                   value={formData.password}
                   onChange={handleChange}
-                  required
                 />
               </div>
+              {errors.password && <span className="error-text">{errors.password}</span>}
 
+              {/* Confirm Password */}
+              <br></br>
               <label>Confirm Password</label>
               <div className="employer_register-input-container">
                 <SvgIcon component={LockIcon} />
@@ -185,15 +231,22 @@ const Registration = () => {
                   placeholder="Confirm your password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
-                  required
                 />
               </div>
+              {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
+
+              {/* Terms & Conditions */}
               <div className="employer_register-checkbox-container">
                 <input
                   type="checkbox"
                   id="terms"
                   checked={agreed}
-                  onChange={(e) => setAgreed(e.target.checked)}
+                  onChange={(e) => {
+                    setAgreed(e.target.checked);
+                    if (errors.agreed) {
+                      setErrors((prev) => ({ ...prev, agreed: "" }));
+                    }
+                  }}
                 />
                 <label htmlFor="terms">
                   I agree with all{" "}
@@ -206,26 +259,27 @@ const Registration = () => {
                   </a>
                 </label>
               </div>
+              {errors.agreed && <span className="error-text">{errors.agreed}</span>}
+
               <button className="employer_register-btn-submit" type="submit">
                 Register
               </button>
             </form>
+
             {showVerificationPopup && (
               <div className="popup-backdrop">
                 <EmailVerificationPopup
-                // key={formData.email} // 🔑 Add key to prevent stale rendering
                   email={formData.email}
                   onVerify={handleOtpVerified}
                 />
               </div>
             )}
 
-            {isVerified && (
-              <p style={{ color: "green" }}>Email Verified Successfully!</p>
-            )}
+            {isVerified && <p style={{ color: "green" }}>Email Verified Successfully!</p>}
+            {/*login option */}
             <div className="employer_register-option">
               <p>
-                Already have an account? <a href="/EmployerLogin">Log In</a>
+                Already have an account? <Link to="/EmployerLogin">Log In</Link>
               </p>
             </div>
           </div>

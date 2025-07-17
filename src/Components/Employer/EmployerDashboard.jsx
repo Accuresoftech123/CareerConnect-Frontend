@@ -275,17 +275,17 @@ const EmployerDashboard = () => {
 
         <div className="Employer_Dashboard-sidebar-footer">
           <div className="Employer_Dashboard-user-profile">
-            <img
+            {/* <img
               src="Employer_Dashboard-user-profile-pic.jpg"
               alt="User Profile"
               className="profile-pic"
-            />
-            <div className="user-info">
+            /> */}
+            {/* <div className="user-info">
               <span className="Employer_Dashboard-user-name">
                 Shruti Punewar
               </span>
               <span className="Employer_Dashboard-user-role">HR Executive</span>
-            </div>
+            </div> */}
             <i className="icon-arrow-right"></i>
           </div>
         </div>
@@ -461,7 +461,7 @@ const EmployerDashboard = () => {
                   </option>
                 ))}
               </select>
-              <span className="experience-separator">to</span>
+              <span className="experience-separator" style={{paddingLeft:"10px", paddingRight:"10px"}}>to</span>
               <select
                 id="maxExperience"
                 name="maxExperience"
@@ -506,9 +506,9 @@ const EmployerDashboard = () => {
                 htmlFor="salaryRange"
                 className="Employer_Dashboard-input-label"
               >
-                Salary range{" "}
+                Salary range (LPA)
                 <span className="Employer_Dashboard-label-optional">
-                  (optional)
+                  [optional]
                 </span>
               </label>
               <div className="Employer_Dashboard-salary-range-group">
@@ -520,7 +520,7 @@ const EmployerDashboard = () => {
                   className="Employer_Dashboard-text-input-half"
                   placeholder="Minimum"
                 />
-                <span className="salary-separator">to</span>
+                <span className="salary-separator" style={{paddingRight:"10px", paddingLeft:"10px"}}>to</span>
                 <input
                   type="number"
                   name="maxSalary"
