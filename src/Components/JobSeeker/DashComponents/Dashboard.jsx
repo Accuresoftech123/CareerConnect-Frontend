@@ -13,7 +13,6 @@ import { MapPin, Building, IndianRupee } from "lucide-react";
 import axios from "axios";
 import axiosInstance from "../../../axiosInstance";
 
-
 import "../../../Styles/JobSeeker/DashComponents/Dashboard.css";
 
 const STORAGE_KEY = "recommendedJobs";
@@ -33,15 +32,15 @@ const Dashboard = () => {
   // Add profile completion state
   const [profileCompletion, setProfileCompletion] = useState(0);
   const [savingJobId, setSavingJobId] = useState(null);
-  
+
   const initialJobs = async () => {
     const jobSeekerId = localStorage.getItem("jobSeekerId");
     try {
       // const response = await axiosInstance.get(`/api/jobposts/all-jobs/${jobSeekerId}`);
       // console.log(response.data);
       const response = await axiosInstance.get(
-         `/api/jobposts/jobseeker/${jobSeekerId}/recommended`
-       );
+        `/api/jobposts/jobseeker/${jobSeekerId}/recommended`
+      );
 
       console.log(response.data);
 
@@ -52,85 +51,79 @@ const Dashboard = () => {
     }
   };
 
-
-
   //save Job Post
- const saveJob = async (jobId) => {
-  const jobSeekerId = localStorage.getItem("jobSeekerId");
+  const saveJob = async (jobId) => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
 
-  handleBookmarkToggle(jobId);
+    handleBookmarkToggle(jobId);
 
     try {
       const response = await axiosInstance.post(
         `/api/jobseekers/saved-jobs/save/${jobSeekerId}/${jobId}`
       );
       fetchSavedJobsCount();
-    alert("Job saved successfully!");
+      alert("Job saved successfully!");
 
       // Optionally update UI locally (toggle bookmark)
       const updated = recommendedJobs.map((job) =>
-      job.id === jobId ? { ...job, bookmarked: true } : job
-    );
-    setRecommendedJobs(updated);
-  } catch (error) {
-    
-    // If 409 Conflict (already saved), do nothing — we still want to show it as bookmarked
-    if (error.response?.status === 409) {
+        job.id === jobId ? { ...job, bookmarked: true } : job
+      );
+      setRecommendedJobs(updated);
+    } catch (error) {
+      // If 409 Conflict (already saved), do nothing — we still want to show it as bookmarked
+      if (error.response?.status === 409) {
+        setRecommendedJobs((prevJobs) =>
+          prevJobs.map((job) =>
+            job.id === jobId ? { ...job, bookmarked: true } : job
+          )
+        );
+        console.warn("Job is already saved. Keeping bookmark icon active.");
+        alert("Job is already saved!");
+      } else {
+        // For other errors, rollback the UI
+        alert("Something went wrong while saving the job.");
+      }
+    } finally {
+      setSavingJobId(null);
+    }
+  };
 
-       setRecommendedJobs((prevJobs) =>
+  // unsaved job
+  const unsaveJob = async (jobId) => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
+    setSavingJobId(jobId);
+
+    try {
+      await axiosInstance.delete(
+        `/api/jobseekers/saved-jobs/remove/${jobSeekerId}/${jobId}`
+      );
+
+      //console.log("Job removed from saved list");
+      alert("unsaved successfully!");
+
+      // fetch saved job
+      fetchSavedJobsCount();
+      // Update UI immediately
+      setRecommendedJobs((prevJobs) =>
         prevJobs.map((job) =>
-          job.id === jobId ? { ...job, bookmarked: true } : job
+          job.id === jobId ? { ...job, bookmarked: false } : job
         )
       );
-      console.warn("Job is already saved. Keeping bookmark icon active.");
-      alert("Job is already saved!");
-    } else {
-      // For other errors, rollback the UI
-      alert("Something went wrong while saving the job.");
-     
+    } catch (error) {
+      console.error("Unsave Job Error:", error);
+      alert("Something went wrong while removing the job.");
+    } finally {
+      setSavingJobId(null);
     }
-  } finally {
-    setSavingJobId(null);
-  }
-};
+  };
 
-// unsaved job
-const unsaveJob = async (jobId) => {
-  const jobSeekerId = localStorage.getItem("jobSeekerId");
-  setSavingJobId(jobId);
-
-  try {
-    await axiosInstance.delete(`/api/jobseekers/saved-jobs/remove/${jobSeekerId}/${jobId}`);
-
-    
-    //console.log("Job removed from saved list");
-    alert("unsaved successfully!");
-   
-    // fetch saved job 
-    fetchSavedJobsCount();
-    // Update UI immediately
-    setRecommendedJobs((prevJobs) =>
-      prevJobs.map((job) =>
-        job.id === jobId ? { ...job, bookmarked: false } : job
-      )
-    );
-  } catch (error) {
-    console.error("Unsave Job Error:", error);
-    alert("Something went wrong while removing the job.");
-  } finally {
-    setSavingJobId(null);
-  }
-};
-
-const handleBookmarkClick = (jobId, isBookmarked) => {
-  if (isBookmarked) {
-    unsaveJob(jobId);
-  } else {
-    saveJob(jobId);
-  }
-};
-
-
+  const handleBookmarkClick = (jobId, isBookmarked) => {
+    if (isBookmarked) {
+      unsaveJob(jobId);
+    } else {
+      saveJob(jobId);
+    }
+  };
 
   const applyToJob = async (jobId) => {
     const jobSeekerId = localStorage.getItem("jobSeekerId");
@@ -143,23 +136,25 @@ const handleBookmarkClick = (jobId, isBookmarked) => {
       const response = await axiosInstance.post(
         `/api/applications/applyjob/${jobSeekerId}/job-post/${jobId}`
       );
-       fetchApplicationCount();
+      fetchApplicationCount();
       alert("Applied Successfully!");
       const updated = recommendedJobs.map((job) =>
         job.id === jobId ? { ...job, applied: true } : job
       );
       setRecommendedJobs(updated);
     } catch (error) {
-
       console.error("Full error object:", error);
-     let errorMessage = error.response?.data?.message 
-      || (typeof error.response?.data === 'string' ? error.response.data : null)
-      || error.message;
+      let errorMessage =
+        error.response?.data?.message ||
+        (typeof error.response?.data === "string"
+          ? error.response.data
+          : null) ||
+        error.message;
 
       console.error("Application failed:", errorMessage);
 
-       // ✅ Null-safe and case-insensitive
-  const normalizedMessage = errorMessage?.toLowerCase() || "";
+      // ✅ Null-safe and case-insensitive
+      const normalizedMessage = errorMessage?.toLowerCase() || "";
 
       if (normalizedMessage.includes("already applied")) {
         alert("You have already applied for this job.");
@@ -172,10 +167,12 @@ const handleBookmarkClick = (jobId, isBookmarked) => {
   const [count, setCount] = useState(0);
 
   const fetchSavedJobsCount = async () => {
-     const jobSeekerId = localStorage.getItem("jobSeekerId");
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
     try {
-       const response = await axiosInstance.get(`/api/jobseekers/saved-jobs/count/${jobSeekerId}`);
-     
+      const response = await axiosInstance.get(
+        `/api/jobseekers/saved-jobs/count/${jobSeekerId}`
+      );
+
       setCount(response.data);
       console.log("Saved jobs count:", response.data);
     } catch (error) {
@@ -203,23 +200,22 @@ const handleBookmarkClick = (jobId, isBookmarked) => {
   // };
 
   const fetchProfileCompletion = async () => {
-  const jobSeekerId = localStorage.getItem("jobSeekerId");
-  try {
-    const response = await axiosInstance.get(
-      `/api/jobseekers/${jobSeekerId}/profile-completion`
-    );
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
+    try {
+      const response = await axiosInstance.get(
+        `/api/jobseekers/${jobSeekerId}/profile-completion`
+      );
 
-    console.log("Profile completion response:", response.data);
+      console.log("Profile completion response:", response.data);
 
-    // Set the value, fallback to 0 if not found
-    setProfileCompletion(response.data.profileCompletion || 0);
-  } catch (error) {
-    console.error("Error fetching profile completion:", error);
-    // fallback value if API fails
-    setProfileCompletion(70);
-  }
-};
-
+      // Set the value, fallback to 0 if not found
+      setProfileCompletion(response.data.profileCompletion || 0);
+    } catch (error) {
+      console.error("Error fetching profile completion:", error);
+      // fallback value if API fails
+      setProfileCompletion(70);
+    }
+  };
 
   const fetchJobsAndInterviews = async () => {
     const jobsFromApi = await initialJobs();
@@ -242,10 +238,8 @@ const handleBookmarkClick = (jobId, isBookmarked) => {
     navigate("/JobSeekerHome/SpecificJob", { state: { selectedJob: jobId } });
   };
 
-  
-
   const handleBookmarkToggle = (jobId, forceValue) =>
-  setRecommendedJobs((prev) => toggleBookmark(prev, jobId, forceValue));
+    setRecommendedJobs((prev) => toggleBookmark(prev, jobId, forceValue));
 
   const handleApply = (jobId) => {
     const updated = applyToJob(jobId);
@@ -294,14 +288,12 @@ const handleBookmarkClick = (jobId, isBookmarked) => {
   };
 
   const toggleBookmark = (jobs, jobId, value) => {
-    
     const updated = jobs.map((job) =>
       job.id === jobId ? { ...job, bookmarked: !job.bookmarked } : job
     );
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     return updated;
   };
- 
 
   const getInterviews = () => {
     const data = localStorage.getItem(INTERVIEWS_KEY);
@@ -326,53 +318,51 @@ const handleBookmarkClick = (jobId, isBookmarked) => {
   const handleEditInterview = (id) => {
     console.log("Edit interview", id);
   };
- 
- 
-const [applicationCount, setApplicationCount] = useState(0);
-const fetchApplicationCount = async () => {
-  const jobSeekerId = localStorage.getItem("jobSeekerId");
-  try {
-    const response = await axiosInstance.get(`/api/applications/jobseeker/${jobSeekerId}/applied-jobs/count`);
-    setApplicationCount(response.data);
-    
-  } catch (error) {
-    console.error("Error fetching application count:", error);
-  }
-};
 
-// Todays matche JobPosts
-const [jobMatchCount, setJobMatchCount]= useState(0);
-const fetchMatchJobCount = async () => {
-  const jobSeekerId = localStorage.getItem("jobSeekerId");
-  try {
-    const response = await axiosInstance.get(`/api/jobposts/today-matches-count/${jobSeekerId}`);
-    setJobMatchCount(response.data);
-    
-  } catch (error) {
-    console.error("Error fetching application count:", error);
-  }
-};
-
-useEffect(() => {
-  const fetchAllDashboardData = async () => {
-    fetchSavedJobsCount();      // fetch count of saved jobs
-    fetchApplicationCount();    // fetch count of applied jobs
-     fetchMatchJobCount();
-    const jobsFromApi = await initialJobs(); // fetch recommended jobs
-    setRecommendedJobs(jobsFromApi);
-
-    seedInterviews(initialInterviews);      // seed interview list
-    setInterviews(getInterviews());         // get interviews from storage
-
-    fetchProfileCompletion();               // fetch profile completion
+  const [applicationCount, setApplicationCount] = useState(0);
+  const fetchApplicationCount = async () => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
+    try {
+      const response = await axiosInstance.get(
+        `/api/applications/jobseeker/${jobSeekerId}/applied-jobs/count`
+      );
+      setApplicationCount(response.data);
+    } catch (error) {
+      console.error("Error fetching application count:", error);
+    }
   };
 
-  fetchAllDashboardData(); // run all API/data fetching in one go
-}, []);
+  // Todays matche JobPosts
+  const [jobMatchCount, setJobMatchCount] = useState(0);
+  const fetchMatchJobCount = async () => {
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
+    try {
+      const response = await axiosInstance.get(
+        `/api/jobposts/today-matches-count/${jobSeekerId}`
+      );
+      setJobMatchCount(response.data);
+    } catch (error) {
+      console.error("Error fetching application count:", error);
+    }
+  };
 
+  useEffect(() => {
+    const fetchAllDashboardData = async () => {
+      fetchSavedJobsCount(); // fetch count of saved jobs
+      fetchApplicationCount(); // fetch count of applied jobs
+      fetchMatchJobCount();
+      const jobsFromApi = await initialJobs(); // fetch recommended jobs
+      setRecommendedJobs(jobsFromApi);
 
+      seedInterviews(initialInterviews); // seed interview list
+      setInterviews(getInterviews()); // get interviews from storage
 
-  
+      fetchProfileCompletion(); // fetch profile completion
+    };
+
+    fetchAllDashboardData(); // run all API/data fetching in one go
+  }, []);
+
   return (
     <>
       <div className="JobSeeker-dashboard-content">
@@ -397,7 +387,7 @@ useEffect(() => {
           </div>
           <button
             className="JobSeeker-dashboard-complete-profile-button"
-            onClick={() =>  navigate("/JobSeeker-Create-Profile")}
+            onClick={() => navigate("/JobSeeker-Create-Profile")}
             aria-label="Complete your profile"
             style={{ cursor: "pointer" }}
           >
@@ -476,119 +466,148 @@ useEffect(() => {
               See More ...
             </button>
           </div>
-          <div className="JobSeeker-dashboard-cards-container">
-            {recommendedJobs.slice(0,8).map((job) => (
-              <article
-                key={job.id}
-                className="JobSeeker-dashboard-card"
-                aria-label={`${job.title} at ${job.companyName}`}
+          {recommendedJobs.length === 0 ? (
+            <div className="JobSeeker-dashboard-no-jobs">
+              <p
+                style={{
+                  textAlign: "center",
+                  padding: "20px",
+                  fontSize: "16px",
+                }}
               >
-                <div className="JobSeeker-dashboard-header">
-                  <div className="JobSeeker-dashboard-icon">
-                    {job.companyImageUrl &&
-                    job.companyImageUrl.trim() !== "" ? (
-                      <img
-                        src={job.companyImageUrl}
-                        alt="Company"
-                        className="w-12 h-12 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-12 h-12 rounded-full bg-blue-500 text-black flex items-center justify-center text-lg font-bold">
-                        {job.companyName?.charAt(0).toUpperCase() || "?"}
-                      </div>
-                    )}
-                  </div>
-                  <div className="JobSeeker-dashboard-details">
-                    <div className="JobSeeker-dashboard-title-company">
-                      <span className="JobSeeker-dashboard-title">
-                        {job.title}
-                      </span>
-                      <span className="JobSeeker-dashboard-company">
-                        {job.companyName}
-                      </span>
+                No recommended jobs available.
+              </p>
+            </div>
+          ) : (
+            <div className="JobSeeker-dashboard-cards-container">
+              {recommendedJobs.slice(0, 8).map((job) => (
+                <article
+                  key={job.id}
+                  className="JobSeeker-dashboard-card"
+                  aria-label={`${job.title} at ${job.companyName}`}
+                >
+                  <div className="JobSeeker-dashboard-header">
+                    <div className="JobSeeker-dashboard-icon">
+                      {job.companyImageUrl &&
+                      job.companyImageUrl.trim() !== "" ? (
+                        <img
+                          src={job.companyImageUrl}
+                          alt="Company"
+                          className="w-12 h-12 rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-blue-500 text-black flex items-center justify-center text-lg font-bold">
+                          {job.companyImageUrl ||job.companyName?.charAt(0).toUpperCase() || "?"}
+                        </div>
+                      )}
                     </div>
-                   <button
-  className="JobSeeker-dashboard-bookmark-button"
-  onClick={() => handleBookmarkClick(job.id, job.bookmarked)}
-  aria-label={job.bookmarked ? "Remove bookmark" : "Bookmark job"}
-  disabled={savingJobId === job.id}
-  style={{ cursor: "pointer", border: "none", background: "transparent" }}
->
-  <img
-    className={`bookmark-icon ${job.bookmarked ? "bookmarked" : ""}`}
-    src={job.bookmarked ? bookmark : bookmarkBlank}
-    alt={job.bookmarked ? "Bookmarked" : "Not bookmarked"}
-    style={{ width: "24px", height: "24px" }}
-  />
-</button>
+                    <div className="JobSeeker-dashboard-details">
+                      <div className="JobSeeker-dashboard-title-company">
+                        <span className="JobSeeker-dashboard-title">
+                          {job.title}
+                        </span>
+                        <span className="JobSeeker-dashboard-company">
+                          {job.companyName}
+                        </span>
+                      </div>
+                      <button
+                        className="JobSeeker-dashboard-bookmark-button"
+                        onClick={() =>
+                          handleBookmarkClick(job.id, job.bookmarked)
+                        }
+                        aria-label={
+                          job.bookmarked ? "Remove bookmark" : "Bookmark job"
+                        }
+                        disabled={savingJobId === job.id}
+                        style={{
+                          cursor: "pointer",
+                          border: "none",
+                          background: "transparent",
+                        }}
+                      >
+                        <img
+                          className={`bookmark-icon ${
+                            job.bookmarked ? "bookmarked" : ""
+                          }`}
+                          src={job.bookmarked ? bookmark : bookmarkBlank}
+                          alt={job.bookmarked ? "Bookmarked" : "Not bookmarked"}
+                          style={{ width: "24px", height: "24px" }}
+                        />
+                      </button>
+                    </div>
                   </div>
-                </div>
-                <div className="JobSeeker-dashboard-info">
-                  <p>
-                    <span className="JobSeeker-dashboard-info-icon">
-                      <SvgIcon component={MapPin} style={{ fill: "none" }} />
-                    </span>{" "}
-                    {job.location}
-                  </p>
-                  <p>
-                    <span className="JobSeeker-dashboard-info-icon">
-                      <SvgIcon component={Building} style={{ fill: "none" }} />
-                    </span>{" "}
-                    {job.employmentType}
-                  </p>
-                  <p>
-                    <span className="JobSeeker-dashboard-info-icon">
-                      <SvgIcon
-                        component={IndianRupee}
-                        style={{ fill: "none" }}
-                      />
-                    </span>{" "}
-                    {job.minSalary} to {job.maxSalary}
-                  </p>
-                </div>
-                <div className="JobSeeker-dashboard-tags">
-                  {Array.isArray(job.skills) &&
-                    job.skills.map((skills, index) => (
-                      <span key={index} className="JobSeeker-dashboard-tag">
-                        {skills}
-                      </span>
-                    ))}
-                </div>
+                  <div className="JobSeeker-dashboard-info">
+                    <p>
+                      <span className="JobSeeker-dashboard-info-icon">
+                        <SvgIcon component={MapPin} style={{ fill: "none" }} />
+                      </span>{" "}
+                      {job.location}
+                    </p>
+                    <p>
+                      <span className="JobSeeker-dashboard-info-icon">
+                        <SvgIcon
+                          component={Building}
+                          style={{ fill: "none" }}
+                        />
+                      </span>{" "}
+                      {job.employmentType}
+                    </p>
+                    <p>
+                      <span className="JobSeeker-dashboard-info-icon">
+                        <SvgIcon
+                          component={IndianRupee}
+                          style={{ fill: "none" }}
+                        />
+                      </span>{" "}
+                      {job.minSalary} to {job.maxSalary}
+                    </p>
+                  </div>
+                  <div className="JobSeeker-dashboard-tags">
+                    {Array.isArray(job.skills) &&
+                      job.skills.map((skills, index) => (
+                        <span key={index} className="JobSeeker-dashboard-tag">
+                          {skills}
+                        </span>
+                      ))}
+                  </div>
 
-                <div className="JobSeeker-dashboard-button-group">
-                  <button
-                    className="JobSeeker-dashboard-apply-button"
-                    disabled={job.applied}
-                    onClick={() => applyToJob(job.id)}
-                    aria-disabled={job.applied}
-                    aria-label={
-                      job.applied ? "Already applied" : "Apply to job"
-                    }
-                    style={{ cursor: job.applied ? "not-allowed" : "pointer" }}
-                  >
-                    {job.applied ? "Applied" : "Apply"}
-                  </button>
-                  <button
-                    onClick={()=>handleClick(job.id)}
-                    className="JobSeeker-dashboard-details-button"
-                    aria-label="View job details"
-                    style={{ cursor: "pointer" }}
-                  >
-                    Details
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
+                  <div className="JobSeeker-dashboard-button-group">
+                    <button
+                      className="JobSeeker-dashboard-apply-button"
+                      disabled={job.applied}
+                      onClick={() => applyToJob(job.id)}
+                      aria-disabled={job.applied}
+                      aria-label={
+                        job.applied ? "Already applied" : "Apply to job"
+                      }
+                      style={{
+                        cursor: job.applied ? "not-allowed" : "pointer",
+                      }}
+                    >
+                      {job.applied ? "Applied" : "Apply"}
+                    </button>
+                    <button
+                      onClick={() => handleClick(job.id)}
+                      className="JobSeeker-dashboard-details-button"
+                      aria-label="View job details"
+                      style={{ cursor: "pointer" }}
+                    >
+                      Details
+                    </button>
+                  </div>
+                </article>
+              ))}
+            </div>
+          )}
         </section>
 
         {/* Upcoming Interviews */}
         <section
           className="JobSeeker-dashboard-upcoming-interviews"
           aria-label="Upcoming interviews"
-          style={{backgroundColor:"#e3e368ff"}}
+          style={{ backgroundColor: "#e3e368ff" }}
         >
-          <div className="JobSeeker-dashboard-header" >
+          <div className="JobSeeker-dashboard-header">
             <div className="JobSeeker-dashboard-tableicon">
               <img src={calendarDays} alt="Calender-icon" />
               <h3>Upcoming Interviews</h3>
@@ -616,7 +635,7 @@ useEffect(() => {
                 </tr>
               ) : (
                 interviews.map((interview) => (
-                  <tr key={interview.id} style={{color:"#e3e368ff"}}>
+                  <tr key={interview.id} style={{ color: "#e3e368ff" }}>
                     <td>{interview.company}</td>
                     <td>{interview.role}</td>
                     <td>
