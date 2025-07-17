@@ -99,6 +99,18 @@ const JobSeekerHome = ({ children }) => {
     fetchJobSeekerInfo(); // Fetch job seeker info when component mounts
   }, []);
 
+
+// logout function
+const handleLogout = () => {
+  localStorage.removeItem("jobSeekerId"); // Clear stored user ID
+  localStorage.removeItem("token");    // Clear token if you're using JWT
+  localStorage.removeItem("rzp_checkout_anon_id");//clear razerpay details
+  localStorage.removeItem("rzp_device_id");// clear razerpay id
+  localStorage.removeItem("rzp_stored_checkout_id");
+
+  navigate("/Login"); // Redirect to login page
+};
+
   return (
     <div className="JobSeekerHome_layout-container">
       {/* Header */}
@@ -164,20 +176,33 @@ const JobSeekerHome = ({ children }) => {
       {/* Body section */}
       <div className="JobSeekerHome_layout-body">
         {/* Sidebar */}
-        <nav className={`JobSeekerHome_sidebar ${sidebarOpen ? "active" : ""}`}>
+     <nav className={`JobSeekerHome_sidebar ${sidebarOpen ? "active" : ""}`}>
   {navItems.map((item) => (
-    <Link
-      key={item.path}
-      to={item.path}
-      className={isActive(item.path) ? "active-link" : "link"}
-      onClick={closeSidebar}
-      style={isActive(item.path) ? { color: "#000" } : item.style} // white for active, yellow otherwise
-    >
-      {item.icon}
-      <span>{item.label}</span>
-    </Link>
+    item.label === "Logout" ? (
+      <button
+        key={item.path}
+        className="link logout-btn"
+        onClick={handleLogout}
+        style={{ color: "#FF0000", background: "none", border: "none", display: "flex", alignItems: "center" }}
+      >
+        {item.icon}
+        <span>{item.label}</span>
+      </button>
+    ) : (
+      <Link
+        key={item.path}
+        to={item.path}
+        className={isActive(item.path) ? "active-link" : "link"}
+        onClick={closeSidebar}
+        style={isActive(item.path) ? { color: "#000" } : item.style}
+      >
+        {item.icon}
+        <span>{item.label}</span>
+      </Link>
+    )
   ))}
 </nav>
+
 
 
         {/* ✅ Main content now scrollable */}
