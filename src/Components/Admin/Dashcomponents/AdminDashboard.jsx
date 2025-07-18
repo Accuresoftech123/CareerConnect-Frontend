@@ -1,5 +1,5 @@
 // Admin-Dashboard
-import React ,{ useState }from "react";
+import React ,{ useEffect, useState }from "react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import MessageIcon from '@mui/icons-material/Message';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
@@ -12,34 +12,91 @@ import activeUser from "../../../Images/activeUser.svg";
 import Candidates from "../../../Images/Candidates.svg";
 import newRecruiter from "../../../Images/newRecruiter.svg";
 import activeUsersSection from "../../../Images/activeUsersSection.svg";
- 
+import axios from "axios";
+import axiosInstance from "../../../axiosInstance"; 
+
 const AdminDashboard = () => {
+  const url = "http://localhost:9191";
   // Stats data
-  const stats = {
-    newJobPosted: 45,
-    newCandidates: 175,
-    newCompanies: 15,
-    totalSubscriptions: 7054,
-    totalActiveUsers: 8796
-  };
+  const [newJobPostedcount, setnewJobPostedcount] = useState(0);
+  const [newCandidatescount, setnewCandidatescount] = useState(0);
+  const [newCompaniescount, setnewCompaniescount] = useState(0);
+  const [totalSubscriptionscount, settotalSubscriptionscount] = useState(0);
+  const [totalActiveUserscount, settotalActiveUserscount] = useState(0);
+  const [newCandidates, setNewCandidates] = useState([]);
+  const [newRecruiters, setNewrecruiters] = useState([]);
  
+const fetchJobPostedcount = async () => {
+ 
+  try {
+    const response = await axiosInstance.get(`${url}/api/jobposts/jobposts/recent/count`);
+    setnewJobPostedcount(response.data);
+  } catch (error) {
+    console.error("Failed to fetch dashboard stats", error);
+  }
+};
+
+const fetchCandidatescount = async () => {
+ 
+  try {
+     const response = await axiosInstance.get(`${url}/api/jobseekers/recent/count`);
+     setnewCandidatescount(response.data);
+   } catch (error) {
+     console.error("Failed to fetch dashboard stats", error);
+   }
+};
+
+const fetchCompaniescount = async () => {
+ 
+   try {
+    const response = await axiosInstance.get(`${url}/api/recruiters/recent/count`);
+     setnewCompaniescount(response.data);
+   } catch (error) {
+     console.error("Failed to fetch dashboard stats", error);
+   }
+};
+
+const fetchSubscriptionscount = async () => {
+ 
+   try {
+    const response = await axiosInstance.get(`${url}/api/payments/total-amount`);
+     settotalSubscriptionscount(response.data);
+    //  console.log(response);
+   } catch (error) {
+    console.error("Failed to fetch dashboard stats", error);
+   }
+};
+
+const fetchActiveUserscount = async () => {
+ 
+  // try {
+  //   const response = await axiosInstance.get("/api/admin/dashboard-stats");
+  //   settotalActiveUserscount(response.data);
+  // } catch (error) {
+  //   console.error("Failed to fetch dashboard stats", error);
+  // }
+};
   // New Recruiters data
-  const newRecruiters = [
+  const fetchnewcompanies = () => {
+    setNewrecruiters([
     { companyName: 'Proven Solutions Pvt. Ltd', location: 'Pune', subscription: 'Platinum', time: '2 hours ago' },
     { companyName: 'Senator Technologies', location: 'Bangalore', subscription: 'Golden', time: '5 hours ago' },
     { companyName: 'Quantum Solutions', location: 'Bangalore', subscription: 'Free', time: '14 hours ago' },
     { companyName: 'Systems Tech Pvt Ltd', location: 'Gurugram', subscription: 'Golden', time: '16 hours ago' },
     { companyName: 'Itechno Solutions', location: 'Bangalore', subscription: 'Platinum', time: '01 day ago' }
-  ];
+  ]);
+  }
  
   // New Candidates data
-  const newCandidates = [
+  const fetchnewcandidates = () => {
+    setNewCandidates([
     { name: 'Asmita Rai', jobTitle: 'Java Developer', subscription: 'Platinum', time: '2 hours ago' },
     { name: 'Vaishnavi Singh', jobTitle: 'Senior HR', subscription: 'Golden', time: '5 hours ago' },
     { name: 'Shree Pione', jobTitle: 'Full-stack developer', subscription: 'Free', time: '14 hours ago' },
     { name: 'Amar Taneja', jobTitle: 'UIUX Designer', subscription: 'Golden', time: '16 hours ago' },
     { name: 'Rajat Tiwari', jobTitle: 'Business Developer', subscription: 'Platinum', time: '01 day ago' }
-  ];
+  ]);
+  } 
  
   // Active Users data with action icons
     const [selectedFilter, setSelectedFilter] = useState('Last 7 days');
@@ -136,6 +193,15 @@ const AdminDashboard = () => {
       )
     }
   ];
+  useEffect(()=>{
+    fetchJobPostedcount();
+    fetchSubscriptionscount();
+    fetchActiveUserscount();
+    fetchCandidatescount();
+    fetchCompaniescount();
+    fetchnewcandidates();
+    fetchnewcompanies();
+  },[]);
  
   return (
     <div className="AdminDashboard-container">
@@ -143,27 +209,27 @@ const AdminDashboard = () => {
       <div className="AdminDashboard-summary-cards">
         <div className="AdminDashboard-card">
           <span class="AdminDashboard-summary-icon"><img src={newJobPosted} alt="New Job Posted" /></span>
-          <h3>{stats.newJobPosted}</h3>
+          <h3>{newJobPostedcount}</h3>
           <p>New Job Posted</p>
         </div>
         <div className="AdminDashboard-card">
           <span class="AdminDashboard-summary-icon"><img src={newCandidate} alt="New Candidates" /></span>          
-          <h3>{stats.newCandidates}</h3>
+          <h3>{newCandidatescount}</h3>
           <p>New Candidates</p>
         </div>
         <div className="AdminDashboard-card">
           <span class="AdminDashboard-summary-icon"><img src={newCompanies} alt="New Companies" /></span>          
-          <h3>{stats.newCompanies}</h3>
+          <h3>{newCompaniescount}</h3>
           <p>New Companies</p>
         </div>
         <div className="AdminDashboard-card">
           <span class="AdminDashboard-summary-icon"><img src={indianRupee} alt="Total Subscriptions" /></span>          
-          <h3>{stats.totalSubscriptions}</h3>
+          <h3>{totalSubscriptionscount}</h3>
           <p>Total Subscriptions</p>
         </div>
         <div className="AdminDashboard-card">
           <span class="AdminDashboard-summary-icon"><img src={activeUser} alt="Total active users" /></span>          
-          <h3>{stats.totalActiveUsers}</h3>
+          <h3>{totalActiveUserscount}</h3>
           <p>Total active users</p>
         </div>
       </div>

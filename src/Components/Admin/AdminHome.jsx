@@ -37,7 +37,6 @@ const AdminHome = ({ children }) => {
       path: "/AdminHome/Admin-Dashboard",
       icon: <FaTachometerAlt />,
       label: "Dashboard",
- 
     },
     {
       path: "/AdminHome/JobListing",
@@ -69,6 +68,11 @@ const AdminHome = ({ children }) => {
       path: "/Admin/Settings",
       icon: <FaCog />,
       label: "Settings",
+    },
+     {
+      path: "/AdminLogin",
+      icon: <FaCog />,
+      label: "Logout",
     },
   ];
  
