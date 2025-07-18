@@ -15,7 +15,7 @@ const Registration = () => {
   const navigate = useNavigate();
   // State to hold form data
   const [formData, setFormData] = useState({
-    fullName: "",
+    companyName: "",
     email: "",
     mobileNumber: "",
     password: "",
@@ -33,8 +33,8 @@ const Registration = () => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
     const phoneRegex = /^[6-9]\d{9}$/;
 
-    if (!formData.fullName.trim()) {
-      newErrors.fullName = "Full name is required";
+    if (!formData.companyName.trim()) {
+      newErrors.companyName = "Company Name is required";
     }
 
     if (!formData.email.trim()) {
@@ -88,6 +88,7 @@ const Registration = () => {
   const recruiterId = response.data.recruiterId;
   localStorage.setItem("recruiterId", recruiterId);
   console.log("Recruiter ID:", recruiterId);
+  console.log("Response:", response.data);
 
   alert(response.data.message || "📨 OTP sent to your email.");
   setShowVerificationPopup(true);
@@ -167,13 +168,13 @@ const Registration = () => {
                 <SvgIcon component={PersonIcon} />
                 <input
                   type="text"
-                  name="fullName"
-                  placeholder="Enter your full name"
-                  value={formData.fullName}
+                  name="companyName"
+                  placeholder="Enter your Company name"
+                  value={formData.companyName}
                   onChange={handleChange}
                 />
               </div>
-              {errors.fullName && <span className="error-text">{errors.fullName}</span>}
+              {errors.companyName && <span className="error-text">{errors.companyName}</span>}
 
               {/* Email */}
               <br></br>
