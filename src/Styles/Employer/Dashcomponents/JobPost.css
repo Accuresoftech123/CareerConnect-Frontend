@@ -1,0 +1,304 @@
+/* Container */
+.EJobPost-container {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Slightly better font stack */
+  background-color: #f7f1ec;
+  color: #222; /* Add default text color for readability */
+}
+
+/* Middle Page */
+.EJobPost-MiddlePage {
+  background-color: #f9f8fc;
+  padding: 20px;
+  /* top auto left for sidebar space */
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #222;
+}
+
+/* Forms */
+.EJobPost-form {
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  padding: 20px;
+}
+
+/* Headings */
+.EJobPost-main-heading {
+  font-size: 28px;
+  color: var(--text-color-dark);
+  margin-bottom: 10px;
+  font-weight: 700;
+}
+
+.EJobPost-sub-heading,
+.EJobPost-form-instruction {
+  font-size: 15px;
+  color: var(--text-color-light);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.EJobPost-section-title {
+  font-size: 20px;
+  color: var(--text-color-dark);
+  margin-bottom: 0;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+}
+
+/* Form Groups */
+.EJobPost-form-group {
+  margin-bottom: 20px;
+}
+
+/* Labels */
+.EJobPost-input-label {
+  display: block;
+  font-size: 15px;
+  color: var(--text-color-dark);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.EJobPost-label-required::after {
+  content: '*';
+  color: red;
+  margin-left: 4px;
+}
+
+.EJobPost-label-optional {
+  color: var(--placeholder-color);
+  font-weight: normal;
+}
+
+/* Inputs */
+.EJobPost-text-input,
+.EJobPost-textarea-input,
+.EJobPost-select-input {
+  width: 100%;
+  padding: 12px 15px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  color: var(--text-color-dark);
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  appearance: none;
+  background-color: var(--bg-color-white);
+}
+
+.EJobPost-text-input:focus,
+.EJobPost-textarea-input:focus,
+.EJobPost-select-input:focus {
+  border-color: #842cc0;
+  box-shadow: 0 0 5px #842cc0;
+  outline: none;
+}
+
+/* Radio Buttons */
+.EJobPost-radio-option {
+  display: block;
+  border: 2px solid #ccc;
+  padding: 12px 16px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.EJobPost-radio-option input[type="radio"]:checked + span {
+  font-weight: 700;
+}
+
+.EJobPost-radio-option:hover,
+.EJobPost-radio-option:focus-within {
+  border-color: #007bff;
+  background-color: #f5faff;
+  outline: none;
+}
+
+/* Experience Range Group */
+.EJobPost-experience-range-group-abc select {
+  width: 358px;
+  padding: 10px 10px;
+}
+
+.EJobPost-text-input-half {
+  width: 358px;
+  padding: 10px 10px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  color: var(--text-color-dark);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  appearance: none;
+  background-color: var(--bg-color-white);
+}
+
+/* Benefits Grid */
+.EJobPost-benefits-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 40px;
+  max-width: 500px;
+}
+
+/* Checkbox Options */
+.EJobPost-checkbox-option {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+/* Post Job Button */
+.EJobPost-post-job-button {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  padding: 15px 25px;
+  background-color: var(--primary-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 15px auto 0;
+}
+
+.EJobPost-post-job-button:hover,
+.EJobPost-post-job-button:focus {
+  background-color: #840cc0;
+  outline: none;
+  transform: scale(1.05);
+}
+
+/* Half-width job buttons */
+.EJobPost-job-button-half {
+  width: 48%;
+  padding: 12px 15px;
+  border: 2px solid #ccc;
+  border-radius: 6px;
+  font-size: 15px;
+  color: var(--text-color-dark);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: var(--bg-color-white);
+  cursor: pointer;
+}
+
+.EJobPost-job-button-half:hover {
+  background-color: #840cc0;
+  color: white;
+}
+
+.EJobPost-job-button-half.active {
+  background-color: #b153e5;
+  color: white;
+}
+
+/* Post Preview Container */
+.post-preview-container {
+  position: fixed; /* Changed absolute to fixed for better viewport stickiness */
+  top: 90px;
+  right: 40px;
+  width: 300px;
+  height: calc(100vh - 100px); /* Full viewport height minus header and margin */
+  background-color: #fff;
+  padding: 20px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  z-index: 999;
+  overflow-y: auto; /* Allow scroll if content overflows */
+}
+
+.post-preview-container h1 {
+  font-size: 22px;
+  color: #222;
+  margin-bottom: 5px;
+  padding-bottom: 5px;
+  border-bottom: 1px solid #eee;
+  font-weight: 600;
+}
+
+.post-preview-section h2 {
+  font-size: 18px;
+  color: #444;
+  margin-top: 10px;
+  margin-bottom: 15px;
+  font-weight: 500;
+}
+
+.post-preview-section p {
+  font-size: 12px;
+  line-height: 1.6;
+  margin-bottom: 8px;
+  color: #555;
+}
+
+.post-preview-section p strong {
+  font-weight: 600;
+  color: #333;
+  margin-right: 5px;
+  word-wrap: break-word;
+}
+
+/* Skill Tags */
+.EJobPost-skill-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.EJobPost-skill-tag {
+  background-color: #f0f0f0;
+  padding: 6px 10px;
+  border-radius: 16px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+
+.EJobPost-remove-skill {
+  background: none;
+  border: none;
+  margin-left: 6px;
+  color: red;
+  font-weight: 700;
+  cursor: pointer;
+}
+.EJobPost-applypost-job-button {
+  display: block;
+  width: 100%;
+  max-width: 200px;
+  padding: 15px 25px;
+  background-color: #b153e5;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin: 15px auto 0;
+}
+
+.EJobPost-applypost-job-button:hover,
+.EJobPost-applypost-job-button:focus {
+  background-color: #840cc0;
+  outline: none;
+  transform: scale(1.05);
+}

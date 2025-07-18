@@ -1,21 +1,10 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import "../../Styles/Employer/EmployerDashboard.css";
-import search from "../../Images/search.svg";
-import Notification from "../../Images/Notification.svg";
-import userHeader from "../../Images/userHeader.svg";
-import axios from "axios";
-import Dashboard from "../../Images/Dashboard.svg";
-import MyJobsPost from "../../Images/MyJobsPost.svg";
-import Applicants from "../../Images/Applicants.svg";
-import Recommendation from "../../Images/Recommendation.svg";
-import Messages from "../../Images/Messages.svg";
-import Analysis from "../../Images/Analysis.svg";
-import settings from "../../Images/settings.svg";
-import axiosInstance from "../../axiosInstance";
+import "../../../Styles/Employer/Dashcomponents/JobPost.css";
+import axiosInstance from "../../../../src/axiosInstance";
 
 
-const EmployerDashboard = () => {
+const JobPost = () => {
   const [prefillEnabled, setPrefillEnabled] = useState(false);
   const [previousJobs, setPreviousJobs] = useState([]);
   const [selectedJobId, setSelectedJobId] = useState(null);
@@ -157,150 +146,17 @@ const EmployerDashboard = () => {
     }
   };
   return (
-    <div className="Employer_Dashboard-Container">
-      {/* Header */}
-      <header className="Employer_Dashboard-header">
-        <div className="Employer_Dashboard-logo">
-          <span>Career</span> Connect
-        </div>
-        <nav className="Employer_Dashboard-nav-links">
-          <Link to="#" className="Employer_Dashboard-header-link">
-            <img
-              src={search}
-              alt="search"
-              className="Employer_Dashboard-profile-icon"
-            />
-          </Link>
-
-          <Link to="#" className="Employer_Dashboard-header-link">
-            <img
-              src={Notification}
-              alt="Notification"
-              className="Employer_Dashboard-profile-icon"
-            />
-          </Link>
-          <Link to="#" className="Employer_Dashboard-header-link">
-            <img
-              src={userHeader}
-              alt="userHeader"
-              className="Employer_Dashboard-profile-icon"
-            />
-          </Link>
-          <Link to="#">
-            <button className="Employer_Dashboard-btn-primary">
-              Post a Job
-            </button>
-          </Link>
-        </nav>
-      </header>
-
-      {/* Sidebar */}
-      <div className="Employer_Dashboard-sidebar">
-        <ul className="Employer_Dashboard-sidebar-menu">
-          <li className="Employer_Dashboard-menu-item">
-            <a href="#">
-              <img
-                src={Dashboard}
-                alt="Dashboard"
-                className="Employer_Dashboard-sidebar-profile-icon"
-              />
-              <span>Dashboard</span>
-            </a>
-          </li>
-          <li className="Employer_Dashboard-menu-item">
-            <a href="#">
-              <img
-                src={MyJobsPost}
-                alt="MyJobsPost"
-                className="Employer_Dashboard-sidebar-profile-icon"
-              />
-              <span>My Job Posts</span>
-            </a>
-          </li>
-          <li className="Employer_Dashboard-menu-item">
-            <a href="#">
-              <img
-                src={Applicants}
-                alt="Applicants"
-                className="Employer_Dashboard-sidebar-profile-icon"
-              />
-              <span>Applicants</span>
-            </a>
-          </li>
-          <li className="Employer_Dashboard-menu-item">
-            <a href="#">
-              <img
-                src={Recommendation}
-                alt="Recommendation"
-                className="Employer_Dashboard-sidebar-profile-icon"
-              />
-              <span>Recommendation</span>
-            </a>
-          </li>
-          <li className="Employer_Dashboard-menu-item">
-            <a href="#">
-              <img
-                src={Messages}
-                alt="Messages"
-                className="Employer_Dashboard-sidebar-profile-icon"
-              />
-              <span>Messages</span>
-            </a>
-          </li>
-          <li className="Employer_Dashboard-menu-item">
-            <a href="#">
-              <img
-                src={Analysis}
-                alt="Analysis"
-                className="Employer_Dashboard-sidebar-profile-icon"
-              />
-              <span>Analysis</span>
-            </a>
-          </li>
-          <li className="Employer_Dashboard-menu-item">
-            <a href="#">
-              <img
-                src={settings}
-                alt="settings"
-                className="Employer_Dashboard-sidebar-profile-icon"
-              />
-              <span>Settings</span>
-            </a>
-          </li>
-        </ul>
-
-        <button type="submit" className="Employer_Dashboard-Sidebar-PostButton">
-          Post a job
-        </button>
-
-        <div className="Employer_Dashboard-sidebar-footer">
-          <div className="Employer_Dashboard-user-profile">
-            {/* <img
-              src="Employer_Dashboard-user-profile-pic.jpg"
-              alt="User Profile"
-              className="profile-pic"
-            /> */}
-            {/* <div className="user-info">
-              <span className="Employer_Dashboard-user-name">
-                Shruti Punewar
-              </span>
-              <span className="Employer_Dashboard-user-role">HR Executive</span>
-            </div> */}
-            <i className="icon-arrow-right"></i>
-          </div>
-        </div>
-      </div>
-
-      {/* Middle Page - Job Post Form */}
-      <div className="Employer_Dashboard-MiddlePage">
-        <div className="Employer_Dashboard-job-post-container">
-          <h1 className="Employer_Dashboard-main-heading">Post a job</h1>
-          <p className="Employer_Dashboard-sub-heading">
+    <div className="EJobPost-Container">
+      {/* Job Post Form */}
+      <div className="EJobPost-MiddlePage">
+        <div className="EJobPost-job-post-container">
+          <h1 className="EJobPost-main-heading">Post a job</h1>
+          <p className="EJobPost-sub-heading">
             Ready to find your next great hire? Select a
           </p>
 
-          <div className="Employer_Dashboard-form-type-selection">
-            <label className="Employer_Dashboard-radio-option">
+          <div className="EJobPost-form-type-selection">
+            <label className="EJobPost-radio-option">
               <input
                 type="radio"
                 name="formPrefill"
@@ -310,7 +166,7 @@ const EmployerDashboard = () => {
               />{" "}
               Prefill details from a job you've posted earlier
             </label>
-            <label className="Employer_Dashboard-radio-option">
+            <label className="EJobPost-radio-option">
               <input
                 type="radio"
                 name="formPrefill"
@@ -321,26 +177,26 @@ const EmployerDashboard = () => {
             </label>
           </div>
 
-          <p className="Employer_Dashboard-form-instruction">
+          <p className="EJobPost-form-instruction">
             Fill out the details below and get your job live in minutes.
           </p>
         </div>
 
-        <form className="Employer_Dashboard-form" onSubmit={handleSubmit}>
+        <form className="EJobPost-form" onSubmit={handleSubmit}>
           {/* Basic Details */}
-          <section className="Employer_Dashboard-form-section">
-            <h2 className="Employer_Dashboard-section-title">Basic details</h2>
-            <div className="Employer_Dashboard-form-group">
+          <section className="EJobPost-form-section">
+            <h2 className="EJobPost-section-title">Basic details</h2>
+            <div className="EJobPost-form-group">
               <label
                 htmlFor="jobTitle"
-                className="Employer_Dashboard-label-required"
+                className="EJobPost-label-required"
               >
                 Job title
               </label>
               <input
                 type="text"
                 id="jobTitle"
-                className="Employer_Dashboard-text-input"
+                className="EJobPost-text-input"
                 name="title"
                 value={jobPost.title}
                 onChange={handleChange}
@@ -348,10 +204,10 @@ const EmployerDashboard = () => {
                 required
               />
             </div>
-            <div className="Employer_Dashboard-form-group">
+            <div className="EJobPost-form-group">
               <label
                 htmlFor="employmentType"
-                className="Employer_Dashboard-label-required"
+                className="EJobPost-label-required"
               >
                 Employment type
               </label>
@@ -360,7 +216,7 @@ const EmployerDashboard = () => {
                 name="employmentType"
                 value={jobPost.employmentType}
                 onChange={handleChange}
-                className="Employer_Dashboard-select-input"
+                className="EJobPost-select-input"
                 required
               >
                 <option value="">Select employment type</option>
@@ -374,18 +230,18 @@ const EmployerDashboard = () => {
           </section>
 
           {/* Job Details */}
-          <section className="Employer_Dashboard-form-section">
-            <h2 className="Employer_Dashboard-section-title">Job details</h2>
-            <div className="Employer_Dashboard-form-group">
+          <section className="EJobPost-form-section">
+            <h2 className="EJobPost-section-title">Job details</h2>
+            <div className="EJobPost-form-group">
               <label
                 htmlFor="jobDescription"
-                className="Employer_Dashboard-label-required"
+                className="EJobPost-label-required"
               >
                 Job description
               </label>
               <textarea
                 id="jobDescription"
-                className="Employer_Dashboard-textarea-input"
+                className="EJobPost-textarea-input"
                 placeholder="Describe the role and responsibilities..."
                 rows="6"
                 name="description"
@@ -397,14 +253,14 @@ const EmployerDashboard = () => {
           </section>
 
           {/* Skills */}
-          <section className="Employer_Dashboard-form-section">
-            <h2 className="Employer_Dashboard-section-title">
+          <section className="EJobPost-form-section">
+            <h2 className="EJobPost-section-title">
               Required skills
             </h2>
-            <div className="Employer_Dashboard-skills-input-group">
+            <div className="EJobPost-skills-input-group">
               <input
                 type="text"
-                className="Employer_Dashboard-text-input"
+                className="EJobPost-text-input"
                 placeholder="+ Add skills"
                 value={skillInput}
                 onChange={(e) => setSkillInput(e.target.value)}
@@ -439,20 +295,20 @@ const EmployerDashboard = () => {
           </section>
 
           {/* Experience */}
-          <div className="Employer_Dashboard-form-group">
+          <div className="EJobPost-form-group">
             <label
               htmlFor="minExperience"
-              className="Employer_Dashboard-label-required"
+              className="EJobPost-label-required"
             >
               Experience required
             </label>
-            <div className="Employer_Dashboard-experience-range-group-abc">
+            <div className="EJobPost-experience-range-group-abc">
               <select
                 id="minExperience"
                 name="minExperience"
                 value={jobPost.minExperience}
                 onChange={handleChange}
-                className="Employer_Dashboard-text-input-half"
+                className="EJobPost-text-input-half"
               >
                 <option value="">Minimum experience</option>
                 {[...Array(11).keys()].map((year) => (
@@ -467,7 +323,7 @@ const EmployerDashboard = () => {
                 name="maxExperience"
                 value={jobPost.maxExperience}
                 onChange={handleChange}
-                className="Employer_Dashboard-text-input-half"
+                className="EJobPost-text-input-half"
               >
                 <option value="">Maximum experience</option>
                 {[...Array(11).keys()].map((year) => (
@@ -480,14 +336,14 @@ const EmployerDashboard = () => {
           </div>
 
           {/* Location & Salary */}
-          <section className="Employer_Dashboard-form-section">
-            <h2 className="Employer_Dashboard-section-title">
+          <section className="EJobPost-form-section">
+            <h2 className="EJobPost-section-title">
               Location & Compensation
             </h2>
-            <div className="Employer_Dashboard-form-group">
+            <div className="EJobPost-form-group">
               <label
                 htmlFor="location"
-                className="Employer_Dashboard-label-required"
+                className="EJobPost-label-required"
               >
                 Location
               </label>
@@ -497,27 +353,27 @@ const EmployerDashboard = () => {
                 name="location"
                 value={jobPost.location}
                 onChange={handleChange}
-                className="Employer_Dashboard-text-input"
+                className="EJobPost-text-input"
                 placeholder="E.g Pune, Mumbai, Bangalore..."
               />
             </div>
-            <div className="Employer_Dashboard-form-group">
+            <div className="EJobPost-form-group">
               <label
                 htmlFor="salaryRange"
-                className="Employer_Dashboard-input-label"
+                className="EJobPost-input-label"
               >
                 Salary range (LPA)
-                <span className="Employer_Dashboard-label-optional">
+                <span className="EJobPost-label-optional">
                   [optional]
                 </span>
               </label>
-              <div className="Employer_Dashboard-salary-range-group">
+              <div className="EJobPost-salary-range-group">
                 <input
                   type="number"
                   name="minSalary"
                   value={jobPost.minSalary}
                   onChange={handleChange}
-                  className="Employer_Dashboard-text-input-half"
+                  className="EJobPost-text-input-half"
                   placeholder="Minimum"
                 />
                 <span className="salary-separator" style={{paddingRight:"10px", paddingLeft:"10px"}}>to</span>
@@ -526,7 +382,7 @@ const EmployerDashboard = () => {
                   name="maxSalary"
                   value={jobPost.maxSalary}
                   onChange={handleChange}
-                  className="Employer_Dashboard-text-input-half"
+                  className="EJobPost-text-input-half"
                   placeholder="Maximum"
                 />
               </div>
@@ -534,10 +390,10 @@ const EmployerDashboard = () => {
           </section>
 
           {/* Benefits */}
-          <section className="Employer_Dashboard-form-section">
-            <h2 className="Employer_Dashboard-section-title">Benefits</h2>
-            <div className="Employer_Dashboard-benefits-grid">
-              <label className="Employer_Dashboard-checkbox-option">
+          <section className="EJobPost-form-section">
+            <h2 className="EJobPost-section-title">Benefits</h2>
+            <div className="EJobPost-benefits-grid">
+              <label className="EJobPost-checkbox-option">
                 <input
                   type="checkbox"
                   value="Health insurance"
@@ -546,7 +402,7 @@ const EmployerDashboard = () => {
                 />
                 Health insurance
               </label>
-              <label className="Employer_Dashboard-checkbox-option">
+              <label className="EJobPost-checkbox-option">
                 <input
                   type="checkbox"
                   value="Annual bonus"
@@ -555,7 +411,7 @@ const EmployerDashboard = () => {
                 />
                 Annual bonus
               </label>
-              <label className="Employer_Dashboard-checkbox-option">
+              <label className="EJobPost-checkbox-option">
                 <input
                   type="checkbox"
                   value="Remote/hybrid flexibility"
@@ -566,7 +422,7 @@ const EmployerDashboard = () => {
                 />
                 Remote/hybrid flexibility
               </label>
-              <label className="Employer_Dashboard-checkbox-option">
+              <label className="EJobPost-checkbox-option">
                 <input
                   type="checkbox"
                   value="Travel allowance"
@@ -575,7 +431,7 @@ const EmployerDashboard = () => {
                 />
                 Travel allowance
               </label>
-              <label className="Employer_Dashboard-checkbox-option">
+              <label className="EJobPost-checkbox-option">
                 <input
                   type="checkbox"
                   value="ESOP's"
@@ -584,7 +440,7 @@ const EmployerDashboard = () => {
                 />
                 ESOP's
               </label>
-              <label className="Employer_Dashboard-checkbox-option">
+              <label className="EJobPost-checkbox-option">
                 <input
                   type="checkbox"
                   value="Learning programs"
@@ -597,14 +453,14 @@ const EmployerDashboard = () => {
           </section>
 
           {/* Application Deadline */}
-          <section className="Employer_Dashboard-form-section">
-            <h2 className="Employer_Dashboard-section-title">
+          <section className="EJobPost-form-section">
+            <h2 className="EJobPost-section-title">
               Additional details
             </h2>
-            <div className="Employer_Dashboard-form-group">
+            <div className="EJobPost-form-group">
               <label
                 htmlFor="applicationDeadline"
-                className="Employer_Dashboard-label-required"
+                className="EJobPost-label-required"
               >
                 Application deadline
               </label>
@@ -614,14 +470,14 @@ const EmployerDashboard = () => {
                 name="lastDateToApply"
                 value={jobPost.lastDateToApply}
                 onChange={handleChange}
-                className="Employer_Dashboard-text-input"
+                className="EJobPost-text-input"
                 required
               />
             </div>
-            <div className="Employer_Dashboard-form-group">
+            <div className="EJobPost-form-group">
               <label
                 htmlFor="numberOfOpening"
-                className="Employer_Dashboard-label-required"
+                className="EJobPost-label-required"
               >
                 Number of openings
               </label>
@@ -631,26 +487,26 @@ const EmployerDashboard = () => {
                 value={jobPost.numberOfOpenings}
                 name="numberOfOpenings"
                 onChange={handleChange}
-                className="Employer_Dashboard-text-input"
+                className="EJobPost-text-input"
                 required
               />
             </div>
           </section>
 
           {isLoadingPreviousJobs && (
-            <div className="Employer_Dashboard-loading">
+            <div className="EJobPost-loading">
               {/* //  <Spinner /> Loading your last job details... */}
             </div>
           )}
 
           {fetchError && (
-            <div className="Employer_Dashboard-error">
+            <div className="EJobPost-error">
               {fetchError}
               <button onClick={fetchPreviousJobs}>Retry</button>
             </div>
           )}
-          <button type="submit" className="Employer_Dashboard-btn-primary">
-            Submit Job Post
+          <button type="submit" className="EJobPost-applypost-job-button">
+            Post a job
           </button>
         </form>
       </div>
@@ -658,4 +514,4 @@ const EmployerDashboard = () => {
   );
 };
 
-export default EmployerDashboard;
+export default JobPost;
