@@ -62,7 +62,7 @@ const EmployerLogin = () => {
       const token = response.data.token;
       localStorage.setItem("token", token);
 
-     navigate("/EmployerDashboard"); // Navigate after successful login
+     navigate("/EmployerHome"); // Navigate after successful login
     } else {
       alert("Invalid credentials");
     }

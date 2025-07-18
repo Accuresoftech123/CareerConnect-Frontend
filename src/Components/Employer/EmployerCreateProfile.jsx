@@ -42,6 +42,7 @@ const EmployerCreateProfile = () => {
         city: "",
         state: "",
         country: "",
+        postalCode: "",
       },
     ],
   });
@@ -85,75 +86,80 @@ const EmployerCreateProfile = () => {
 
   // Handle form submission
   // This function will be called when the form is submitted
-      const handleSubmit = async (e) => {
-  e.preventDefault();
-  setShowVerificationPopup(true);
-  const recruiterId = localStorage.getItem("recruiterId");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setShowVerificationPopup(true);
+    const recruiterId = localStorage.getItem("recruiterId");
 
-  try {
-    const payload = {
-      ...formData,
-      recruiterId: parseInt(recruiterId),
-    };
+    try {
+      const payload = {
+        ...formData,
+        recruiterId: parseInt(recruiterId),
+      };
 
-    const multipartFormData = new FormData();
-    multipartFormData.append(
-      "profileDto",
-      new Blob([JSON.stringify(payload)], {
-        type: "application/json",
-      })
-    );
+      const multipartFormData = new FormData();
+      multipartFormData.append(
+        "profileDto",
+        new Blob([JSON.stringify(payload)], {
+          type: "application/json",
+        })
+      );
 
-    if (imageFile) {
-      multipartFormData.append("image", imageFile);
-    }
-
-    const response = await axiosInstance.post(
-      `/api/recruiters/profile/create/${recruiterId}`,
-      multipartFormData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
+      if (imageFile) {
+        multipartFormData.append("image", imageFile);
       }
-    );
 
-    if (response.status === 200) {
-      const data = response.data;
-      if (data.success) {
-        alert("Recruiter profile created successfully!");
-        setIsVerified(true);
-        navigate("/EmployerDashboard");
-      } else {
-        alert("Error: " + data.message);
+      const response = await axiosInstance.post(
+        `/api/recruiters/profile/create/${recruiterId}`,
+        multipartFormData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const data = response.data;
+        if (data.success) {
+          alert("Recruiter profile created successfully!");
+          setIsVerified(true);
+          navigate("/EmployerDashboard");
+        } else {
+          alert("Error: " + data.message);
+        }
       }
+    } catch (error) {
+      console.error("Error creating recruiter profile", error);
+      alert("Something went wrong. Please try again.");
     }
-  } catch (error) {
-    console.error("Error creating recruiter profile", error);
-    alert("Something went wrong. Please try again.");
-  }
-};
-
+  };
 
   const handleImageUpload = (e) => {
-  const file = e.target.files[0];
-  if (file) {
-    setImageFile(file); // Save the raw file
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData((prev) => ({
-        ...prev,
-        companyProfile: {
-          ...prev.companyProfile,
-          img: reader.result, // For preview only
-        },
-      }));
-    };
-    reader.readAsDataURL(file);
-  }
-};
-
-  
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file); // Save the raw file
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData((prev) => ({
+          ...prev,
+          companyProfile: {
+            ...prev.companyProfile,
+            img: reader.result, // For preview only
+          },
+        }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+  const handleRemoveLocation = (indexToRemove) => {
+    setFormData((prev) => ({
+      ...prev,
+      companyLocations: prev.companyLocations.filter(
+        (_, index) => index !== indexToRemove
+      ),
+    }));
+  };
 
   return (
     <div className="ecp-container">
@@ -317,40 +323,125 @@ const EmployerCreateProfile = () => {
                   </div>
                 </div>
 
-                <div className="ecp-form-row">
-                  <div className="ecp-input-group ecp-full">
-                    <label>Location</label>
-                    <div className="ecp-location-group">
-                      {/* State Dropdown */}
-                      <select
-                        name="state"
-                        id="locationState"
-                        value={formData.companyLocations[0].state}
-                        onChange={(e) => handleChange(e, "companyLocations", 0)}
-                      >
-                        <option value="">Select your state</option>
-                        <option value="Maharashtra">Maharashtra</option>
-                        <option value="Delhi">Delhi</option>
-                        <option value="MP">MP</option>
-                      </select>
+                {formData.companyLocations.map((location, index) => (
+                  <div className="ecp-form-row" key={index}>
+                    <div className="ecp-input-group ecp-full">
+                      <label>
+                        Location{" "}
+                        {formData.companyLocations.length > 1 ? index + 1 : ""}
+                      </label>
 
-                      {/* Country Dropdown */}
-                      <select
-                        name="country"
-                        id="locationCountry"
-                        value={formData.companyLocations[0].country}
-                        onChange={(e) => handleChange(e, "companyLocations", 0)}
+                      {/* State & Country */}
+                      <div className="ecp-location-group">
+                        <select
+                          name="state"
+                          value={location.state}
+                          onChange={(e) =>
+                            handleChange(e, "companyLocations", index)
+                          }
+                        >
+                          <option value="">Select your state</option>
+                          <option value="Maharashtra">Maharashtra</option>
+                          <option value="Delhi">Delhi</option>
+                          <option value="MP">MP</option>
+                        </select>
+
+                        <select
+                          name="country"
+                          value={location.country}
+                          onChange={(e) =>
+                            handleChange(e, "companyLocations", index)
+                          }
+                        >
+                          <option value="">Select your country</option>
+                          <option value="India">India</option>
+                          <option value="Russia">Russia</option>
+                        </select>
+                      </div>
+
+                      {/* City & Postal Code */}
+                      <div
+                        className="ecp-location-group"
+                        style={{ paddingTop: "1rem" }}
                       >
-                        <option value="">Select your country</option>
-                        <option value="India">India</option>
-                        <option value="Russia">Russia</option>
-                      </select>
+                        <input
+                          type="text"
+                          name="city"
+                          placeholder="Enter city"
+                          value={location.city}
+                          onChange={(e) =>
+                            handleChange(e, "companyLocations", index)
+                          }
+                        />
+                        <input
+                          type="text"
+                          name="postalCode"
+                          placeholder="Enter postal code"
+                          value={location.postalCode}
+                          onChange={(e) =>
+                            handleChange(e, "companyLocations", index)
+                          }
+                        />
+                      </div>
+
+                      {/* Full Address */}
+                      <div
+                        className="ecp-location-group"
+                        style={{ paddingTop: "1rem" }}
+                      >
+                        <input
+                          type="text"
+                          name="address"
+                          placeholder="Enter full address"
+                          value={location.address}
+                          onChange={(e) =>
+                            handleChange(e, "companyLocations", index)
+                          }
+                          className="ecp-full-width"
+                        />
+                      </div>
+                      {formData.companyLocations.length > 1 && (
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveLocation(index)}
+                          className="ecp-remove-location"
+                          style={{
+                            marginTop: "1rem",
+                            color: "#fff",
+                            backgroundColor: "#b153e5",
+                            border: "none",
+                            borderRadius: "4px",
+                            padding: "7px",
+                          }}
+                        >
+                          Remove Location
+                        </button>
+                      )}
                     </div>
                   </div>
-                </div>
+                ))}
 
+                {/* Add Another Location Button */}
                 <div className="ecp-form-row">
-                  <button type="button" className="ecp-add-location">
+                  <button
+                    type="button"
+                    className="ecp-add-location"
+                    onClick={() =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        companyLocations: [
+                          ...prev.companyLocations,
+                          {
+                            state: "",
+                            country: "",
+                            city: "",
+                            postalCode: "",
+                            address: "",
+                          },
+                        ],
+                      }))
+                    }
+                  >
                     <img src={plusIcon} alt="" /> Add another location
                   </button>
                 </div>
@@ -370,9 +461,9 @@ const EmployerCreateProfile = () => {
                 </div>
 
                 <div className="ecp-form-row ecp-buttons-row">
-                  <button type="button" className="ecp-btn-secondary">
+                  {/* <button type="button" className="ecp-btn-secondary">
                     Save as draft
-                  </button>
+                  </button> */}
                   <button
                     type="button"
                     className="ecp-btn-primary"
@@ -395,7 +486,7 @@ const EmployerCreateProfile = () => {
               <div className="ecp-card-body">
                 <div className="ecp-form-row">
                   <div className="ecp-input-group ecp-full">
-                    <label htmlFor="recruiterName">Name</label>
+                    <label htmlFor="recruiterName">Recruiter Name</label>
                     <input
                       type="text"
                       id="recruiterName"
@@ -408,7 +499,9 @@ const EmployerCreateProfile = () => {
                 </div>
                 <div className="ecp-form-row">
                   <div className="ecp-input-group ecp-half">
-                    <label htmlFor="recruiterEmail">Email Address</label>
+                    <label htmlFor="recruiterEmail">
+                      Recruiter Email Address
+                    </label>
                     <input
                       type="email"
                       id="hrContactEmail"
@@ -433,9 +526,9 @@ const EmployerCreateProfile = () => {
               </div>
 
               <div className="ecp-form-row ecp-buttons-row">
-                <button type="button" className="ecp-btn-secondary">
+                {/* <button type="button" className="ecp-btn-secondary">
                   Save as draft
-                </button>
+                </button> */}
                 <button
                   type="button"
                   className="ecp-btn-secondary"

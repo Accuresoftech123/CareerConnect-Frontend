@@ -1,0 +1,391 @@
+/* AdminDashboard.css */
+ 
+/* Main Container */
+.AdminDashboard-container {
+  padding: 20px;
+  font-family: sans-serif;
+  background-color: #f7f1ec;
+  min-height: 100vh;
+ 
+}
+ 
+/* Summary Cards Section */
+.AdminDashboard-summary-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 10px;
+  margin-bottom: 30px;
+}
+ 
+.AdminDashboard-card {
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+ 
+.AdminDashboard-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+ 
+.AdminDashboard-card h3 {
+  font-size: 28px;
+  font-weight: 1000;
+  color: #e58c53;
+  margin-bottom: 5px;
+  margin-top:-22px;
+}
+ 
+.AdminDashboard-card p {
+  font-size: 14px;
+  color: #7f8c8d;
+  margin: 0;
+}
+ 
+ 
+ 
+ 
+ 
+/* Dashboard Sections */
+.AdminDashboard-summary-icon{
+  margin-left:-163px;
+  margin-top:0px;
+}
+.AdminDashboard-dashboard-section-tables {
+  display: flex;
+  gap: 20px; /* spacing between the two sections */
+  margin-bottom: 25px;
+}
+ 
+.AdminDashboard-dashboard-section {
+  width: 50%;
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+ 
+.AdminDashboard-dashboard-section h2 {
+  color: #080808;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: -24px;
+  padding-bottom: 10px;
+  margin-left:36px;
+}
+ 
+/* Grid Layout for Recruiters and Candidates */
+.AdminDashboard-recruiters-grid,
+.AdminDashboard-candidates-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 15px;
+}
+ 
+.AdminDashboard-grid-column h3 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #080808;
+  margin-bottom: 15px;
+  padding-bottom: 8px;
+}
+ 
+.AdminDashboard-grid-item {
+  font-size: 13px;
+  color: #444444;
+  padding: 8px 0;
+  border-bottom: 1px solid #f8f9fa;
+}
+ 
+/* Active Users Table */
+.AdminDashboard-dashboard-section-user{
+  background: white;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+ 
+}
+ 
+.AdminDashboard-dashboard-section-user h2
+{color: #080808;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: -24px;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  margin-left:36px;}
+ 
+.AdminDashboard-active-users-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+ 
+.AdminDashboard-active-users-table th {
+  background-color: #f8f9fa;
+  color: #080808;
+  font-weight: 600;
+  padding: 12px 15px;
+  text-align: left;
+}
+ 
+.AdminDashboard-active-users-table td {
+  padding: 12px 15px;
+  color: #080808;
+}
+ 
+.AdminDashboard-active-users-table tr:hover {
+  background-color: #f8f9fa;
+}
+ 
+.AdminDashboard-dashboard-section-viewAll{
+  color:#b153e5;
+margin-left: 600px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+ 
+.AdminDashboard-dashboard-section-viewAll:hover{
+  color:#842cc0;
+}
+ 
+/* Action Icons Styles */
+.AdminDashboard-action-icons {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+ 
+.AdminDashboard-action-icon {
+  color: #7f8c8d;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 18px !important;
+}
+ 
+.AdminDashboard-action-icon:hover {
+  color:#842cc0;
+  transform: scale(1.1);
+}
+ 
+ 
+/* Days Filter Component */
+.AdminDashboard-days-filter-container {
+  position: relative;
+  display: inline-block;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  min-width: 180px;
+  z-index: 100;
+  margin-left:1100px;
+}
+ 
+.AdminDashboard-days-filter-selected {
+  padding: 5px 10px;
+  background-color: #ffffff;
+  border: 2px solid #080808;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  color: #333333;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+ 
+.AdminDashboard-days-filter-selected:hover {
+  border-color: #1890ff;
+  box-shadow: 0 1px 3px rgba(24, 144, 255, 0.2);
+}
+ 
+.AdminDashboard-days-filter-selected .dropdown-icon {
+  margin-left: 10px;
+  font-size: 12px;
+  color: #666666;
+  transition: transform 0.2s ease;
+}
+ 
+.AdminDashboard-days-filter-selected .dropdown-icon.open {
+  transform: rotate(180deg);
+}
+ 
+.AdminDashboard-days-filter-options {
+  position: absolute;
+  top: calc(100% + 5px);
+  left: 0;
+  right: 0;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  overflow: hidden;
+  animation: fadeIn 0.15s ease-out;
+}
+ 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+ 
+.AdminDashboard-days-filter-options .filter-option {
+  padding: 10px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14px;
+  color: #333333;
+  border-bottom: 1px solid #f0f0f0;
+}
+ 
+.AdminDashboard-days-filter-options .filter-option:last-child {
+  border-bottom: none;
+}
+ 
+.AdminDashboard-days-filter-options .filter-option:hover {
+  background-color: #f5f5f5;
+}
+ 
+.AdminDashboard-days-filter-options .filter-option.selected {
+  background-color: #e6f7ff;
+  color: #1890ff;
+  font-weight: 500;
+}
+ .AdminDashboard-dashboard-section-viewAll {
+  margin-left: auto;
+  display: inline-block;
+}
+
+.AdminDashboard-days-filter-container {
+  margin: 20px 0;
+}
+.AdminDashboard-dashboard-section-tables {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.AdminDashboard-dashboard-section,
+.AdminDashboard-dashboard-section-user {
+  flex: 1 1 300px;
+  min-width: 300px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .AdminDashboard-days-filter-container {
+    width: 100%;
+  }
+ 
+  .AdminDashboard-days-filter-selected {
+    padding: 12px 16px;
+  }
+ 
+  .AdminDashboard-days-filter-options .filter-option {
+    padding: 12px 16px;
+  }
+}
+ @media (max-width: 768px) {
+  .AdminDashboard-dashboard-section-tables {
+    flex-direction: column;
+  }
+
+  .AdminDashboard-dashboard-section-viewAll {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .AdminDashboard-recruiters-grid,
+  .AdminDashboard-candidates-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+
+  .AdminDashboard-active-users-table th,
+  .AdminDashboard-active-users-table td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+ 
+/* Ensure table cells have enough padding for icons */
+.AdminDashboard-active-users-table td {
+  padding: 12px 15px;
+}
+ 
+/* Subscription Badges */
+.AdminDashboard-grid-item:nth-child(3n) {
+  font-weight: 500;
+}
+ 
+.AdminDashboard-grid-item:nth-child(3n):contains("Platinum") {
+  color: #3498db;
+}
+ 
+.AdminDashboard-grid-item:nth-child(3n):contains("Golden") {
+  color: #f39c12;
+}
+ 
+.AdminDashboard-grid-item:nth-child(3n):contains("Free") {
+  color: #7f8c8d;
+}
+ 
+/* Time Indicators */
+/* .AdminDashboard-grid-item:nth-child(4n) {
+  color: #95a5a6;
+  font-size: 12px;
+} */
+ 
+/* Action Buttons */
+.AdminDashboard-active-users-table td:last-child {
+  font-size: 16px;
+  letter-spacing: 5px;
+}
+@media (max-width: 480px) {
+  .AdminDashboard-container {
+    padding: 10px;
+  }
+
+  .AdminDashboard-summary-cards {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .AdminDashboard-card h3 {
+    font-size: 24px;
+  }
+
+  .AdminDashboard-dashboard-section {
+    padding: 15px;
+  }
+
+  .AdminDashboard-recruiters-grid,
+  .AdminDashboard-candidates-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .AdminDashboard-days-filter-container {
+    width: 100%;
+  }
+
+  .AdminDashboard-active-users-table {
+    font-size: 12px;
+  }
+
+  .AdminDashboard-active-users-table th,
+  .AdminDashboard-active-users-table td {
+    padding: 6px 8px;
+  }
+
+  .AdminDashboard-action-icon {
+    font-size: 16px !important;
+  }
+
+  .AdminDashboard-days-filter-container {
+    margin-left: 0;
+  }
+}

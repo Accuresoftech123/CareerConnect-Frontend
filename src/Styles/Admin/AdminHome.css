@@ -1,0 +1,325 @@
+ 
+/* Admin-Home */
+ 
+.AdminHome_layout-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+  background: #f7f1ec;
+}
+ 
+/* Header */
+.AdminHome_header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 10px 16px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 60px;
+  z-index: 1001;
+  flex-wrap: wrap; /* ✨ Add for responsiveness */
+}
+ 
+.AdminHome_sidebar-toggle-btn {
+  display: none;
+  background: none;
+  border: none;
+  font-size: 24px;
+  color: #b153e5;
+  cursor: pointer;
+}
+ 
+.AdminHome_logo {
+  font-size: 24px;
+  font-weight: bold;
+  color: #b153e5;
+}
+ 
+.AdminHome_logo span {
+  color: #000;
+}
+ 
+.AdminHome_search-container {
+  display: flex;
+  align-items: center;
+  background-color: #efefef;
+  border: 1px solid #f3b7a4;
+  border-radius: 6px;
+  padding: 4px 10px;
+  max-width: 400px;
+  flex: 1;
+  margin: 0 16px;
+}
+ 
+.AdminHome_search-input {
+  border: none;
+  outline: none;
+  flex: 1;
+  padding-left: 14px;
+  background-color: #efefef;
+}
+ 
+.AdminHome_search-icon {
+  color: #000;
+}
+ 
+.AdminHome_right-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding-right: 19px;
+  flex-wrap: wrap; /* ✨ Add for mobile wrapping */
+}
+ 
+.AdminHome_user-greeting {
+  font-weight: 500;
+  cursor: pointer;
+}
+.AdminHome_user-greeting:hover {
+  background: #842cc0;
+  color: white;    
+}
+ 
+.AdminHome_sidebar {
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 250px;
+  height: calc(100vh - 60px);
+  background: #fff;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.05);
+  transition: transform 0.3s ease;
+  z-index: 1000;
+  transform: translateX(0);
+}
+ 
+.AdminHome_link,
+.AdminHome_active-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 15px;
+  color: #555;
+  cursor: pointer;
+}
+ 
+.AdminHome_link:hover {
+  background: #842cc0;
+  color: white;
+}
+ 
+.AdminHome_active-link {
+  background: #b153e5;
+  color: #ffffff;
+}
+ 
+.AdminHome_sidebar-overlay {
+  display: none;
+}
+ 
+.AdminHome_sidebar-overlay.active {
+  display: block;
+  position: fixed;
+  top: 60px;
+  left: 0;
+  width: 100%;
+  height: calc(100vh - 60px);
+  background-color: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
+ 
+ 
+.AdminHome_header-link {
+  display: flex;
+  align-items: center;
+  color: #6a0dad;
+}
+ 
+.AdminHome_profile-icon {
+  width: 20px;
+  margin-left: 5px;
+}
+ 
+ 
+ 
+/* SideBar-footer */
+ 
+.AdminHome_sidebar-footer {
+  margin-top:67px; /* Pushes the footer to the bottom */
+  padding: 16px;
+  background-color: #ffffff;
+  border-top: 1px solid #ccc;
+  margin-bottom: 2px;
+ 
+}
+ 
+.AdminHome_user-profile {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  cursor: pointer;
+}
+ 
+.AdminHome_user-profile .profile-pic {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border-color);
+}
+ 
+.AdminHome_user-profile .user-info {
+  display: flex;
+  flex-direction: column;
+}
+ 
+.AdminHome_user-profile .user-name {
+  font-weight: bold;
+  color: var(--text-color-dark);
+  font-size: 15px;
+}
+ 
+.AdminHome_user-profile .user-role {
+  font-size: 13px;
+  color: var(--text-color-light);
+}
+ 
+.AdminHome_user-profile .icon-arrow-right {
+  margin-left: auto;
+  /* Pushes the arrow to the right */
+  font-size: 18px;
+  color: var(--text-color-light);
+}
+ 
+ 
+/* Layout body */
+.AdminHome_layout-body {
+  display: flex;
+  margin-top: 60px;
+  margin-left: 260px;
+  height: calc(100vh - 60px);
+  overflow: hidden;
+  min-height: 0;
+}
+ 
+.AdminHome_main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+  height: calc(100vh - 60px);
+  min-height: 0;
+}
+ 
+/* ---------------------- */
+/* 📱 Responsive Styles    */
+/* ---------------------- */
+ 
+@media (max-width: 1024px) {
+  .AdminHome_search-container {
+    max-width: 250px;
+  }
+}
+ 
+@media (max-width: 768px) {
+  .AdminHome_sidebar-toggle-btn {
+    display: block;
+  }
+ 
+  .AdminHome_sidebar {
+    transform: translateX(-100%);
+    width: 80%;
+    margin-top: 150px;
+  }
+ 
+  .AdminHome_sidebar.active {
+    transform: translateX(0);
+  }
+ 
+  .AdminHome_sidebar-overlay.active {
+    display: block;
+  }
+ 
+  .AdminHome_layout-body {
+    margin-top: 60px;
+    margin-left: 0;
+  }
+ 
+  .AdminHome_main-content {
+    margin-left: 0;
+    padding: 10px;
+    padding-top: 140px;
+    height: auto;
+  }
+ 
+  .AdminHome_header {
+    flex-direction: column;
+    align-items: flex-start;
+    height: auto;
+    gap: 10px;
+    padding: 12px;
+  }
+ 
+  .AdminHome_right-section {
+    width: 100%;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+ 
+  .AdminHome_logo-container {
+    width: 100%;
+    justify-content: center;
+  }
+ 
+  .AdminHome_user-greeting {
+    font-size: 14px;
+  }
+ 
+  .AdminHome_search-container {
+    width: 100%;
+    margin: 8px 0;
+  }
+}
+ 
+@media only screen and (max-width: 480px) {
+  .AdminHome_header {
+    padding: 10px;
+  }
+ 
+  .AdminHome_search-container {
+    padding: 6px 8px;
+  }
+ 
+  .AdminHome_right-section {
+    gap: 10px;
+    justify-content: space-between;
+  }
+ 
+  .AdminHome_user-greeting {
+    font-size: 13px;
+  }
+ 
+ 
+  .AdminHome_logo {
+    font-size: 20px;
+  }
+ 
+  .AdminHome_main-content {
+    padding: 10px;
+    padding-top: 110px;
+  }
+}
+ 

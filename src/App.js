@@ -1,25 +1,36 @@
 import "./App.css";
+import React from "react";
+import { Routes, Route, BrowserRouter } from "react-router-dom";
+
+//main homepage
 import HomePage from "./Components/HomePage";
+
+//Job seeker
 import Login from "./Components/JobSeeker/Login";
 import Registration from "./Components/JobSeeker/Registration";
-import { Routes, Route, BrowserRouter } from "react-router-dom";
 import EmailVerificationPopup from "./Components/JobSeeker/EmailVerification";
-import React from "react";
-import EmployerLogin from "./Components/Employer/EmployerLogin";
-import EmployerRegistration from "./Components/Employer/EmployerRegistration";
-import EmployerCreateProfile from "./Components/Employer/EmployerCreateProfile";
-import EmployerDashboard from "./Components/Employer/EmployerDashboard";
 import JobSeekerSubscription from "./Components/JobSeeker/JobSeekerSubscription";
 import JobSeekerCreateProfile from "./Components/JobSeeker/JobSeekerCreateProfile";
 import JobSeekerHome from "./Components/JobSeeker/JobSeekerHome";
 import Dashboard from "./Components/JobSeeker/DashComponents/Dashboard";
 import JSJobDetails from "./Components/JobSeeker/DashComponents/JSJobDetails";
+import SpecificJob from "./Components/JobSeeker/DashComponents/SpecificJob";
+
+//employer 
+import EmployerLogin from "./Components/Employer/EmployerLogin";
+import EmployerRegistration from "./Components/Employer/EmployerRegistration";
+import EmployerCreateProfile from "./Components/Employer/EmployerCreateProfile";
+import EmployerHome from "./Components/Employer/EmployerHome";
+import EmployerDashboard from "./Components/Employer/Dashcomponents/EmployerDashboard";
+import JobPost from "./Components/Employer/Dashcomponents/JobPost";
+
+//Admin
 import AdminLogin from "./Components/Admin/AdminLogin";
 import AdminHome from "./Components/Admin/AdminHome";
+import AdminDashboard from "./Components/Admin/Dashcomponents/AdminDashboard";
 
 // ✅ Import Google OAuth Provider
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import SpecificJob from "./Components/JobSeeker/DashComponents/SpecificJob";
 
 function App() {
   return (
@@ -36,21 +47,15 @@ function App() {
           <Route path="/JobSeeker-Create-Profile" element={<JobSeekerCreateProfile />} />
           <Route path="/JobSeekerHome/*" element={<JobSeekerRoutes />} />
 
-
-        
-   
         {/*Employer */}
         <Route path="/EmployerLogin" element={<EmployerLogin />}></Route>
         <Route path="/EmployerRegistration" element={<EmployerRegistration />}></Route>
         <Route path="/EmployerCreateProfile" element={<EmployerCreateProfile />}></Route>
-        <Route path="/EmployerDashboard" element={<EmployerDashboard />}></Route>
+        <Route path="/EmployerHome/*" element={<EmployerRoutes />}></Route>
  
         {/* Admin */}
         <Route path="/AdminLogin" element={<AdminLogin />}></Route>
-        <Route path="/AdminHome" element={<AdminHome />}></Route>
- 
- 
-       
+        <Route path="/AdminHome/*" element={<AdminRoutes />}></Route>
       </Routes>
     </BrowserRouter>
     </GoogleOAuthProvider>
@@ -71,4 +76,25 @@ const JobSeekerRoutes = () => {
   );
 };
 
+const EmployerRoutes = () => {
+  return (
+   <EmployerHome>
+      <Routes>
+        <Route index element={<EmployerDashboard />} />
+        <Route path="Employer-Dashboard" element={<EmployerDashboard/>}/>
+        <Route path="Job-Post" element={<JobPost/>}/>
+      </Routes>
+    </EmployerHome>
+  );
+};
+const AdminRoutes = () => {
+  return (
+   <EmployerHome>
+      <Routes>
+        <Route index element={<AdminDashboard />} />
+        <Route path="Admin-Dashboard" element={<AdminDashboard/>}/>
+      </Routes>
+    </EmployerHome>
+  );
+};
 export default App;
