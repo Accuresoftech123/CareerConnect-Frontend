@@ -93,15 +93,78 @@ const JobSeekerCreateProfile = () => {
   // const [preferredLocation, setPreferredLocation] = React.useState("");
   const [agreeTerms, setAgreeTerms] = React.useState(false);
 
-  // Handler for personal info inputs
-  const handlePersonalInfoChange = (e) => {
-    const { id, type, value, checked, files } = e.target;
+  //parse resume and update fields
+  const parseResumeAndUpdateFields = async () => {
+  const jobSeekerId = localStorage.getItem("jobSeekerId");
+
+  const formData = new FormData();
+  formData.append("file", resumeFile);
+
+  try {
+    const response = await axios.post(
+      `${url}/api/jobseekers/${jobSeekerId}/upload-resume`,
+      formData,
+      {
+        headers: { "Content-Type": "multipart/form-data" },
+      }
+    );
+
+    const data = response.data.jobSeekerData;
+
+    setFullName(data.fullName || "");
+    setEmail(data.email || "");
+    setPhone(data.mobileNumber || "");
+
+   setSkills(Array.isArray(data?.skills) ? data.skills : []);
 
     setPersonalInfos((prev) => ({
       ...prev,
-      [id]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
+      city: data.personalInfo?.city || "",
+      resumeUrl: data.personalInfo?.resumeUrl || "",
     }));
-  };
+
+    setSocialLinks((prev) => ({
+      ...prev,
+      linkedinUrl: data.scoicalProfile?.linkedinUrl || "",
+    }));
+
+    if (data.educationList?.length > 0) {
+      setEducations(data.educationList);
+    }
+
+    if (data.experienceList?.length > 0) {
+      setExperiences(data.experienceList);
+    }
+
+    console.log("✅ Resume parsed and state updated", data);
+  } catch (error) {
+    console.error("❌ Resume parsing failed:", error);
+    alert("Resume parsing failed. Please ensure it is a valid PDF.");
+  }
+};
+ // Handler for personal info inputs
+
+  const handlePersonalInfoChange = async (e) => {
+  const { id, type, value, checked, files } = e.target;
+
+  if (type === "checkbox" && id === "autoParse") {
+    setPersonalInfos((prev) => ({
+      ...prev,
+      [id]: checked,
+    }));
+
+    if (checked && resumeFile) {
+      await parseResumeAndUpdateFields();
+    }
+    return;
+  }
+
+  setPersonalInfos((prev) => ({
+    ...prev,
+    [id]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
+  }));
+};
+
 
   /*Add education functionality */
   const handleEducationChange = (index, field, value) => {
@@ -208,7 +271,6 @@ const JobSeekerCreateProfile = () => {
         alert("Unexpected error. Please try again.");
       }
     }
-
     // navigate("/JobSeekerDashboard");
   };
 
@@ -434,7 +496,15 @@ const JobSeekerCreateProfile = () => {
   accept=".pdf,.doc,.docx"
   ref={resumeInputRef}
                       style={{ display: "none" }}
-                      onChange={(e) => setResumeFile(e.target.files[0])}
+                      onChange={async (e) => {
+  const file = e.target.files[0];
+  setResumeFile(file);
+
+  if (personalInfo.autoParse && file) {
+    await parseResumeAndUpdateFields();
+  }
+}}
+
                       required
                     />
                     <label htmlFor="resume" className="jscp-browse-button">
@@ -494,8 +564,9 @@ const JobSeekerCreateProfile = () => {
                 <input
                   type="checkbox"
                   id="autoParse"
-                  checked={personalInfo.autoParse}
-                  onChange={handlePersonalInfoChange}
+                 checked={personalInfo.autoParse}
+  onChange={handlePersonalInfoChange}
+  disabled={!resumeFile}
                   //formData.append("parseResume", parseResumeCheckbox.checked);
                 />
                 <label htmlFor="autoParse">Auto‑parse resume data</label>
