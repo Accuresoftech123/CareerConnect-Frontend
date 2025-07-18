@@ -16,12 +16,15 @@ import {
 import { HiOutlineUsers } from "react-icons/hi";
 import { AiOutlineCalendar } from "react-icons/ai";
 import "../../../Styles/Employer/Dashcomponents/EmployerDashboard.css";
+import axiosInstance from "../../../axiosInstance";
 
 const EmployerDashboard = () => {
   const navigate = useNavigate();
 
   // State for interviews and applicants
   const [interviewData, setInterviewData] = useState([]);
+
+  // applicants data object
   const [applicantsData, setApplicantsData] = useState([]);
 
   // Loading states (optional)
@@ -33,10 +36,18 @@ const EmployerDashboard = () => {
   const [experienceFilter, setExperienceFilter] = useState("");
   const [jobTypeFilter, setJobTypeFilter] = useState("");
 
-  // Simulate API fetch for interviews
-  useEffect(() => {
-    // Simulate network delay
-    setTimeout(() => {
+  //states for stat cards
+  const [totalJobsPostedCount, setTotalJobsPostedCount] = useState(0);
+  const [newApplicationsCount, setnewApplicationsCount] = useState(0);
+  const [shortlistedCount, setshortlistedCount] = useState(0);
+  const [savedProfilesCount, setsavedProfilesCount] = useState(0);
+  const [totalViewsCount, settotalViewsCount] = useState(0);
+
+
+  // upcoming interview function 
+
+  // jobpostcount function
+  const upcomingInterviews = async () => {
       setInterviewData([
         {
           name: "Asmita Rai",
@@ -60,54 +71,179 @@ const EmployerDashboard = () => {
           image: "https://randomuser.me/api/portraits/men/77.jpg",
         },
       ]);
+    };
+
+   // fetch applicants function
+  const applicants = async () => {
+
+    const employeeId = localStorage.getItem("recruiterId");
+     try {
+           const response = await axiosInstance.get(`/api/recruiters/dashboard/recent-applicants?recruiterId=${employeeId}`);
+    
+           console.log(response.data);
+    if (response.status === 200) {
+      const transformedData = response.data.map(applicant => ({
+        name: applicant.jobSeekerName || "N/A", // fallback
+        title: applicant.jobPostTitle || "Unknown Title",
+        location: applicant.jobPostLocation || "Unknown",
+        date: formatDate(applicant.appliedDate),
+        status: formatStatus(applicant.status),
+        resume: applicant.resumeFileName,
+        email: applicant.email,
+         profileImageUrl: applicant.profileImageUrl || "https://randomuser.me/api/portraits/men/32.jpg", 
+      }));
+
+      console.log("Applicants Data:", transformedData);
+
+
+      setApplicantsData(transformedData);
+    } else {
+      setApplicantsData([]);
+    }
+  } catch (error) {
+    console.error('Error fetching applicants:', error);
+    setApplicantsData([]);
+  }
+
+    };
+
+    // Utility function to format date
+const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  return date.toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'short',
+    year: 'numeric',
+  });
+};
+
+// Optional: map backend statuses to UI-friendly names
+const formatStatus = (status) => {
+  switch (status) {
+    case 'SUBMITTED': return 'Submitted';
+    case 'UNDER_REVIEW': return 'Under Review';
+    case 'SHORTLISTED': return 'Shortlisted';
+    case 'INTERVIEW_SCHEDULED': return 'Interview Scheduled';
+    case 'REJECTED': return 'Rejected';
+    case 'OFFER_EXTENDED': return 'Offer Extended';
+    case 'HIRED': return 'Hired';
+    default: return status ? status.charAt(0) + status.slice(1).toLowerCase() : 'Unknown';
+  }
+};
+
+
+
+    
+
+
+  // jobpostcount function
+  const  newApplicationCount = async () => {
+      const employeeId = localStorage.getItem("recruiterId");
+      setTotalJobsPostedCount(4);
+     try {
+        const response = await axiosInstance.get(`/api/recruiters/dashboard/summary/${employeeId}`);
+      const data =response.data;
+        console.log(data);
+        setnewApplicationsCount(data.newApplications || 0);
+        setsavedProfilesCount(data.savedProfiles || 0);
+        settotalViewsCount(data.totalviews || 0);
+        setshortlistedCount(data.shortlisted || 0);
+
+      } catch (err) {
+        console.error('Error fetching dashboard summary:', err);
+      }
+    };
+
+
+      // jobpostcount function
+      const jobPostCount = async () => {
+      const recruiterId = localStorage.getItem("recruiterId");
+           try {
+                const response = await axiosInstance.get(`/api/jobposts/jobpost-count/${recruiterId}`);
+             
+                   console.log(response.data);
+                  if (response.status === 200) {
+                  setTotalJobsPostedCount(response.data);
+                  } else {
+                   console.warn("Unexpected response:", response);
+                  setTotalJobsPostedCount(0); // fallback
+            }
+            } catch (error) {
+                   console.error("Error fetching job post count:", error);
+                   setTotalJobsPostedCount(0); // fallback on error
+           }
+    
+    };
+
+    //shortlist count function
+     const shortListCount = async () => {
+      const jobSeekerId = localStorage.getItem("jobSeekerId");
+
+       setshortlistedCount(100);
+      // try {
+      //   const response = await axiosInstance.get(
+      //     `/api/jobseekers/saved-jobs/count/${jobSeekerId}`
+      //   );
+  
+      //   setnewApplications(10);
+      //   console.log("Saved jobs count:", response.data);
+      // } catch (error) {
+      //   console.error("Error fetching saved jobs count:", error);
+      // }
+    };
+
+    // saved profile count 
+    const savedProfileCount = async () => {
+      const jobSeekerId = localStorage.getItem("jobSeekerId");
+
+       setsavedProfilesCount(50);
+      // try {
+      //   const response = await axiosInstance.get(
+      //     `/api/jobseekers/saved-jobs/count/${jobSeekerId}`
+      //   );
+  
+      //   setnewApplications(10);
+      //   console.log("Saved jobs count:", response.data);
+      // } catch (error) {
+      //   console.error("Error fetching saved jobs count:", error);
+      // }
+    };
+    // total views count 
+    const totalviewCount = async () => {
+      const jobSeekerId = localStorage.getItem("jobSeekerId");
+
+       settotalViewsCount(500);
+      // try {
+      //   const response = await axiosInstance.get(
+      //     `/api/jobseekers/saved-jobs/count/${jobSeekerId}`
+      //   );
+  
+      //   setnewApplications(10);
+      //   console.log("Saved jobs count:", response.data);
+      // } catch (error) {
+      //   console.error("Error fetching saved jobs count:", error);
+      // }
+    };
+
+
+  // Simulate API fetch for interviews
+  useEffect(() => {
+
+    upcomingInterviews();
+    applicants();
+    jobPostCount();
+    newApplicationCount();
+    shortListCount();
+    savedProfileCount();
+    totalviewCount();
+    // Simulate network delay
+     setTimeout(() => {
+      setLoadingApplicants(false);
       setLoadingInterviews(false);
     }, 1000);
   }, []);
 
-  // Simulate API fetch for applicants
-  useEffect(() => {
-    setTimeout(() => {
-      setApplicantsData([
-        {
-          name: "Ganesh Khedkar",
-          title: "Graphics Designer",
-          date: "26 May 2025",
-          status: "In review",
-        },
-        {
-          name: "Nikita Vaishampayal",
-          title: "Cyber Security Engineer",
-          date: "26 May 2025",
-          status: "Rejected",
-        },
-        {
-          name: "Simaran Agrawal",
-          title: "UI UX Designer",
-          date: "25 May 2025",
-          status: "Shortlisted",
-        },
-        {
-          name: "Mayur Shinde",
-          title: "Senior HR Executive",
-          date: "25 May 2025",
-          status: "In review",
-        },
-        {
-          name: "Vaishali Gupta",
-          title: "Java Developer",
-          date: "24 May 2025",
-          status: "Rejected",
-        },
-      ]);
-      setLoadingApplicants(false);
-    }, 1000);
-  }, []);
-const  shortlistedCount = 20;
- const totalJobsPosted = 5;
-  const newApplications = 34;
-  const savedProfiles = 10;
-  const totalViews = 1027;
-
+  
   return (
     <div className="EDashboard-container">
       {/* Search Bar */}
@@ -157,12 +293,12 @@ const  shortlistedCount = 20;
           {
             icon: <FaRegFileAlt size={24} color="rgb(218, 96, 52)" />,
             label: "Job Posted",
-            value: totalJobsPosted,
+            value: totalJobsPostedCount,
           },
           {
             icon: <FaRegUser size={24} color="rgb(218, 96, 52)" />,
             label: "New Applications",
-            value: newApplications,
+            value: newApplicationsCount,
           },
           {
             icon: <FaRegStar size={24} color="rgb(218, 96, 52)" />,
@@ -172,12 +308,12 @@ const  shortlistedCount = 20;
           {
             icon: <FaRegBookmark size={24} color="rgb(218, 96, 52)" />,
             label: "Saved Profile",
-            value: savedProfiles,
+            value: savedProfilesCount,
           },
           {
             icon: <FaRegEye size={24} color="rgb(218, 96, 52)" />,
             label: "Total views",
-            value: totalViews,
+            value: totalViewsCount,
           },
         ].map((item, idx) => (
           <div key={idx} className="EDashboard-summary-card">
@@ -286,7 +422,7 @@ const  shortlistedCount = 20;
                 </tr>
               </thead>
               <tbody>
-                {applicantsData.map(({ name, title, date, status }, idx) => (
+                {applicantsData.map(({ name, title, date, status, profileImageUrl }, idx) => (
                   <tr key={idx}>
                     <td>
                       <input type="checkbox" />
@@ -294,11 +430,10 @@ const  shortlistedCount = 20;
                     <td>
                       <div className="EDashboard-candidate-profile">
                         <img
-                          src={`https://randomuser.me/api/portraits/${
-                            idx % 2 === 0 ? "men" : "women"
-                          }/${20 + idx}.jpg`}
-                          alt={name}
-                        />
+                             src={profileImageUrl || "/default-avatar.png"}
+                                alt={name}
+                                onError={(e) => (e.target.src = "/default-avatar.png")}
+                         />
                         <span>{name}</span>
                       </div>
                     </td>

@@ -112,13 +112,39 @@ const EmployerHome = ({ children }) => {
       label: "Logout",
     },
   ];
+
+   // profile img 
+    const getProfileImg = async () => {
+      const recruiterId = localStorage.getItem("recruiterId");
+
+       try {
+       
+          const response = await axiosInstance.get(`/api/recruiters/profile/${recruiterId}/company-profile`);
+
+          console.log("company profile img "+ response.data);
+    setEmployerInfo({
+      companyName: response.data.companyName || "Company Name",
+      profileImageUrl: response.data.companyProfile || "/default-avatar.png",
+    });
+  } catch (error) {
+    console.error("Error fetching recruiter profile:", error);
+    setEmployerInfo({
+      companyName: "Company Name",
+      profileImageUrl: "/default-avatar.png",
+    });
+  }
+
+    };
+
+
   useEffect(() => {
+    getProfileImg();
     fetchRecruiterInfo();
   }, []);
 
   // logout function
   const handleLogout = () => {
-    localStorage.removeItem("employerId"); // Clear stored user ID
+    localStorage.removeItem("recruiterId"); // Clear stored user ID
     localStorage.removeItem("token"); // Clear token if you're using JWT
     localStorage.removeItem("rzp_checkout_anon_id"); //clear razerpay details
     localStorage.removeItem("rzp_device_id"); // clear razerpay id

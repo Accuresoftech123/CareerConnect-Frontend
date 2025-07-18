@@ -124,7 +124,7 @@ const EmployerCreateProfile = () => {
         if (data.success) {
           alert("Recruiter profile created successfully!");
           setIsVerified(true);
-          navigate("/EmployerDashboard");
+          navigate("/EmployerHome");
         } else {
           alert("Error: " + data.message);
         }

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import "../../../Styles/Employer/Dashcomponents/JobPost.css";
 import axiosInstance from "../../../../src/axiosInstance";
 
 
 const JobPost = () => {
+  const navigate = useNavigate();
   const [prefillEnabled, setPrefillEnabled] = useState(false);
   const [previousJobs, setPreviousJobs] = useState([]);
   const [selectedJobId, setSelectedJobId] = useState(null);
@@ -138,8 +139,9 @@ const JobPost = () => {
         JobProfileData
       );
       console.log("Job posted successfully", response.data);
-
+       
       alert("Job posted!");
+       navigate("/EmployerHome");
     } catch (error) {
       console.error("Error posting job", error);
       alert("Failed to post job");
