@@ -56,7 +56,7 @@ const EmployerHome = ({ children }) => {
         `/api/recruiters/get-image-name/${employerId}`
       );
       setEmployerInfo({
-        fullName: response.data.companyName,
+        companyName: response.data.companyName,
         profileImageUrl: response.data.profileImageUrl,
       });
     } catch (error) {
