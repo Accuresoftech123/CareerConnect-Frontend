@@ -89,12 +89,12 @@ const EmployerRoutes = () => {
 };
 const AdminRoutes = () => {
   return (
-   <EmployerHome>
+   <AdminHome>
       <Routes>
         <Route index element={<AdminDashboard />} />
         <Route path="Admin-Dashboard" element={<AdminDashboard/>}/>
       </Routes>
-    </EmployerHome>
+    </AdminHome>
   );
 };
 export default App;
