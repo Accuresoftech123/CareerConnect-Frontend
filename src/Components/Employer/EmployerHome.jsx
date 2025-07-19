@@ -49,20 +49,7 @@ const EmployerHome = ({ children }) => {
     profileImageUrl: "",
   });
   const employerId = localStorage.getItem("employerId");
-  // Fetch job seeker info from the backend
-  const fetchRecruiterInfo = async () => {
-    try {
-      const response = await axiosInstance.get(
-        `/api/recruiters/get-image-name/${employerId}`
-      );
-      setEmployerInfo({
-        companyName: response.data.companyName,
-        profileImageUrl: response.data.profileImageUrl,
-      });
-    } catch (error) {
-      console.error("Error fetching Employer info:", error);
-    }
-  };
+ 
   // Navigation items for the sidebar
   const navItems = [
     {
@@ -119,12 +106,12 @@ const EmployerHome = ({ children }) => {
 
        try {
        
-          const response = await axiosInstance.get(`/api/recruiters/profile/${recruiterId}/company-profile`);
+          const response = await axios.get(`${url}/api/recruiters/profile-image/${recruiterId}`);
 
-          console.log("company profile img "+ response.data);
+          console.log("company profile img ", response.data);
     setEmployerInfo({
       companyName: response.data.companyName || "Company Name",
-      profileImageUrl: response.data.companyProfile || "/default-avatar.png",
+      profileImageUrl: response.data.image || "/default-avatar.png",
     });
   } catch (error) {
     console.error("Error fetching recruiter profile:", error);
@@ -139,7 +126,7 @@ const EmployerHome = ({ children }) => {
 
   useEffect(() => {
     getProfileImg();
-    fetchRecruiterInfo();
+    
   }, []);
 
   // logout function
