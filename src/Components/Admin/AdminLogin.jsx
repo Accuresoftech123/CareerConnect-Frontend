@@ -20,39 +20,36 @@ const AdminLogin = () => {
   const [password, setPassword] = useState("");
   // State for password visibility
   const [showPassword, setShowPassword] = useState(false);
+ const [error, setError] = useState("");
 
   // Toggle password visibility
   const togglePasswordVisibility = () => {
     setShowPassword((prevShowPassword) => !prevShowPassword); // Use functional update for safety
   };
 
-  // Handle login form submission
-  const handleSubmit = async (e) => {
+   const handleSubmit = async (e) => {
     e.preventDefault();
-    // In a real application, you would send email and password to your backend here
-    // For demonstration, we're just navigating
-    console.log("Attempting to log in with:", { email, password });
 
-    // Example of basic validation
+    // 🔐 Optional: Basic validation
     if (!email || !password) {
-      alert("Please enter both email and password.");
+      setError("Please enter both email and password.");
       return;
     }
 
-    // Simulating an API call
-    // try {
-    //     const response = await axios.post("/api/admin/login", { email, password });
-    //     if (response.data.success) {
-    //         navigate("/AdminHome");
-    //     } else {
-    //         alert(response.data.message || "Login failed. Please check your credentials.");
-    //     }
-    // } catch (error) {
-    //     console.error("Login error:", error);
-    //     alert("An error occurred during login. Please try again later.");
-    // }
+    try {
+      const response = await axios.post("http://localhost:9191/api/admin/login", {
+        email: email,
+        password: password,
+      });
 
-    navigate("/AdminHome"); // Temporarily navigate for demo
+      if (response.status === 200) {
+       alert(" ✅ Login success");
+        navigate("/AdminHome");
+      }
+    } catch (err) {
+      // ❌ Login failed
+      setError(err.response?.data || "Invalid email or password");
+    }
   };
 
   return (

@@ -23,9 +23,9 @@ const EmployerCreateProfile = () => {
   const [imageFile, setImageFile] = useState(null);
 
   const [formData, setFormData] = useState({
-    fullName: "",
+    companyName: "",
     companyProfile: {
-      companyName: "",
+     hrName: "",
       companyEmail: "",
       companySize: "",
       img: "",
@@ -75,12 +75,12 @@ const EmployerCreateProfile = () => {
   };
   const handleNextStep = (e) => {
     e.preventDefault();
-    const companyName = document.getElementById("companyName").value.trim();
+   // const companyName = document.getElementById("companyName").value.trim();
     const email = document.getElementById("companyEmail").value.trim();
-    if (!companyName || !email) {
-      alert("Please complete Company Name and Email Address.");
-      return;
-    }
+    // if (!companyName || !email) {
+    //   alert("Please complete Company Name and Email Address.");
+    //   return;
+    // }
     setStep(2);
   };
 
@@ -124,7 +124,7 @@ const EmployerCreateProfile = () => {
         if (data.success) {
           alert("Recruiter profile created successfully!");
           setIsVerified(true);
-          navigate("/EmployerHome");
+          navigate("/EmployerHome/Employer-Dashboard");
         } else {
           alert("Error: " + data.message);
         }
@@ -247,7 +247,7 @@ const EmployerCreateProfile = () => {
                   />
                 </div>
 
-                <div className="ecp-form-row">
+                {/* <div className="ecp-form-row">
                   <div className="ecp-input-group ecp-full">
                     <label htmlFor="companyName">Company Name</label>
                     <input
@@ -259,7 +259,7 @@ const EmployerCreateProfile = () => {
                       onChange={(e) => handleChange(e, "companyProfile")}
                     />
                   </div>
-                </div>
+                </div> */}
 
                 <div className="ecp-form-row">
                   <div className="ecp-input-group ecp-half">
@@ -491,9 +491,9 @@ const EmployerCreateProfile = () => {
                       type="text"
                       id="recruiterName"
                       placeholder="Enter your full Name"
-                      name="fullName"
-                      value={formData.fullName}
-                      onChange={(e) => handleChange(e)}
+                      name="hrName"
+                      value={formData.companyProfile.hrName}
+                      onChange={(e) => handleChange(e, "companyProfile")}
                     />
                   </div>
                 </div>
