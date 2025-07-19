@@ -80,15 +80,15 @@ const AdminDashboard = () => {
     // }
   };
   // New Recruiters data
-  const fetchnewcompanies = () => {
-    setNewrecruiters([
-      { companyName: 'Proven Solutions Pvt. Ltd', location: 'Pune', subscription: 'Platinum', time: '2 hours ago' },
-      { companyName: 'Senator Technologies', location: 'Bangalore', subscription: 'Golden', time: '5 hours ago' },
-      { companyName: 'Quantum Solutions', location: 'Bangalore', subscription: 'Free', time: '14 hours ago' },
-      { companyName: 'Systems Tech Pvt Ltd', location: 'Gurugram', subscription: 'Golden', time: '16 hours ago' },
-      { companyName: 'Itechno Solutions', location: 'Bangalore', subscription: 'Platinum', time: '01 day ago' }
-    ]);
-  }
+  const fetchnewcompanies = async () => {
+      try {
+        const response = await axios.get("http://localhost:9191/api/recruiters/recent");
+       setNewrecruiters(response.data);
+       console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching recruiters:", error);
+      }
+    };
 
   // New Candidates data
   const fetchnewcandidates = () => {
@@ -275,19 +275,25 @@ const AdminDashboard = () => {
             <div className="AdminDashboard-grid-column">
               <h3>Location</h3>
               {newRecruiters.map((recruiter, index) => (
-                <div key={index} className="AdminDashboard-grid-item">{recruiter.location}</div>
+                <div key={index} className="AdminDashboard-grid-item"> {recruiter.companyLocations?.length > 0
+        ? recruiter.companyLocations
+            .map((location) => location.city)
+            .filter(city => city) // remove null or empty
+            .join(", ")
+        : "N/A"}
+</div>
               ))}
             </div>
             <div className="AdminDashboard-grid-column">
               <h3>Subscription</h3>
               {newRecruiters.map((recruiter, index) => (
-                <div key={index} className="AdminDashboard-grid-item">{recruiter.subscription}</div>
+                <div key={index} className="AdminDashboard-grid-item">{recruiter.mobileNumber}</div>
               ))}
             </div>
             <div className="AdminDashboard-grid-column">
               <h3>Time</h3>
               {newRecruiters.map((recruiter, index) => (
-                <div key={index} className="AdminDashboard-grid-item">{recruiter.time}</div>
+                <div key={index} className="AdminDashboard-grid-item">{recruiter.createdAt}</div>
               ))}
             </div>
           </div>
