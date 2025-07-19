@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
  
 import {
   FaBars,
@@ -26,11 +26,21 @@ import "../../Styles/Admin/AdminHome.css"
 const AdminHome = ({ children }) => {
       const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useDispatch();
  
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
-  const isActive = (path) => location.pathname.startsWith(path);
+  const isActive = (path) => {
+    // For default path /JobSeekerHome, manually match Dashboard route
+    if (
+      location.pathname === "/AdminHome" &&
+      path === "/AdminHome/Admin-Dashboard"
+    ) {
+      return true;
+    }
+    return location.pathname.startsWith(path);
+  };
  
   const navItems = [
     {
@@ -44,28 +54,28 @@ const AdminHome = ({ children }) => {
       label: "Job Listing",
     },
     {
-      path: "/Admin/Candidates",
+      path: "/AdminHome/Candidates",
       icon: <FaThumbsUp />,
       label: "Candidates",
     },
     {
-      path: "/Admin/Recruiters",
+      path: "/AdminHome/Recruiters",
       icon: <FaEnvelope  />,
       label: "Recruiters",
     },
     {
-      path: "/Admin/ReportedContent",
+      path: "/AdminHome/ReportedContent",
       icon: <FaEnvelope  />,
       label: "Reported content",
     },
  
     {
-      path: "/Admin/Analysis",
+      path: "/AdminHome/Analysis",
       icon: <FaChartBar />,
       label: "Analysis",
     },
     {
-      path: "/Admin/Settings",
+      path: "/AdminHome/Settings",
       icon: <FaCog />,
       label: "Settings",
     },
@@ -76,6 +86,11 @@ const AdminHome = ({ children }) => {
     },
   ];
  
+ // logout function
+  const handleLogout = () => {
+    navigate("/AdminLogin"); // Redirect to login page
+  };
+
     return (
     <div className="AdminHome_layout-container">
       {/* Header */}
@@ -132,37 +147,38 @@ const AdminHome = ({ children }) => {
       {/* Body section */}
       <div className="AdminHome_layout-body">
         {/* Sidebar */}
-        <nav
-          className={`AdminHome_sidebar ${sidebarOpen ? "active" : ""}`}
-        >
-          {navItems.map((item) => (
-            <Link
-              key={item.path}
-              to={item.path}
-              className={isActive(item.path) ? "active-link" : "link"}
-              onClick={closeSidebar}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </Link>
-          ))}
-          <div className="AdminHome_sidebar-footer">
-          <div className="AdminHome_user-profile">
-            <img
-              src="AdminHome_user-profile-pic.jpg"
-              alt="User Profile"
-              className="profile-pic"
-            />
-            <div className="user-info">
-              <span className="AdminHome_user-name">
-                Shruti Punewar
-              </span>
-              <span className="AdminHome_user-role">Admin</span>
-            </div>
-            <i className="icon-arrow-right"></i>
-          </div>
-        </div>
-        </nav>
+         <nav className={`AdminHome_sidebar ${sidebarOpen ? "active" : ""}`}>
+                  {navItems.map((item) =>
+                    item.label === "Logout" ? (
+                      <button
+                        key={item.path}
+                        className="link logout-btn"
+                        onClick={handleLogout}
+                        style={{
+                          color: "#FF0000",
+                          background: "none",
+                          border: "none",
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </button>
+                    ) : (
+                      <Link
+                        key={item.path}
+                        to={item.path}
+                        className={isActive(item.path) ? "active-link" : "link"}
+                        onClick={closeSidebar}
+                        style={isActive(item.path) ? { color: "#000" } : item.style}
+                      >
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </Link>
+                    )
+                  )}
+                </nav>
  
         {/* ✅ Main content now scrollable */}
         <main className="AdminHome_main-content">{children}</main>
