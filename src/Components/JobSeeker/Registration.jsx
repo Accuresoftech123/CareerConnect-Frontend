@@ -10,6 +10,7 @@ import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
+import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
 import EmailVerificationPopup from "./EmailVerification.jsx";
 
@@ -18,7 +19,7 @@ const Registration = () => {
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
 
-  const url = "http://localhost:9191";
+ // const url = "http://localhost:9191";
   // State to hold form data
   const [formData, setFormData] = useState({
     fullName: '',
@@ -104,7 +105,7 @@ const Registration = () => {
     }
 
     try {
-      const response = await axios.post(`${url}/api/jobseekers/register`, formData);
+      const response = await axios.post(`${baseURL}/api/jobseekers/register`, formData);
 
       const { message, jobSeekerId } = response.data;
 

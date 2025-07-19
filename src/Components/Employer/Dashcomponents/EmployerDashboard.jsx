@@ -366,7 +366,7 @@ const formatStatus = (status) => {
           {loadingInterviews ? (
             <p>Loading interviews...</p>
           ) : (
-            <table className="EDashboard-interview-table">
+            <table className="EDashboard-interview-table" style={{ color:"#B8860B"}}>
               <thead>
                 <tr>
                   <th>Candidate Name</th>

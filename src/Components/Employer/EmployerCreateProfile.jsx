@@ -13,8 +13,9 @@ import plusIcon from "../../Images/plusIcon.svg";
 import axios from "axios";
 import "../../Styles/Employer/EmployerCreateProfilestyle.css";
 import axiosInstance from "../../axiosInstance";
+import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
-const url = "http://localhost:9191/recruitersProfile";
+//const url = "http://localhost:9191/recruitersProfile";
 const EmployerCreateProfile = () => {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);

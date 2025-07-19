@@ -9,9 +9,10 @@ import LockIcon from "@mui/icons-material/Lock";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
 import EmailVerificationPopup from "./EmailVerification.jsx";
+import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
 const Registration = () => {
-  const url = "http://localhost:9191";
+  //const url = "http://localhost:9191";
   const navigate = useNavigate();
   // State to hold form data
   const [formData, setFormData] = useState({
@@ -83,7 +84,7 @@ const Registration = () => {
     if (!validate()) return;
 
   try {
-   const response = await axios.post(`${url}/api/recruiters/register`, formData);
+   const response = await axios.post(`${baseURL}/api/recruiters/register`, formData);
 
   const recruiterId = response.data.recruiterId;
   localStorage.setItem("recruiterId", recruiterId);

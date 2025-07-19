@@ -20,12 +20,13 @@ import "../../Styles/Employer/EmployerHome.css";
 import { useEffect } from "react";
 import axios from "axios"; // ✅ Import Axios
 import axiosInstance from "../../axiosInstance";
+import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
 //Parent component of JobSeeker Dashboard
 const EmployerHome = ({ children }) => {
   const navigate = useNavigate();
 
-  const url = "http://localhost:9191";
+ //const url = "http://localhost:9191";
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
@@ -106,7 +107,7 @@ const EmployerHome = ({ children }) => {
 
        try {
        
-          const response = await axios.get(`${url}/api/recruiters/profile-image/${recruiterId}`);
+          const response = await axios.get(`${baseURL}/api/recruiters/profile-image/${recruiterId}`);
 
           console.log("company profile img ", response.data);
     setEmployerInfo({

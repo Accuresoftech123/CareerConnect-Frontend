@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate} from "react-router-dom";
 import "../../../Styles/Employer/Dashcomponents/JobPost.css";
 import axiosInstance from "../../../../src/axiosInstance";
+import {baseURL} from "../../../axiosInstance"; // Import your axios instance
 
 
 const JobPost = () => {
@@ -27,7 +28,7 @@ const JobPost = () => {
     lastDateToApply: "",
     numberOfOpenings: 0,
   });
-  const url = "http://localhost:9191/jobposts";
+ // const url = "http://localhost:9191/jobposts";
   const recruiterId = localStorage.getItem("recruiterId");
 
   const handleBenefitChange = (e) => {

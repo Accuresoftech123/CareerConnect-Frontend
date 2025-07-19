@@ -13,11 +13,11 @@ import Candidates from "../../../Images/Candidates.svg";
 import newRecruiter from "../../../Images/newRecruiter.svg";
 import activeUsersSection from "../../../Images/activeUsersSection.svg";
 import axios from "axios";
-import axiosInstance from "../../../axiosInstance";
+import axiosInstance, { baseURL } from "../../../axiosInstance";
 import { formatDistanceToNow } from "date-fns";
 
 const AdminDashboard = () => {
-  const url = "http://localhost:9191";
+ // const url = "http://localhost:9191";
   // Stats data
   const [newJobPostedcount, setnewJobPostedcount] = useState(0);
   const [newCandidatescount, setnewCandidatescount] = useState(0);
@@ -32,7 +32,7 @@ const AdminDashboard = () => {
 
   const fetchRecentJobSeekers = async () => {
     try {
-      const response = await axios.get(`${url}/api/jobseekers/recent`);
+      const response = await axios.get(`${baseURL}/api/jobseekers/recent`);
       setNewCandidates(response.data);
       console.log("Recent Job Seekers:", response.data);
     } catch (error) {
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
   const fetchJobPostedcount = async () => {
     try {
       const response = await axiosInstance.get(
-        `${url}/api/jobposts/jobposts/recent/count`
+        `${baseURL}/api/jobposts/jobposts/recent/count`
       );
       setnewJobPostedcount(response.data);
     } catch (error) {
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
   const fetchCandidatescount = async () => {
     try {
       const response = await axiosInstance.get(
-        `${url}/api/jobseekers/recent/count`
+        `${baseURL}/api/jobseekers/recent/count`
       );
       setnewCandidatescount(response.data);
     } catch (error) {
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
   const fetchCompaniescount = async () => {
     try {
       const response = await axiosInstance.get(
-        `${url}/api/recruiters/recent/count`
+        `${baseURL}/api/recruiters/recent/count`
       );
       setnewCompaniescount(response.data);
     } catch (error) {
@@ -78,7 +78,7 @@ const AdminDashboard = () => {
   const fetchSubscriptionscount = async () => {
     try {
       const response = await axiosInstance.get(
-        `${url}/api/payments/total-amount`
+        `${baseURL}/api/payments/total-amount`
       );
       settotalSubscriptionscount(response.data);
       //  console.log(response);

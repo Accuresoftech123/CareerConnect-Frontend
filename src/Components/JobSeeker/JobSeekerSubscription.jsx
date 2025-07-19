@@ -12,7 +12,8 @@ import instagram from "../../Images/instagram.svg";
 import linkedin from "../../Images/linkedin.svg";
 import x from "../../Images/x.svg";
 import axios from "axios";
-import axiosInstance from "../../axiosInstance";
+import axiosInstance, {baseURL} from "../../axiosInstance";
+
  
 // CSS
 import "../../Styles/JobSeeker/JobSeekerSubscription.css";
@@ -22,7 +23,7 @@ const JobSeekerSubscription = () => {
   const [isMonthly, setIsMonthly] = useState(true);
   const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
 
-  const url = "http://localhost:9191";
+ // const url = "http://localhost:9191";
   // Function to load Razorpay script dynamically
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -53,7 +54,7 @@ const JobSeekerSubscription = () => {
     const { data: orderData } = await axios.post(
 
       // create order api
-      `${url}/api/payments/create-order`,
+      `${baseURL}/api/payments/create-order`,
       null,
       {
         params: {

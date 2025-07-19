@@ -8,9 +8,10 @@ import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
 import axios from "axios";
 import { GoogleLogin } from "@react-oauth/google";
+import { baseURL } from "../../axiosInstance";
 
 const Login = () => {
-  const url = "http://localhost:9191";
+  //const url = "http://localhost:9191";
   const navigate = useNavigate();
   // State for email and password
   const [email, setEmail] = useState("");
@@ -45,7 +46,7 @@ const Login = () => {
     const user = { email, password };
 
     axios
-      .post(`${url}/api/jobseekers/login`, user)
+      .post(`${baseURL}/api/jobseekers/login`, user)
       .then((response) => {
         if (response.data) {
           alert("Login Successful");
@@ -170,7 +171,7 @@ const handleGoogleError = () => {
               <GoogleLogin
                 onSuccess={(credentialResponse) => {
                   axios
-                    .post(`${url}/auth/google-login`, {
+                    .post(`${baseURL}/auth/google-login`, {
                       token: credentialResponse.credential,
                     })
                     .then((res) => {

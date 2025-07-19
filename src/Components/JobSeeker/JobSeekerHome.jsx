@@ -14,7 +14,7 @@ import axiosInstance from "../../axiosInstance";
 const JobSeekerHome = ({ children }) => {
   const navigate = useNavigate();
 
-  const url = "http://localhost:9191";
+ // const url = "http://localhost:9191";
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();

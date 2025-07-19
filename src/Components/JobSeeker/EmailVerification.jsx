@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import "../../Styles/JobSeeker/EmailVerfication.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
 const EmailVerificationPopup = ({ email, onVerify }) => {
   const [otp, setOtp] = useState(new Array(6).fill("")); // State for 6-digit OTP
@@ -12,7 +13,7 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
   const inputRefs = useRef([]); // For managing focus between OTP inputs
   const navigate = useNavigate();
 
-  const url = "http://localhost:9191";
+  //const url = "http://localhost:9191";
 
   // Start countdown when component mounts
   useEffect(() => {
@@ -68,7 +69,7 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
 
     try {
       const response = await axios.post(
-        `${url}/api/jobseekers/verify-otp`,
+        `${baseURL}/api/jobseekers/verify-otp`,
         { email, otp: otpValue },
         { headers: { "Content-Type": "application/json" } }
       );

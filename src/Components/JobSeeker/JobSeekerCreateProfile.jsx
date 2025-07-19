@@ -23,6 +23,7 @@ import "../../Styles/JobSeeker/JobSeekerCreateProfile.css";
 import plusIcon from "../../Images/plusIcon.svg";
 import axios from "axios";
 import axiosInstance from "../../axiosInstance";
+import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
 const TOTAL_STEPS = 6;
 
@@ -36,7 +37,7 @@ const JobSeekerCreateProfile = () => {
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
   const [jobPreference, setJobPreference] = useState("");
 
-  const url = "http://localhost:9191";
+//  const url = "http://localhost:9191";
 
   const preferencesOptions = [
     "Full Time",
@@ -102,7 +103,7 @@ const JobSeekerCreateProfile = () => {
 
   try {
     const response = await axios.post(
-      `${url}/api/jobseekers/${jobSeekerId}/upload-resume`,
+      `${baseURL}/api/jobseekers/${jobSeekerId}/upload-resume`,
       formData,
       {
         headers: { "Content-Type": "multipart/form-data" },

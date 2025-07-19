@@ -10,7 +10,7 @@ import { useLocation } from "react-router-dom";
 import axios from "axios";
 import axiosInstance from "../../../axiosInstance";
 
-const url = "http://localhost:9191";
+//const url = "http://localhost:9191";
 
 const SpecificJob = () => {
   const location = useLocation();

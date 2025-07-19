@@ -12,6 +12,7 @@ import { SvgIcon } from "@mui/material";
 import { MapPin, Building, IndianRupee } from "lucide-react";
 import axios from "axios";
 import axiosInstance from "../../../axiosInstance";
+import {baseURL} from "../../../axiosInstance";
 
 import "../../../Styles/JobSeeker/DashComponents/Dashboard.css";
 
@@ -23,7 +24,7 @@ const INTERVIEWS_KEY = "upcomingInterviews";
 //3. Recommended JOb cards
 //4. upcoming interview table
 const Dashboard = () => {
-  const url = "http://localhost:9191";
+ // const url = "http://localhost:9191";
   const navigate = useNavigate();
   // States
   const [recommendedJobs, setRecommendedJobs] = useState([]);

@@ -11,6 +11,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility"; // Import for show 
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff"; // Import for hide password
 
 import axios from "axios"; // axios is imported but not used in this snippet, keep if used elsewhere
+import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
 const AdminLogin = () => {
   const navigate = useNavigate();
@@ -37,7 +38,7 @@ const AdminLogin = () => {
     }
 
     try {
-      const response = await axios.post("http://localhost:9191/api/admin/login", {
+      const response = await axios.post(`${baseURL}/api/admin/login`, {
         email: email,
         password: password,
       });

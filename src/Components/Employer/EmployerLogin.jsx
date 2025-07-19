@@ -10,6 +10,7 @@ import employerLogin from "../../Images/employerLogin.svg";
 import axios from "axios";
 
 import "../../Styles/Employer/EmployerLoginstyle.css";
+import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
 
 const EmployerLogin = () => {
@@ -17,7 +18,7 @@ const EmployerLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const url = "http://localhost:9191";
+ // const url = "http://localhost:9191";
 
   // React Router navigation hook
   const navigate = useNavigate();
@@ -46,7 +47,7 @@ const EmployerLogin = () => {
    const user = { email, password };
 
   try {
-    const response = await axios.post(`${url}/api/recruiters/login`, user);
+    const response = await axios.post(`${baseURL}/api/recruiters/login`, user);
     const recruiter = response.data;
   
 
