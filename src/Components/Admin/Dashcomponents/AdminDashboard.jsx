@@ -321,15 +321,21 @@ const AdminDashboard = () => {
               ))}
             </div>
             <div className="AdminDashboard-grid-column">
-              <h3>Subscription</h3>
+              <h3>Mobile Number</h3>
               {newRecruiters.map((recruiter, index) => (
                 <div key={index} className="AdminDashboard-grid-item">{recruiter.mobileNumber}</div>
               ))}
             </div>
             <div className="AdminDashboard-grid-column">
               <h3>Time</h3>
-              {newRecruiters.map((recruiter, index) => (
-                <div key={index} className="AdminDashboard-grid-item">{recruiter.createdAt}</div>
+               {newRecruiters.map((recruiter, index) => (
+                <div key={index} className="AdminDashboard-grid-item">
+                  {recruiter.createdAt
+                    ? `${formatDistanceToNow(
+                        new Date(recruiter.createdAt)
+                      )} ago`
+                    : "N/A"}
+                </div>
               ))}
             </div>
           </div>
@@ -344,7 +350,7 @@ const AdminDashboard = () => {
             >
               <img src={Candidates} alt="New Candidates" />
             </span>
-            <h2>New Candidates</h2>
+            <h2>New Job-Seekers</h2>
             <span className="AdminDashboard-dashboard-section-viewAll">
               view all
             </span>
