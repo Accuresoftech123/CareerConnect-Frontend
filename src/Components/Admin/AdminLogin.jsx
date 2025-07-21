@@ -57,11 +57,31 @@ const AdminLogin = () => {
     <>
       <div className="AdminLogin_page-container">
         {/* Header */}
-        <nav className="AdminLogin_header">
-          <div className="AdminLogin_logo">
-            <span>Career</span> Connect
-          </div>
-        </nav>
+        <nav className="Admin_header">
+              <div className="Admin_logo">
+                <span>Career</span> Connect
+              </div>
+              <div className="Admin_nav-links">
+                <Link to="/" className="Admin_nav-link">
+                  Home
+                </Link>
+                <Link to="/Jobs" className="Admin_nav-link">
+                  Jobs
+                </Link>
+                 <Link to="/Candidates" className="Admin_nav-link">
+                  Candidates
+                </Link>
+                <Link to="/Companies" className="Admin_nav-link">
+                  Companies
+                </Link>
+                <Link to="/Jobseeker">
+                  <button className="Admin_btn-outline">Job Seeker</button>
+                </Link>
+                <Link to="/Employer">
+                  <button className="Admin_btn-primary">Employer</button>
+                </Link>
+              </div>
+            </nav>
 
         {/* Login Form */}
         <div className="AdminLogin_login-fillUp">

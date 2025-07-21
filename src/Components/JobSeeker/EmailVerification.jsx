@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
-const EmailVerificationPopup = ({ email, onVerify }) => {
+const JEmailVerificationPopup = ({ email, onVerify }) => {
   const [otp, setOtp] = useState(new Array(6).fill("")); // State for 6-digit OTP
   const [timer, setTimer] = useState(30); // Countdown timer state
   const [resendDisabled, setResendDisabled] = useState(true); // To control resend button
@@ -146,4 +146,4 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
   );
 };
 
-export default EmailVerificationPopup;
+export default JEmailVerificationPopup;

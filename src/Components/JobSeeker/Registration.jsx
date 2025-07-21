@@ -12,7 +12,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
 import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
-import EmailVerificationPopup from "./EmailVerification.jsx";
+import JEmailVerificationPopup from "./EmailVerification.jsx";
 
 const Registration = () => {
   const navigate = useNavigate();
@@ -127,7 +127,7 @@ const Registration = () => {
         setShowVerificationPopup(true);
       } else if (res?.status === 409) {
         alert("⚠️ This email is already registered and verified. Please log in.");
-        navigate("/Login");
+        navigate("/Jobseeker");
       } else {
         alert("❌ Error: " + msg);
       }
@@ -152,9 +152,9 @@ const Registration = () => {
         </div>
         <nav className="jobseeker_register-nav">
           <Link to="/">Home</Link>
-          <Link to="/jobs">Jobs</Link>
-          <Link to="/companies">Companies</Link>
-          <Link to="/Login">
+          <Link to="/Jobs">Jobs</Link>
+          <Link to="/Companies">Companies</Link>
+          <Link to="/Jobseeker">
             <button className="jobseeker_register-btn-primary">Log In</button>
           </Link>
         </nav>
@@ -258,7 +258,7 @@ const Registration = () => {
             {/* Conditional rendering for email verification popup */}
             {showVerificationPopup && (
               <div className="popup-backdrop">
-                <EmailVerificationPopup
+                <JEmailVerificationPopup
                   email={formData.email}
                   onVerify={handleOtpVerified}
                 />
@@ -271,7 +271,7 @@ const Registration = () => {
             {/* Link to login page */}
             <div className="jobseeker_register-option">
               <p>
-                Already have an account? <a href="/Login">Log In</a>
+                Already have an account? <a href="/Jobseeker">Log In</a>
               </p>
             </div>
           </div>

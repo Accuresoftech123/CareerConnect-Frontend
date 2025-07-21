@@ -1,4 +1,4 @@
-import React, { useState ,useEffect,useRef} from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import facebook from "../../Images/facebook.svg";
 import instagram from "../../Images/instagram.svg";
@@ -37,7 +37,7 @@ const JobSeekerCreateProfile = () => {
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
   const [jobPreference, setJobPreference] = useState("");
 
-//  const url = "http://localhost:9191";
+  //  const url = "http://localhost:9191";
 
   const preferencesOptions = [
     "Full Time",
@@ -96,76 +96,75 @@ const JobSeekerCreateProfile = () => {
 
   //parse resume and update fields
   const parseResumeAndUpdateFields = async () => {
-  const jobSeekerId = localStorage.getItem("jobSeekerId");
+    const jobSeekerId = localStorage.getItem("jobSeekerId");
 
-  const formData = new FormData();
-  formData.append("file", resumeFile);
+    const formData = new FormData();
+    formData.append("file", resumeFile);
 
-  try {
-    const response = await axios.post(
-      `${baseURL}/api/jobseekers/${jobSeekerId}/upload-resume`,
-      formData,
-      {
-        headers: { "Content-Type": "multipart/form-data" },
+    try {
+      const response = await axios.post(
+        `${baseURL}/api/jobseekers/${jobSeekerId}/upload-resume`,
+        formData,
+        {
+          headers: { "Content-Type": "multipart/form-data" },
+        }
+      );
+
+      const data = response.data.jobSeekerData;
+
+      setFullName(data.fullName || "");
+      setEmail(data.email || "");
+      setPhone(data.mobileNumber || "");
+
+      setSkills(Array.isArray(data?.skills) ? data.skills : []);
+
+      setPersonalInfos((prev) => ({
+        ...prev,
+        city: data.personalInfo?.city || "",
+        resumeUrl: data.personalInfo?.resumeUrl || "",
+      }));
+
+      setSocialLinks((prev) => ({
+        ...prev,
+        linkedinUrl: data.scoicalProfile?.linkedinUrl || "",
+      }));
+
+      if (data.educationList?.length > 0) {
+        setEducations(data.educationList);
       }
-    );
 
-    const data = response.data.jobSeekerData;
+      if (data.experienceList?.length > 0) {
+        setExperiences(data.experienceList);
+      }
 
-    setFullName(data.fullName || "");
-    setEmail(data.email || "");
-    setPhone(data.mobileNumber || "");
-
-   setSkills(Array.isArray(data?.skills) ? data.skills : []);
-
-    setPersonalInfos((prev) => ({
-      ...prev,
-      city: data.personalInfo?.city || "",
-      resumeUrl: data.personalInfo?.resumeUrl || "",
-    }));
-
-    setSocialLinks((prev) => ({
-      ...prev,
-      linkedinUrl: data.scoicalProfile?.linkedinUrl || "",
-    }));
-
-    if (data.educationList?.length > 0) {
-      setEducations(data.educationList);
+      console.log("✅ Resume parsed and state updated", data);
+    } catch (error) {
+      console.error("❌ Resume parsing failed:", error);
+      alert("Resume parsing failed. Please ensure it is a valid PDF.");
     }
-
-    if (data.experienceList?.length > 0) {
-      setExperiences(data.experienceList);
-    }
-
-    console.log("✅ Resume parsed and state updated", data);
-  } catch (error) {
-    console.error("❌ Resume parsing failed:", error);
-    alert("Resume parsing failed. Please ensure it is a valid PDF.");
-  }
-};
- // Handler for personal info inputs
+  };
+  // Handler for personal info inputs
 
   const handlePersonalInfoChange = async (e) => {
-  const { id, type, value, checked, files } = e.target;
+    const { id, type, value, checked, files } = e.target;
 
-  if (type === "checkbox" && id === "autoParse") {
+    if (type === "checkbox" && id === "autoParse") {
+      setPersonalInfos((prev) => ({
+        ...prev,
+        [id]: checked,
+      }));
+
+      if (checked && resumeFile) {
+        await parseResumeAndUpdateFields();
+      }
+      return;
+    }
+
     setPersonalInfos((prev) => ({
       ...prev,
-      [id]: checked,
+      [id]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
     }));
-
-    if (checked && resumeFile) {
-      await parseResumeAndUpdateFields();
-    }
-    return;
-  }
-
-  setPersonalInfos((prev) => ({
-    ...prev,
-    [id]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
-  }));
-};
-
+  };
 
   /*Add education functionality */
   const handleEducationChange = (index, field, value) => {
@@ -221,9 +220,9 @@ const JobSeekerCreateProfile = () => {
     };
 
     if (resumeFile) {
-  console.log("Resume File: ", resumeFile);  // <-- Add this
-  formData.append("resumeFile", resumeFile);
-}
+      console.log("Resume File: ", resumeFile); // <-- Add this
+      formData.append("resumeFile", resumeFile);
+    }
     if (videoFile) {
       formData.append("videoFile", videoFile);
     }
@@ -239,12 +238,11 @@ const JobSeekerCreateProfile = () => {
         type: "application/json",
       })
     );
-     formData.append("parseResume", personalInfo.autoParse);
+    formData.append("parseResume", personalInfo.autoParse);
 
-     for (let pair of formData.entries()) {
-  console.log(`${pair[0]}:`, pair[1]);
-}
-     
+    for (let pair of formData.entries()) {
+      console.log(`${pair[0]}:`, pair[1]);
+    }
 
     try {
       const response = await axiosInstance.put(
@@ -258,9 +256,9 @@ const JobSeekerCreateProfile = () => {
       );
       if (response.status === 200) {
         alert("Job Seeker profile updated successfully!");
-         if (resumeInputRef.current) {
-    console.log(resumeInputRef.current.value);
-  }
+        if (resumeInputRef.current) {
+          console.log(resumeInputRef.current.value);
+        }
         navigate("/JobSeekerHome");
       }
     } catch (error) {
@@ -283,10 +281,10 @@ const JobSeekerCreateProfile = () => {
           <span>Career</span> Connect
         </div>
         <nav className="jscp-nav-links">
-          <Link to="/jobs">Jobs</Link>
-          <Link to="/companies">Companies</Link>
-          <Link to="/messages">Messages</Link>
-          <Link to="/myprofile">My Profile</Link>
+          <Link to="/Jobs">Jobs</Link>
+          <Link to="/Companies">Companies</Link>
+          <Link to="/Messages">Messages</Link>
+          <Link to="/MyProfile">My Profile</Link>
         </nav>
       </header>
 
@@ -493,19 +491,17 @@ const JobSeekerCreateProfile = () => {
                     <input
                       id="resume"
                       type="file"
-                       
-  accept=".pdf,.doc,.docx"
-  ref={resumeInputRef}
+                      accept=".pdf,.doc,.docx"
+                      ref={resumeInputRef}
                       style={{ display: "none" }}
                       onChange={async (e) => {
-  const file = e.target.files[0];
-  setResumeFile(file);
+                        const file = e.target.files[0];
+                        setResumeFile(file);
 
-  if (personalInfo.autoParse && file) {
-    await parseResumeAndUpdateFields();
-  }
-}}
-
+                        if (personalInfo.autoParse && file) {
+                          await parseResumeAndUpdateFields();
+                        }
+                      }}
                       required
                     />
                     <label htmlFor="resume" className="jscp-browse-button">
@@ -565,9 +561,9 @@ const JobSeekerCreateProfile = () => {
                 <input
                   type="checkbox"
                   id="autoParse"
-                 checked={personalInfo.autoParse}
-  onChange={handlePersonalInfoChange}
-  disabled={!resumeFile}
+                  checked={personalInfo.autoParse}
+                  onChange={handlePersonalInfoChange}
+                  disabled={!resumeFile}
                   //formData.append("parseResume", parseResumeCheckbox.checked);
                 />
                 <label htmlFor="autoParse">Auto‑parse resume data</label>

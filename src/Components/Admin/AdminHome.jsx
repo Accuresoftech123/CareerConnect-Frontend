@@ -81,7 +81,7 @@ const AdminHome = ({ children }) => {
       label: "Settings",
     },
      {
-      path: "/AdminLogin",
+      path: "/Admin",
       icon: <FaCog />,
       label: "Logout",
     },
@@ -89,7 +89,7 @@ const AdminHome = ({ children }) => {
  
  // logout function
   const handleLogout = () => {
-    navigate("/AdminLogin"); // Redirect to login page
+    navigate("/Admin"); // Redirect to login page
   };
 
     return (

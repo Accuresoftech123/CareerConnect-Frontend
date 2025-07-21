@@ -25,7 +25,7 @@ const EmployerLogin = () => {
 
   // Navigate to Registration page
   const goToRegistration = () => {
-    navigate("/EmployerRegistration");
+    navigate("/Employer-Registration");
   };
 
 
@@ -87,13 +87,13 @@ const EmployerLogin = () => {
           <Link to="/" >
                       Home
                     </Link>
-                    <Link to="/candidates" >
+                    <Link to="/Candidates" >
                       Candidates
                     </Link>
-                    <Link to="/companies" >
+                    <Link to="/Companies" >
                       Companies
                     </Link>
-                    <Link to="/EmployerRegistration">
+                    <Link to="/Employer-Registration">
           <button className="employer_btn-primary">
             Register
           </button>
@@ -185,7 +185,7 @@ const EmployerLogin = () => {
             <div className="employer_optionlogin">
               <p>
                 Don't have an account?{" "}
-                <a href="employerregistration">Register</a>
+                <Link to="/Employer-Registration">Register</Link>
               </p>
             </div>
           </section>

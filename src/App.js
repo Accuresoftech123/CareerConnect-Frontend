@@ -4,11 +4,13 @@ import { Routes, Route, BrowserRouter } from "react-router-dom";
 
 //main homepage
 import HomePage from "./Components/HomePage";
-
+import Candidates from "./Components/Candidates";
+import Companies from "./Components/Companies";
+import Jobs from "./Components/Jobs";
 //Job seeker
 import Login from "./Components/JobSeeker/Login";
 import Registration from "./Components/JobSeeker/Registration";
-import EmailVerificationPopup from "./Components/JobSeeker/EmailVerification";
+import JEmailVerificationPopup from "./Components/JobSeeker/EmailVerification";
 import JobSeekerSubscription from "./Components/JobSeeker/JobSeekerSubscription";
 import JobSeekerCreateProfile from "./Components/JobSeeker/JobSeekerCreateProfile";
 import JobSeekerHome from "./Components/JobSeeker/JobSeekerHome";
@@ -19,6 +21,7 @@ import SpecificJob from "./Components/JobSeeker/DashComponents/SpecificJob";
 //employer 
 import EmployerLogin from "./Components/Employer/EmployerLogin";
 import EmployerRegistration from "./Components/Employer/EmployerRegistration";
+import EEmailVerificationPopup from "./Components/Employer/EmailVerification";
 import EmployerCreateProfile from "./Components/Employer/EmployerCreateProfile";
 import EmployerHome from "./Components/Employer/EmployerHome";
 import EmployerDashboard from "./Components/Employer/Dashcomponents/EmployerDashboard";
@@ -32,6 +35,7 @@ import AdminDashboard from "./Components/Admin/Dashcomponents/AdminDashboard";
 // ✅ Import Google OAuth Provider
 import { GoogleOAuthProvider } from "@react-oauth/google";
 
+
 function App() {
   return (
     // ✅ Wrap everything inside GoogleOAuthProvider
@@ -39,23 +43,27 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/Jobs" element={<Jobs />} />
+          <Route path="/Companies" element={<Companies />} />
+          <Route path="/Candidates" element={<Candidates />} />
           {/* Job seeker */}
-          <Route path="/Login" element={<Login />} />
-          <Route path="/Registration" element={<Registration />} />
-          <Route path="/EmailVerification" element={<EmailVerificationPopup />} />
+          <Route path="/Jobseeker" element={<Login />} />
+          <Route path="/Jobseeker-Registration" element={<Registration />} />
+          <Route path="/EmailVerification" element={<JEmailVerificationPopup />} />
           <Route path="/JobSeeker-Subscription" element={<JobSeekerSubscription />} />
           <Route path="/JobSeeker-Create-Profile" element={<JobSeekerCreateProfile />} />
           <Route path="/JobSeekerHome/*" element={<JobSeekerRoutes />} />
 
         {/*Employer */}
-        <Route path="/EmployerLogin" element={<EmployerLogin />}></Route>
-        <Route path="/EmployerRegistration" element={<EmployerRegistration />}></Route>
-        <Route path="/EmployerCreateProfile" element={<EmployerCreateProfile />}></Route>
-        <Route path="/EmployerHome/*" element={<EmployerRoutes />}></Route>
+        <Route path="/Employer" element={<EmployerLogin />}></Route>
+        <Route path="/Employer-Registration" element={<EmployerRegistration />}/>
+          <Route path="/EmailVerification" element={<EEmailVerificationPopup />} />
+        <Route path="/Employer-Create-Profile" element={<EmployerCreateProfile />}/>
+        <Route path="/EmployerHome/*" element={<EmployerRoutes />}/>
  
         {/* Admin */}
-        <Route path="/AdminLogin" element={<AdminLogin />}></Route>
-        <Route path="/AdminHome/*" element={<AdminRoutes />}></Route>
+        <Route path="/Admin" element={<AdminLogin />}/>
+        <Route path="/AdminHome/*" element={<AdminRoutes />}/>
       </Routes>
     </BrowserRouter>
     </GoogleOAuthProvider>

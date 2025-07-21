@@ -98,7 +98,7 @@ const AdminDashboard = () => {
   // New Recruiters data
   const fetchnewcompanies = async () => {
       try {
-        const response = await axios.get("http://localhost:9191/api/recruiters/recent");
+        const response = await axios.get(`${baseURL}/api/recruiters/recent`);
        setNewrecruiters(response.data);
        console.log(response.data);
       } catch (error) {

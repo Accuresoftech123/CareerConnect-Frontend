@@ -501,7 +501,6 @@ const JobPost = () => {
               {/* //  <Spinner /> Loading your last job details... */}
             </div>
           )}
-
           {fetchError && (
             <div className="EJobPost-error">
               {fetchError}

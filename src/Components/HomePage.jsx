@@ -33,24 +33,21 @@ const HomePage = () => {
           <Link to="/" className="Homepage_nav-link Homepage_active">
             Home
           </Link>
-          <Link to="/jobs" className="Homepage_nav-link">
+          <Link to="/Jobs" className="Homepage_nav-link">
             Jobs
           </Link>
-          <Link to="/companies" className="Homepage_nav-link">
+          <Link to="/Companies" className="Homepage_nav-link">
             Companies
           </Link>
-          <Link to="/Login">
+          <Link to="/Jobseeker">
             <button className="Homepage_btn-outline">Job Seeker</button>
           </Link>
-          <Link to="/AdminLogin">
+          {/* <Link to="/Admin">
             <button className="Homepage_btn-outline">Admin</button>
-          </Link>
-          <Link to="/EmployerLogin">
+          </Link> */}
+          <Link to="/Employer">
             <button className="Homepage_btn-primary">Employer</button>
           </Link>
-          
-
-          
         </div>
       </nav>
 

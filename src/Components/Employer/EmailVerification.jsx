@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
-const EmailVerificationPopup = ({ email, onVerify }) => {
+const EEmailVerificationPopup = ({ email, onVerify }) => {
   const [otp, setOtp] = useState(new Array(6).fill("")); // OTP as 6 digits
   const [timer, setTimer] = useState(30);
   const [resendDisabled, setResendDisabled] = useState(true);
@@ -82,7 +82,7 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
       if (response.data.success) {
         alert("✅ OTP Verified Successfully!");
         // Optionally redirect or update UI
-        navigate("/EmployerCreateProfile");
+        navigate("/Employer-Create-Profile");
         onVerify(); // Call the parent callback to indicate verification success
       } else {
         alert("❌ " + response.data.message);
@@ -160,4 +160,4 @@ const EmailVerificationPopup = ({ email, onVerify }) => {
   );
 };
 
-export default EmailVerificationPopup;
+export default EEmailVerificationPopup;

@@ -153,8 +153,8 @@ const starterFeatures = [
           <span>Career</span> Connect
         </div>
         <nav className="js_subscription_nav">
-          <Link to="/jobs">Jobs</Link>
-          <Link to="/companies">Companies</Link>
+          <Link to="/Jobs">Jobs</Link>
+          <Link to="/Companies">Companies</Link>
           <Link>
             <img src={Notification} alt="Notification" className="js_subscription_navbar-nav-icon" />
           </Link>

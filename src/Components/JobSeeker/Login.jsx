@@ -78,9 +78,9 @@ const handleGoogleError = () => {
         </div>
         <nav className="jobseeker_loginnav-links">
           <Link to="/">Home</Link>
-          <Link to="/jobs">Jobs</Link>
-          <Link to="/companies">Companies</Link>
-          <Link to="/Registration">
+          <Link to="/Jobs">Jobs</Link>
+          <Link to="/Companies">Companies</Link>
+          <Link to="/Jobseeker-Registration">
             <button className="jobseeker_btn-primary">Register</button>
           </Link>
         </nav>
@@ -196,7 +196,7 @@ const handleGoogleError = () => {
             <div className="jobseeker_optionlogin">
               <p>
                 Don't have an account?{" "}
-                <Link to="/Registration">Register</Link>
+                <Link to="/Jobseeker-Registration">Register</Link>
               </p>
             </div>
           </div>
