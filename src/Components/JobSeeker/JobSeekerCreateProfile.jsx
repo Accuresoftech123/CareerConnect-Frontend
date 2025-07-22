@@ -67,10 +67,11 @@ const JobSeekerCreateProfile = () => {
   });
 
   const [educationList, setEducations] = useState([
-    { degree: "", fieldOfStudy: "", institution: "", passingYear: "" },
+    {id: null , degree: "", fieldOfStudy: "", institution: "", passingYear: "" },
   ]);
   const [experienceList, setExperiences] = useState([
     {
+      id:null,
       jobTitle: "",
       companyName: "",
       startDate: "",
