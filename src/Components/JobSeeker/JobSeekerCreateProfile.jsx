@@ -36,7 +36,9 @@ const JobSeekerCreateProfile = () => {
   const currentYear = new Date().getFullYear();
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
   const [jobPreference, setJobPreference] = useState("");
-
+  const [isFresher, setIsFresher] = useState(false);
+  const [errors, setErrors] = useState({});
+  const [formError, setFormError] = useState(""); // Common error near Next button
   //  const url = "http://localhost:9191";
 
   const preferencesOptions = [
@@ -94,6 +96,116 @@ const JobSeekerCreateProfile = () => {
   // const [preferredLocation, setPreferredLocation] = React.useState("");
   const [agreeTerms, setAgreeTerms] = React.useState(false);
 
+  //validation part
+  const validateStep = () => {
+    setFormError(""); // Clear general error
+    const stepErrors = {};
+    //const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phoneRegex = /^[0-9]{10}$/;
+    const urlRegex =
+      /^(https?:\/\/)?([\w\d-]+\.){1,}[\w\d-]+(\/[\w\d#?&=.-]*)?$/;
+    const validResumeTypes = [
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+    ];
+
+    switch (step) {
+      case 1:
+        if (!fullName.trim()) stepErrors.fullName = "Full Name is required.";
+
+        if (!mobileNumber.trim())
+          stepErrors.mobileNumber = "Phone Number is required.";
+        else if (!phoneRegex.test(mobileNumber))
+          stepErrors.mobileNumber = "Phone must be 10 digits.";
+
+        if (!personalInfo.city.trim()) stepErrors.city = "City is required.";
+        if (!personalInfo.state.trim()) stepErrors.state = "State is required.";
+        if (!personalInfo.country.trim())
+          stepErrors.country = "Country is required.";
+
+        if (!resumeFile) stepErrors.resumeFile = "Resume is required.";
+        else if (!validResumeTypes.includes(resumeFile.type))
+          stepErrors.resumeFile = "Resume must be PDF or DOCX.";
+
+        break;
+
+      case 2:
+        educationList.forEach((edu, i) => {
+          if (!edu.degree) stepErrors[`degree-${i}`] = "Degree is required.";
+          if (!edu.fieldOfStudy.trim())
+            stepErrors[`fieldOfStudy-${i}`] = "Field of Study is required.";
+          if (!edu.institution.trim())
+            stepErrors[`institution-${i}`] = "Institution is required.";
+          if (!edu.passingYear)
+            stepErrors[`passingYear-${i}`] = "Passing Year is required.";
+        });
+        break;
+
+      case 3:
+        if (!isFresher) {
+          experienceList.forEach((exp, i) => {
+            if (!exp.jobTitle.trim())
+              stepErrors[`jobTitle-${i}`] = "Job Title is required.";
+            if (!exp.companyName.trim())
+              stepErrors[`companyName-${i}`] = "Company Name is required.";
+            if (!exp.startDate)
+              stepErrors[`startDate-${i}`] = "Start Date is required.";
+            if (!exp.currentlyWorking && !exp.endDate)
+              stepErrors[`endDate-${i}`] =
+                "End Date required if not currently working.";
+            if (
+              exp.startDate &&
+              exp.endDate &&
+              new Date(exp.startDate) > new Date(exp.endDate)
+            ) {
+              stepErrors[`startDate-${i}`] =
+                "Start Date cannot be after End Date.";
+            }
+          });
+        }
+        break;
+
+      case 4:
+        if (skills.length === 0)
+          stepErrors.skills = "Please add at least one skill.";
+        if (skills.some((s, i) => !s.trim()))
+          stepErrors.skills = "Skill cannot be empty.";
+        break;
+
+      case 5:
+        Object.entries(socialProfile).forEach(([key, value]) => {
+          if (value && !urlRegex.test(value)) {
+            stepErrors[`social-${key}`] = `Invalid URL for ${key}.`;
+          }
+        });
+        break;
+
+      case 6:
+        if (!jobPrefeences.desiredJobTitle.trim())
+          stepErrors.desiredJobTitle = "Enter job title.";
+        if (!jobPrefeences.jobType.trim())
+          stepErrors.jobType = "Select job type.";
+        if (!jobPrefeences.expectedSalary.toString().trim())
+          stepErrors.expectedSalary = "Enter expected salary.";
+        if (!jobPrefeences.preferredLocation.trim())
+          stepErrors.preferredLocation = "Enter preferred location.";
+        if (!agreeTerms) stepErrors.agreeTerms = "You must agree to terms.";
+        break;
+
+      default:
+        break;
+    }
+
+    setErrors(stepErrors);
+
+    if (Object.keys(stepErrors).length > 0) {
+      setFormError("Please fix the above errors.");
+      return false;
+    }
+
+    return true;
+  };
+
   //parse resume and update fields
   const parseResumeAndUpdateFields = async () => {
     const jobSeekerId = localStorage.getItem("jobSeekerId");
@@ -143,8 +255,8 @@ const JobSeekerCreateProfile = () => {
       alert("Resume parsing failed. Please ensure it is a valid PDF.");
     }
   };
-  // Handler for personal info inputs
 
+  // Handler for personal info inputs
   const handlePersonalInfoChange = async (e) => {
     const { id, type, value, checked, files } = e.target;
 
@@ -188,7 +300,12 @@ const JobSeekerCreateProfile = () => {
     }));
   };
   /*step section handling  */
-  const handleNext = () => setStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
+  const handleNext = () => {
+    if (validateStep()) {
+      setStep((prev) => Math.min(prev + 1, TOTAL_STEPS));
+    }
+  };
+
   const handleBack = () => setStep((prev) => Math.max(prev - 1, 1));
 
   const handleSubmit = async (e) => {
@@ -197,6 +314,7 @@ const JobSeekerCreateProfile = () => {
       alert("Please agree to the Terms and Conditions before submitting.");
       return;
     }
+
     const formData = new FormData();
     const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
 
@@ -403,6 +521,9 @@ const JobSeekerCreateProfile = () => {
                         }}
                         placeholder="Enter your full name"
                       />
+                      {errors.fullName && (
+                        <p className="field-error">{errors.fullName}</p>
+                      )}
                     </div>
                   </div>
 
@@ -428,6 +549,9 @@ const JobSeekerCreateProfile = () => {
                         }}
                         placeholder="Enter your phone number"
                       />
+                      {errors.mobileNumber && (
+                        <p className="field-error">{errors.mobileNumber}</p>
+                      )}
                     </div>
                   </div>
 
@@ -442,6 +566,9 @@ const JobSeekerCreateProfile = () => {
                           onChange={handlePersonalInfoChange}
                           placeholder="Enter your City"
                         />
+                        {errors.city && (
+                          <p className="field-error">{errors.city}</p>
+                        )}
                         <select
                           id="state"
                           value={personalInfo.state}
@@ -452,6 +579,9 @@ const JobSeekerCreateProfile = () => {
                           <option value="Delhi">Delhi</option>
                           <option value="Madhya Pradesh">Madhya Pradesh</option>
                         </select>
+                        {errors.state && (
+                          <p className="field-error">{errors.state}</p>
+                        )}
                         <select
                           id="country"
                           value={personalInfo.country}
@@ -462,6 +592,9 @@ const JobSeekerCreateProfile = () => {
                           <option value="China">China</option>
                           <option value="Russia">Russia</option>
                         </select>
+                        {errors.country && (
+                          <p className="field-error">{errors.country}</p>
+                        )}
                       </div>
                     </div>
                   </div>
@@ -512,6 +645,9 @@ const JobSeekerCreateProfile = () => {
                     </p>
                     {resumeFile && (
                       <p className="jscp-selected-file">{resumeFile.name}</p>
+                    )}
+                    {errors.resumeFile && (
+                      <p className="field-error">{errors.resumeFile}</p>
                     )}
                   </div>
                 </div>
@@ -569,6 +705,14 @@ const JobSeekerCreateProfile = () => {
                 <label htmlFor="autoParse">Auto‑parse resume data</label>
               </div>
 
+              {formError && (
+                <div className="jscp-error-message">
+                  <p style={{ color: "red", marginBottom: "10px" }}>
+                    {formError}
+                  </p>
+                </div>
+              )}
+
               {/* Buttons */}
               <div className="jscp-form-row jscp-buttons-row">
                 {/* <button type="button" className="jscp-btn-secondary">
@@ -578,10 +722,10 @@ const JobSeekerCreateProfile = () => {
                   type="button"
                   className="jscp-btn-primary"
                   onClick={() => {
-                    if (!resumeFile) {
-                      alert("Please upload your resume before proceeding.");
-                      return;
-                    }
+                    // if (!resumeFile) {
+                    //   alert("Please upload your resume before proceeding.");
+                    //   return;
+                    // }
                     handleNext(); // proceed to next step if resume is uploaded
                   }}
                 >
@@ -629,6 +773,11 @@ const JobSeekerCreateProfile = () => {
                               M.Sc/MCS/MCA/MCOM
                             </option>
                           </select>
+                          {errors[`degree-${index}`] && (
+                            <span className="error">
+                              {errors[`degree-${index}`]}
+                            </span>
+                          )}
                         </div>
                         <div className="jscp-input-group jscp-half">
                           <label htmlFor={`fieldOfStudy-${index}`}>
@@ -647,6 +796,11 @@ const JobSeekerCreateProfile = () => {
                               )
                             }
                           />
+                          {errors[`fieldOfStudy-${index}`] && (
+                            <span className="error">
+                              {errors[`fieldOfStudy-${index}`]}
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -668,6 +822,11 @@ const JobSeekerCreateProfile = () => {
                               )
                             }
                           />
+                          {errors[`institution-${index}`] && (
+                            <span className="error">
+                              {errors[`institution-${index}`]}
+                            </span>
+                          )}
                         </div>
                         <div className="jscp-input-group jscp-half">
                           <label htmlFor={`passingYear-${index}`}>
@@ -691,6 +850,11 @@ const JobSeekerCreateProfile = () => {
                               </option>
                             ))}
                           </select>
+                          {errors[`passingYear-${index}`] && (
+                            <span className="error">
+                              {errors[`passingYear-${index}`]}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>
@@ -715,6 +879,14 @@ const JobSeekerCreateProfile = () => {
                   Add Education
                 </button>
               </section>
+
+              {formError && (
+                <div className="jscp-error-message">
+                  <p style={{ color: "red", marginBottom: "10px" }}>
+                    {formError}
+                  </p>
+                </div>
+              )}
 
               <div className="jscp-form-row jscp-buttons-row">
                 {/* <button type="button" className="jscp-btn-secondary">
@@ -750,6 +922,21 @@ const JobSeekerCreateProfile = () => {
                   <h3>Work Experience</h3>
                 </header>
                 <div className="jscp-card-body">
+                  <div
+                    className="jscp-form-row jscp-checkbox-row"
+                    style={{ marginBottom: "20px" }}
+                  >
+                    <input
+                      type="checkbox"
+                      id="isFresher"
+                      checked={isFresher}
+                      onChange={(e) => setIsFresher(e.target.checked)}
+                    />
+                    <label htmlFor="isFresher">
+                      I am a Fresher (No work experience)
+                    </label>
+                  </div>
+
                   {experienceList.map((exp, index) => (
                     <div className="jscp-experience-entry" key={index}>
                       <div className="jscp-form-row">
@@ -768,6 +955,11 @@ const JobSeekerCreateProfile = () => {
                             }
                             placeholder="Job Title"
                           />
+                          {errors[`jobTitle-${index}`] && (
+                            <span className="error">
+                              {errors[`jobTitle-${index}`]}
+                            </span>
+                          )}
                         </div>
                         <div className="jscp-input-group jscp-half">
                           <label htmlFor={`companyName-${index}`}>
@@ -786,6 +978,11 @@ const JobSeekerCreateProfile = () => {
                             }
                             placeholder="Company Name"
                           />
+                          {errors[`companyName-${index}`] && (
+                            <span className="error">
+                              {errors[`companyName-${index}`]}
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -806,6 +1003,11 @@ const JobSeekerCreateProfile = () => {
                               )
                             }
                           />
+                          {errors[`startDate-${index}`] && (
+                            <span className="error">
+                              {errors[`startDate-${index}`]}
+                            </span>
+                          )}
                         </div>
                         <div className="jscp-input-group jscp-half">
                           <label htmlFor={`endDate-${index}`}>End Date</label>
@@ -822,6 +1024,11 @@ const JobSeekerCreateProfile = () => {
                             }
                             disabled={exp.currentlyWorking}
                           />
+                          {errors[`endDate-${index}`] && (
+                            <span className="error">
+                              {errors[`endDate-${index}`]}
+                            </span>
+                          )}
                         </div>
                       </div>
 
@@ -887,6 +1094,14 @@ const JobSeekerCreateProfile = () => {
                 </button>
               </section>
 
+              {formError && (
+                <div className="jscp-error-message">
+                  <p style={{ color: "red", marginBottom: "10px" }}>
+                    {formError}
+                  </p>
+                </div>
+              )}
+
               <div className="jscp-form-row jscp-buttons-row">
                 {/* <button type="button" className="jscp-btn-secondary">
                   Save as draft
@@ -940,6 +1155,9 @@ const JobSeekerCreateProfile = () => {
                         }
                       }}
                     />
+                    {errors.skills && (
+                      <p className="field-error">{errors.skills}</p>
+                    )}
                     <div className="jscp-skills-tags">
                       {skills.map((skill, index) => (
                         <span key={index} className="jscp-skill-tag">
@@ -959,6 +1177,15 @@ const JobSeekerCreateProfile = () => {
                   </div>
                 </div>
               </section>
+
+              {formError && (
+                <div className="jscp-error-message">
+                  <p style={{ color: "red", marginBottom: "10px" }}>
+                    {formError}
+                  </p>
+                </div>
+              )}
+
               <div className="jscp-form-row jscp-buttons-row">
                 {/* <button type="button" className="jscp-btn-secondary">
                   Save as draft
@@ -1035,6 +1262,7 @@ const JobSeekerCreateProfile = () => {
                   ))}
                 </div>
               </section>
+
               <div className="jscp-form-row jscp-buttons-row">
                 {/* <button type="button" className="jscp-btn-secondary">
                   Save as draft
@@ -1083,6 +1311,9 @@ const JobSeekerCreateProfile = () => {
                         }))
                       }
                     />
+                    {errors.desiredJobTitle && (
+                      <p className="field-error">{errors.desiredJobTitle}</p>
+                    )}
                   </div>
                   <div className="jscp-input-group">
                     <label>Preferred Job Type</label>
@@ -1104,6 +1335,9 @@ const JobSeekerCreateProfile = () => {
                                 }))
                               }
                             />
+                            {errors.jobType && (
+                              <p className="field-error">{errors.jobType}</p>
+                            )}
                             <label htmlFor={value}>{label}</label>
                           </div>
                         );
@@ -1128,6 +1362,9 @@ const JobSeekerCreateProfile = () => {
                           }))
                         }
                       />
+                      {errors.expectedSalary && (
+                        <p className="field-error">{errors.expectedSalary}</p>
+                      )}
                     </div>
                     <div className="jscp-input-group jscp-half">
                       <label htmlFor="preferredLocation">
@@ -1145,6 +1382,11 @@ const JobSeekerCreateProfile = () => {
                           }))
                         }
                       />
+                      {errors.preferredLocation && (
+                        <p className="field-error">
+                          {errors.preferredLocation}
+                        </p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -1159,6 +1401,14 @@ const JobSeekerCreateProfile = () => {
                 />{" "}
                 I agree with all <a href="/terms">Terms & Conditions</a>
               </label>
+
+              {formError && (
+                <div className="jscp-error-message">
+                  <p style={{ color: "red", marginBottom: "10px" }}>
+                    {formError}
+                  </p>
+                </div>
+              )}
 
               <div className="jscp-form-row jscp-buttons-row">
                 {/* <button type="button" className="jscp-btn-secondary">
