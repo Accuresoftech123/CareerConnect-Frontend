@@ -95,7 +95,7 @@ const EmployerHome = ({ children }) => {
       style: { color: "#FFFF00" },
     },
     {
-      path: "/EmployerLogin",
+      path: "/Employer",
       icon: <FaSignOutAlt />,
       label: "Logout",
     },
@@ -138,7 +138,7 @@ const EmployerHome = ({ children }) => {
     localStorage.removeItem("rzp_device_id"); // clear razerpay id
     localStorage.removeItem("rzp_stored_checkout_id");
 
-    navigate("/EmployerLogin"); // Redirect to login page
+    navigate("/Employer"); // Redirect to login page
   };
 
   return (

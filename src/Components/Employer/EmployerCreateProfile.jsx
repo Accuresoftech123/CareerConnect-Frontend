@@ -170,8 +170,8 @@ const EmployerCreateProfile = () => {
           <span>Career</span> Connect
         </div>
         <nav className="ecp-nav-links">
-          <Link to="/candidates">Candidates</Link>
-          <Link to="/companies">Companies</Link>
+          <Link to="/Candidates">Candidates</Link>
+          <Link to="/Companies">Companies</Link>
           <Link to="#" className="ecp-profile-link">
             <img src={profileIcon} alt="Profile" className="ecp-profile-icon" />
             My Profile

@@ -108,7 +108,7 @@ const handleLogout = () => {
   localStorage.removeItem("rzp_device_id");// clear razerpay id
   localStorage.removeItem("rzp_stored_checkout_id");
 
-  navigate("/Login"); // Redirect to login page
+  navigate("/Jobseeker"); // Redirect to login page
 };
 
   return (

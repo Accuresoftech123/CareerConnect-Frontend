@@ -8,7 +8,7 @@ import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import PhoneIcon from "@mui/icons-material/Phone";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
-import EmailVerificationPopup from "./EmailVerification.jsx";
+import EEmailVerificationPopup from "./EmailVerification.jsx";
 import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
 const Registration = () => {
@@ -107,7 +107,7 @@ const Registration = () => {
 
   if (message.includes("already registered")) {
     alert("⚠️ This email is already registered. Please log in instead.");
-    navigate("/EmployerLogin");
+    navigate("/Employer");
   } else {
     alert("❌ Error: " + message);
   }
@@ -119,7 +119,7 @@ const Registration = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
     alert("✅ Email Verified Successfully!");
-    navigate("/EmployerCreateProfile");
+    navigate("/Employer-Create-Profile");
   };
 
   return (
@@ -131,9 +131,9 @@ const Registration = () => {
         </div>
         <nav className="employer_register-nav">
           <Link to="/">Home</Link>
-          <Link to="/candidates">Candidates</Link>
-          <Link to="/companies">Companies</Link>
-          <Link to="/EmployerLogin">
+          <Link to="/Candidates">Candidates</Link>
+          <Link to="/Companies">Companies</Link>
+          <Link to="/Employer">
             <button className="employer_register-btn-primary">Log In</button>
           </Link>
         </nav>
@@ -270,7 +270,7 @@ const Registration = () => {
 
             {showVerificationPopup && (
               <div className="popup-backdrop">
-                <EmailVerificationPopup
+                <EEmailVerificationPopup
                   email={formData.email}
                   onVerify={handleOtpVerified}
                 />
@@ -281,7 +281,7 @@ const Registration = () => {
             {/*login option */}
             <div className="employer_register-option">
               <p>
-                Already have an account? <Link to="/EmployerLogin">Log In</Link>
+                Already have an account? <Link to="/Employer">Log In</Link>
               </p>
             </div>
           </div>
