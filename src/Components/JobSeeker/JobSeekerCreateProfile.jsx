@@ -67,11 +67,17 @@ const JobSeekerCreateProfile = () => {
   });
 
   const [educationList, setEducations] = useState([
-    {id: null , degree: "", fieldOfStudy: "", institution: "", passingYear: "" },
+    {
+      id: null,
+      degree: "",
+      fieldOfStudy: "",
+      institution: "",
+      passingYear: "",
+    },
   ]);
   const [experienceList, setExperiences] = useState([
     {
-      id:null,
+      id: null,
       jobTitle: "",
       companyName: "",
       startDate: "",
@@ -101,7 +107,6 @@ const JobSeekerCreateProfile = () => {
   const validateStep = () => {
     setFormError(""); // Clear general error
     const stepErrors = {};
-    //const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     const phoneRegex = /^[0-9]{10}$/;
     const urlRegex =
       /^(https?:\/\/)?([\w\d-]+\.){1,}[\w\d-]+(\/[\w\d#?&=.-]*)?$/;
@@ -184,13 +189,8 @@ const JobSeekerCreateProfile = () => {
       case 6:
         if (!jobPrefeences.desiredJobTitle.trim())
           stepErrors.desiredJobTitle = "Enter job title.";
-        if (!jobPrefeences.jobType.trim())
-          stepErrors.jobType = "Select job type.";
-        if (!jobPrefeences.expectedSalary.toString().trim())
-          stepErrors.expectedSalary = "Enter expected salary.";
         if (!jobPrefeences.preferredLocation.trim())
           stepErrors.preferredLocation = "Enter preferred location.";
-        if (!agreeTerms) stepErrors.agreeTerms = "You must agree to terms.";
         break;
 
       default:
@@ -205,6 +205,18 @@ const JobSeekerCreateProfile = () => {
     }
 
     return true;
+  };
+
+  const clearFieldError = (field) => {
+    setErrors((prevErrors) => {
+      const updated = { ...prevErrors, [field]: "" };
+
+      // If no more errors remain, also clear formError
+      const stillHasErrors = Object.values(updated).some((val) => val);
+      if (!stillHasErrors) setFormError("");
+
+      return updated;
+    });
   };
 
   //parse resume and update fields
@@ -277,6 +289,11 @@ const JobSeekerCreateProfile = () => {
       ...prev,
       [id]: type === "checkbox" ? checked : type === "file" ? files[0] : value,
     }));
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [id]: "",
+    }));
+    clearFieldError([id]);
   };
 
   /*Add education functionality */
@@ -284,6 +301,7 @@ const JobSeekerCreateProfile = () => {
     const updatedEducations = [...educationList];
     updatedEducations[index][field] = value;
     setEducations(updatedEducations);
+    clearFieldError(`${field}-${index}`);
   };
 
   /*Add experience functionality */
@@ -291,6 +309,7 @@ const JobSeekerCreateProfile = () => {
     const updatedExperiences = [...experienceList];
     updatedExperiences[index][field] = value;
     setExperiences(updatedExperiences);
+    clearFieldError(`${field}-${index}`);
   };
   // Handlers for social links change
   const handleSocialLinkChange = (e) => {
@@ -311,6 +330,9 @@ const JobSeekerCreateProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+      const isValid = validateStep();
+      if (!isValid) return;
+
     if (!agreeTerms) {
       alert("Please agree to the Terms and Conditions before submitting.");
       return;
@@ -519,6 +541,11 @@ const JobSeekerCreateProfile = () => {
                         value={fullName}
                         onChange={(e) => {
                           setFullName(e.target.value);
+                          setErrors((prevErrors) => ({
+                            ...prevErrors,
+                            fullName: "", // or delete prevErrors.fullName
+                          }));
+                          clearFieldError("fullName");
                         }}
                         placeholder="Enter your full name"
                       />
@@ -547,6 +574,11 @@ const JobSeekerCreateProfile = () => {
                         value={mobileNumber}
                         onChange={(e) => {
                           setPhone(e.target.value);
+                          setErrors((prevErrors) => ({
+                            ...prevErrors,
+                            mobileNumber: "", // or delete prevErrors.mobileNumber
+                          }));
+                          clearFieldError("mobileNumber");
                         }}
                         placeholder="Enter your phone number"
                       />
@@ -631,7 +663,12 @@ const JobSeekerCreateProfile = () => {
                       onChange={async (e) => {
                         const file = e.target.files[0];
                         setResumeFile(file);
-
+                        // ✅ Clear error when file is selected
+                        setErrors((prev) => ({
+                          ...prev,
+                          resumeFile: "",
+                        }));
+                        clearFieldError("resumeFile");
                         if (personalInfo.autoParse && file) {
                           await parseResumeAndUpdateFields();
                         }
@@ -765,13 +802,15 @@ const JobSeekerCreateProfile = () => {
                             }
                           >
                             <option value="">Select degree</option>
+                            <option value="SSC">SSC</option>
+                            <option value="HSC">HSC</option>
                             <option value="BE/B.tech">BE/B.tech</option>
-                            <option value="ME/M.tech">ME/M.tech</option>
-                            <option value="B.Sc/BCS/BCA/BCOM">
-                              B.Sc/BCS/BCA/BCOM
+                            <option value="BSC/BCS/BCA/BCOM/BA/BBA">BSC/BCS/BCA/BCOM/BA/BBA</option>
+                            <option value="ME/M.tech">
+                              ME/M.tech
                             </option>
-                            <option value="M.Sc/MCS/MCA/MCOM">
-                              M.Sc/MCS/MCA/MCOM
+                            <option value="M.Sc/MCS/MCA/MCOM/MA/MBA">
+                              M.Sc/MCS/MCA/MCOM/MA/MBA
                             </option>
                           </select>
                           {errors[`degree-${index}`] && (
@@ -996,6 +1035,7 @@ const JobSeekerCreateProfile = () => {
                             type="date"
                             id={`startDate-${index}`}
                             value={exp.startDate || ""}
+                             max={exp.endDate || ""}
                             onChange={(e) =>
                               handleExperienceChange(
                                 index,
@@ -1016,6 +1056,7 @@ const JobSeekerCreateProfile = () => {
                             type="date"
                             id={`endDate-${index}`}
                             value={exp.endDate || ""}
+                             min={exp.startDate || ""}
                             onChange={(e) =>
                               handleExperienceChange(
                                 index,
@@ -1038,12 +1079,17 @@ const JobSeekerCreateProfile = () => {
                           type="checkbox"
                           id={`currentlyWorking-${index}`}
                           checked={exp.currentlyWorking}
-                          onChange={(e) =>
+                          onChange={(e) =>{
                             handleExperienceChange(
                               index,
                               "currentlyWorking",
                               e.target.checked
-                            )
+                            );
+                            if (e.target.checked) {
+                              // If currently working, clear end date
+                              handleExperienceChange(index, "endDate", "");
+                            };
+                          }
                           }
                         />
                         <label htmlFor={`currentlyWorking-${index}`}>
@@ -1144,7 +1190,14 @@ const JobSeekerCreateProfile = () => {
                       id="skillsInput"
                       placeholder="Type your skill and press Enter"
                       value={skillInput}
-                      onChange={(e) => setSkillInput(e.target.value)}
+                      onChange={(e) => {setSkillInput(e.target.value);
+                        // ✅ Clear error when file is selected
+                        setErrors((prev) => ({
+                          ...prev,
+                          skills: "",
+                        }));
+                        clearFieldError("skills");
+                      }}
                       onKeyDown={(e) => {
                         if (e.key === "Enter") {
                           e.preventDefault();
@@ -1305,11 +1358,17 @@ const JobSeekerCreateProfile = () => {
                       id="desiredJobTitle"
                       placeholder="Enter your desired job title"
                       value={JobPreferences.desiredJobTitle}
-                      onChange={(e) =>
+                      onChange={(e) =>{
                         setjobPrefeences((prev) => ({
                           ...prev,
                           desiredJobTitle: e.target.value,
-                        }))
+                        }));
+                        setErrors((prev) => ({
+                          ...prev,
+                          desiredJobTitle: "",
+                        }));
+                        clearFieldError("desiredJobTitle");
+                      }
                       }
                     />
                     {errors.desiredJobTitle && (
@@ -1336,9 +1395,6 @@ const JobSeekerCreateProfile = () => {
                                 }))
                               }
                             />
-                            {errors.jobType && (
-                              <p className="field-error">{errors.jobType}</p>
-                            )}
                             <label htmlFor={value}>{label}</label>
                           </div>
                         );
@@ -1363,9 +1419,6 @@ const JobSeekerCreateProfile = () => {
                           }))
                         }
                       />
-                      {errors.expectedSalary && (
-                        <p className="field-error">{errors.expectedSalary}</p>
-                      )}
                     </div>
                     <div className="jscp-input-group jscp-half">
                       <label htmlFor="preferredLocation">
@@ -1376,11 +1429,17 @@ const JobSeekerCreateProfile = () => {
                         id="preferredLocation"
                         placeholder="Enter your Preferred location"
                         value={JobPreferences.preferredLocation}
-                        onChange={(e) =>
+                        onChange={(e) =>{
                           setjobPrefeences((prev) => ({
                             ...prev,
                             preferredLocation: e.target.value,
-                          }))
+                          }));
+                        setErrors((prev) => ({
+                          ...prev,
+                          preferredLocation: "",
+                        }));
+                        clearFieldError("preferredLocation");
+                        }
                         }
                       />
                       {errors.preferredLocation && (

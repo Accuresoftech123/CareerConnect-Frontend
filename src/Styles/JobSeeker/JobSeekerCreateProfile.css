@@ -527,7 +527,7 @@ display: flex;
   font-size: 12px;
   margin-top: 2px;
 }
-.jscp-error-message, .field-error {
+.jscp-error-message, .field-error, .error {
   color: #dc3545;
 }
 
