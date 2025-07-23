@@ -94,7 +94,7 @@ const JobSeekerCreateProfile = () => {
 
   const [jobPrefeences, setjobPrefeences] = useState({
     desiredJobTitle: "",
-    jobType: "",
+    jobTypes: [],
     expectedSalary: 0,
     preferredLocation: "",
   });
@@ -330,8 +330,8 @@ const JobSeekerCreateProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-      const isValid = validateStep();
-      if (!isValid) return;
+    const isValid = validateStep();
+    if (!isValid) return;
 
     if (!agreeTerms) {
       alert("Please agree to the Terms and Conditions before submitting.");
@@ -805,10 +805,10 @@ const JobSeekerCreateProfile = () => {
                             <option value="SSC">SSC</option>
                             <option value="HSC">HSC</option>
                             <option value="BE/B.tech">BE/B.tech</option>
-                            <option value="BSC/BCS/BCA/BCOM/BA/BBA">BSC/BCS/BCA/BCOM/BA/BBA</option>
-                            <option value="ME/M.tech">
-                              ME/M.tech
+                            <option value="BSC/BCS/BCA/BCOM/BA/BBA">
+                              BSC/BCS/BCA/BCOM/BA/BBA
                             </option>
+                            <option value="ME/M.tech">ME/M.tech</option>
                             <option value="M.Sc/MCS/MCA/MCOM/MA/MBA">
                               M.Sc/MCS/MCA/MCOM/MA/MBA
                             </option>
@@ -1035,7 +1035,7 @@ const JobSeekerCreateProfile = () => {
                             type="date"
                             id={`startDate-${index}`}
                             value={exp.startDate || ""}
-                             max={exp.endDate || ""}
+                            max={exp.endDate || ""}
                             onChange={(e) =>
                               handleExperienceChange(
                                 index,
@@ -1056,7 +1056,7 @@ const JobSeekerCreateProfile = () => {
                             type="date"
                             id={`endDate-${index}`}
                             value={exp.endDate || ""}
-                             min={exp.startDate || ""}
+                            min={exp.startDate || ""}
                             onChange={(e) =>
                               handleExperienceChange(
                                 index,
@@ -1079,7 +1079,7 @@ const JobSeekerCreateProfile = () => {
                           type="checkbox"
                           id={`currentlyWorking-${index}`}
                           checked={exp.currentlyWorking}
-                          onChange={(e) =>{
+                          onChange={(e) => {
                             handleExperienceChange(
                               index,
                               "currentlyWorking",
@@ -1088,9 +1088,8 @@ const JobSeekerCreateProfile = () => {
                             if (e.target.checked) {
                               // If currently working, clear end date
                               handleExperienceChange(index, "endDate", "");
-                            };
-                          }
-                          }
+                            }
+                          }}
                         />
                         <label htmlFor={`currentlyWorking-${index}`}>
                           Currently Working Here
@@ -1190,7 +1189,8 @@ const JobSeekerCreateProfile = () => {
                       id="skillsInput"
                       placeholder="Type your skill and press Enter"
                       value={skillInput}
-                      onChange={(e) => {setSkillInput(e.target.value);
+                      onChange={(e) => {
+                        setSkillInput(e.target.value);
                         // ✅ Clear error when file is selected
                         setErrors((prev) => ({
                           ...prev,
@@ -1358,7 +1358,7 @@ const JobSeekerCreateProfile = () => {
                       id="desiredJobTitle"
                       placeholder="Enter your desired job title"
                       value={JobPreferences.desiredJobTitle}
-                      onChange={(e) =>{
+                      onChange={(e) => {
                         setjobPrefeences((prev) => ({
                           ...prev,
                           desiredJobTitle: e.target.value,
@@ -1368,8 +1368,7 @@ const JobSeekerCreateProfile = () => {
                           desiredJobTitle: "",
                         }));
                         clearFieldError("desiredJobTitle");
-                      }
-                      }
+                      }}
                     />
                     {errors.desiredJobTitle && (
                       <p className="field-error">{errors.desiredJobTitle}</p>
@@ -1383,17 +1382,37 @@ const JobSeekerCreateProfile = () => {
                         return (
                           <div key={value} className="jscp-radio-item">
                             <input
-                              type="radio"
+                              type="checkbox"
                               id={value}
-                              name="jobPreference"
+                              name="jobTypes"
                               value={label}
-                              checked={jobPrefeences.jobType === label}
-                              onChange={(e) =>
-                                setjobPrefeences((prev) => ({
-                                  ...prev,
-                                  jobType: e.target.value,
-                                }))
+                              checked={
+                                jobPrefeences.jobTypes.includes(label) || false
                               }
+                              onChange={(e) => {
+                                const selected = e.target.value;
+                                setjobPrefeences((prev) => {
+                                  let updatedJobTypes = [];
+
+                                  if (prev.jobTypes.includes(selected)) {
+                                    // remove if already selected
+                                    updatedJobTypes = prev.jobTypes.filter(
+                                      (t) => t !== selected
+                                    );
+                                  } else {
+                                    // add new selection
+                                    updatedJobTypes = [
+                                      ...prev.jobTypes,
+                                      selected,
+                                    ];
+                                  }
+
+                                  return {
+                                    ...prev,
+                                    jobTypes: updatedJobTypes,
+                                  };
+                                });
+                              }}
                             />
                             <label htmlFor={value}>{label}</label>
                           </div>
@@ -1429,18 +1448,17 @@ const JobSeekerCreateProfile = () => {
                         id="preferredLocation"
                         placeholder="Enter your Preferred location"
                         value={JobPreferences.preferredLocation}
-                        onChange={(e) =>{
+                        onChange={(e) => {
                           setjobPrefeences((prev) => ({
                             ...prev,
                             preferredLocation: e.target.value,
                           }));
-                        setErrors((prev) => ({
-                          ...prev,
-                          preferredLocation: "",
-                        }));
-                        clearFieldError("preferredLocation");
-                        }
-                        }
+                          setErrors((prev) => ({
+                            ...prev,
+                            preferredLocation: "",
+                          }));
+                          clearFieldError("preferredLocation");
+                        }}
                       />
                       {errors.preferredLocation && (
                         <p className="field-error">
