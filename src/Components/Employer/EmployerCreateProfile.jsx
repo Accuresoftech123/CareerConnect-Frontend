@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import facebook from "../../Images/facebook.svg";
 import instagram from "../../Images/instagram.svg";
@@ -14,7 +14,7 @@ import axios from "axios";
 import "../../Styles/Employer/EmployerCreateProfilestyle.css";
 import axiosInstance from "../../axiosInstance";
 import { baseURL } from "../../axiosInstance"; // Import your axios instance
-
+import { Country, State } from "country-state-city";
 //const url = "http://localhost:9191/recruitersProfile";
 const EmployerCreateProfile = () => {
   const navigate = useNavigate();
@@ -22,6 +22,8 @@ const EmployerCreateProfile = () => {
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
   const [imageFile, setImageFile] = useState(null);
+  const [countries, setCountries] = useState([]);
+  const [locationStates, setLocationStates] = useState([]); // array of arrays
 
   // New state for errors
   const [errors, setErrors] = useState({});
@@ -50,135 +52,158 @@ const EmployerCreateProfile = () => {
     ],
   });
   //validate function
- const validateStep1 = () => {
-  const newErrors = {};
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  const validateStep1 = () => {
+    const newErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 
-  if (!formData.companyProfile.companyEmail.trim()) {
-    newErrors.companyEmail = "Company email is required";
-  } else if (!emailRegex.test(formData.companyProfile.companyEmail)) {
-    newErrors.companyEmail = "Invalid email format";
-  }
-
-  if (!imageFile) {
-    newErrors.profileImage = "Company logo/image is required";
-  }
-
-  if (!formData.companyProfile.website.trim()) {
-    newErrors.website = "Enter a valid website URL";
-  }
-
-  if (
-    !formData.companyProfile.industryType ||
-    formData.companyProfile.industryType === "Select industry"
-  ) {
-    newErrors.industryType = "Please select an industry type";
-  }
-
-  if (
-    !formData.companyProfile.companySize ||
-    formData.companyProfile.companySize === "Select company size"
-  ) {
-    newErrors.companySize = "Please select company size";
-  }
-
-  if (!formData.companyProfile.about.trim()) {
-    newErrors.about = "Company description is required";
-  } else if (formData.companyProfile.about.trim().length < 20) {
-    newErrors.about = "Description must be at least 20 characters";
-  }
-
-  formData.companyLocations.forEach((loc, index) => {
-    if (!loc.city || !loc.state || !loc.country || !loc.postalCode) {
-      newErrors[`location${index}`] = "All fields in company location are required";
+    if (!formData.companyProfile.companyEmail.trim()) {
+      newErrors.companyEmail = "Company email is required";
+    } else if (!emailRegex.test(formData.companyProfile.companyEmail)) {
+      newErrors.companyEmail = "Invalid email format";
     }
-  });
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};
+    if (!imageFile) {
+      newErrors.profileImage = "Company logo/image is required";
+    }
 
-const validateStep2 = () => {
-  const newErrors = {};
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-  const phoneRegex = /^[0-9]{10}$/;
+    if (!formData.companyProfile.website.trim()) {
+      newErrors.website = "Enter a valid website URL";
+    }
 
-  if (!formData.companyProfile.hrName.trim()) {
-    newErrors.hrName = "Recruiter name is required";
-  } else if (!/^[A-Za-z\s]+$/.test(formData.companyProfile.hrName.trim())) {
-    newErrors.hrName = "Name must contain only letters and spaces";
-  }
+    if (
+      !formData.companyProfile.industryType ||
+      formData.companyProfile.industryType === "Select industry"
+    ) {
+      newErrors.industryType = "Please select an industry type";
+    }
 
-  if (!formData.companyProfile.hrContactEmail.trim()) {
-    newErrors.hrContactEmail = "HR email is required";
-  } else if (!emailRegex.test(formData.companyProfile.hrContactEmail.trim())) {
-    newErrors.hrContactEmail = "Invalid email format";
-  }
+    if (
+      !formData.companyProfile.companySize ||
+      formData.companyProfile.companySize === "Select company size"
+    ) {
+      newErrors.companySize = "Please select company size";
+    }
 
-  if (!formData.companyProfile.hrContactMobileNumber.trim()) {
-    newErrors.hrContactMobileNumber = "Mobile number is required";
-  } else if (!phoneRegex.test(formData.companyProfile.hrContactMobileNumber.trim())) {
-    newErrors.hrContactMobileNumber = "Invalid mobile number format";
-  }
+    if (!formData.companyProfile.about.trim()) {
+      newErrors.about = "Company description is required";
+    } else if (formData.companyProfile.about.trim().length < 20) {
+      newErrors.about = "Description must be at least 20 characters";
+    }
 
-  setErrors(newErrors);
-  return Object.keys(newErrors).length === 0;
-};
+    formData.companyLocations.forEach((loc, index) => {
+      if (!loc.city || !loc.state || !loc.country || !loc.postalCode) {
+        newErrors[`location${index}`] =
+          "All fields in company location are required";
+      }
+    });
 
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const validateStep2 = () => {
+    const newErrors = {};
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+    const phoneRegex = /^[0-9]{10}$/;
+
+    if (!formData.companyProfile.hrName.trim()) {
+      newErrors.hrName = "Recruiter name is required";
+    } else if (!/^[A-Za-z\s]+$/.test(formData.companyProfile.hrName.trim())) {
+      newErrors.hrName = "Name must contain only letters and spaces";
+    }
+
+    if (!formData.companyProfile.hrContactEmail.trim()) {
+      newErrors.hrContactEmail = "HR email is required";
+    } else if (
+      !emailRegex.test(formData.companyProfile.hrContactEmail.trim())
+    ) {
+      newErrors.hrContactEmail = "Invalid email format";
+    }
+
+    if (!formData.companyProfile.hrContactMobileNumber.trim()) {
+      newErrors.hrContactMobileNumber = "Mobile number is required";
+    } else if (
+      !phoneRegex.test(formData.companyProfile.hrContactMobileNumber.trim())
+    ) {
+      newErrors.hrContactMobileNumber = "Invalid mobile number format";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  // Load countries on mount
+  useEffect(() => {
+    setCountries(Country.getAllCountries());
+  }, []);
+
+  // Load states when country changes
+  useEffect(() => {
+    const initialStates = formData.companyLocations.map((loc) =>
+      loc.country ? State.getStatesOfCountry(loc.country) : []
+    );
+    setLocationStates(initialStates);
+  }, []);
 
   const handleChange = (e, group, index = 0) => {
-  const { name, value } = e.target;
+    const { name, value } = e.target;
 
-  // Clear errors dynamically as user types
-  setErrors((prevErrors) => {
-    const updatedErrors = { ...prevErrors };
+    // Clear errors dynamically as user types
+    setErrors((prevErrors) => {
+      const updatedErrors = { ...prevErrors };
 
-    if (group === "companyLocations") {
-      const locationKey = `location${index}`;
-      delete updatedErrors[locationKey];
-    } else {
-      delete updatedErrors[name];
-    }
+      if (group === "companyLocations") {
+        const locationKey = `location${index}`;
+        delete updatedErrors[locationKey];
+      } else {
+        delete updatedErrors[name];
+      }
 
-    return updatedErrors;
-  });
+      return updatedErrors;
+    });
 
-  // Update form data
-  if (!group) {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  } else if (group === "companyProfile") {
-    setFormData((prev) => ({
-      ...prev,
-      companyProfile: {
-        ...prev.companyProfile,
+    // Update form data
+    if (!group) {
+      setFormData((prev) => ({
+        ...prev,
         [name]: value,
-      },
-    }));
-  } else if (group === "companyLocations") {
-    const updatedLocations = [...formData.companyLocations];
-    updatedLocations[index][name] = value;
-    setFormData((prev) => ({
-      ...prev,
-      companyLocations: updatedLocations,
-    }));
-  }
-};
+      }));
+    } else if (group === "companyProfile") {
+      setFormData((prev) => ({
+        ...prev,
+        companyProfile: {
+          ...prev.companyProfile,
+          [name]: value,
+        },
+      }));
+    } else if (group === "companyLocations") {
+      const updatedLocations = [...formData.companyLocations];
+      updatedLocations[index][name] = value;
+      // If country changes, update the corresponding states and reset state value
+    if (name === "country") {
+      updatedLocations[index]["state"] = "";
+      const updatedStates = [...locationStates];
+      updatedStates[index] = State.getStatesOfCountry(value);
+      setLocationStates(updatedStates);
+    }
+      setFormData((prev) => ({
+        ...prev,
+        companyLocations: updatedLocations,
+      }));
+    }
+  };
 
   const handleNextStep = (e) => {
-  e.preventDefault();
-  if (!validateStep1()) return;
-  setStep(2);
-};
-
+    e.preventDefault();
+    if (!validateStep1()) return;
+    setStep(2);
+  };
 
   // Handle form submission
   // This function will be called when the form is submitted
   const handleSubmit = async (e) => {
     e.preventDefault();
-   if (!validateStep2()) return;
+    if (!validateStep2()) return;
     setShowVerificationPopup(true);
     const recruiterId = localStorage.getItem("recruiterId");
 
@@ -231,12 +256,12 @@ const validateStep2 = () => {
     if (file) {
       setImageFile(file); // Save the raw file
 
- // Clear image error
-    setErrors((prevErrors) => {
-      const updatedErrors = { ...prevErrors };
-      delete updatedErrors.profileImage;
-      return updatedErrors;
-    });
+      // Clear image error
+      setErrors((prevErrors) => {
+        const updatedErrors = { ...prevErrors };
+        delete updatedErrors.profileImage;
+        return updatedErrors;
+      });
 
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -457,31 +482,40 @@ const validateStep2 = () => {
 
                       {/* State & Country */}
                       <div className="ecp-location-group">
+                        {/* Country Dropdown */}
                         <select
-                          name="state"
-                          value={location.state}
-                          onChange={(e) =>
-                            handleChange(e, "companyLocations", index)
-                          }
-                        >
-                          <option value="">Select your state</option>
-                          <option value="Maharashtra">Maharashtra</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="MP">MP</option>
-                          <option value="Other">Other</option>
-                        </select>
-
-                        <select
+                          id="country"
                           name="country"
                           value={location.country}
                           onChange={(e) =>
                             handleChange(e, "companyLocations", index)
                           }
                         >
-                          <option value="">Select your country</option>
-                          <option value="India">India</option>
-                          <option value="Russia">Russia</option>
-                          <option value="Other">Other</option>
+                          <option value="">Select your Country</option>
+                          {countries.map((country) => (
+                            <option
+                              key={country.isoCode}
+                              value={country.isoCode}
+                            >
+                              {country.name}
+                            </option>
+                          ))}
+                        </select>
+                        {/* State Dropdown */}
+                        <select
+                          id="state"
+                          name="state"
+                          value={location.state}
+                          onChange={(e) =>
+                            handleChange(e, "companyLocations", index)
+                          }
+                        >
+                          <option value="">Select your State</option>
+                          {locationStates[index]?.map((state) => (
+                            <option key={state.isoCode} value={state.isoCode}>
+                              {state.name}
+                            </option>
+                          ))}
                         </select>
                       </div>
 
@@ -633,8 +667,8 @@ const validateStep2 = () => {
                       onChange={(e) => handleChange(e, "companyProfile")}
                     />
                     {errors.hrName && (
-                    <span className="error-text">{errors.hrName}</span>
-                  )}
+                      <span className="error-text">{errors.hrName}</span>
+                    )}
                   </div>
                 </div>
                 <div className="ecp-form-row">
@@ -651,8 +685,10 @@ const validateStep2 = () => {
                       onChange={(e) => handleChange(e, "companyProfile")}
                     />
                     {errors.hrContactEmail && (
-                    <span className="error-text">{errors.hrContactEmail}</span>
-                  )}
+                      <span className="error-text">
+                        {errors.hrContactEmail}
+                      </span>
+                    )}
                   </div>
                   <div className="ecp-input-group ecp-half">
                     <label htmlFor="mobileNumber">Mobile Number</label>
@@ -665,8 +701,10 @@ const validateStep2 = () => {
                       onChange={(e) => handleChange(e, "companyProfile")}
                     />
                     {errors.hrContactMobileNumber && (
-                    <span className="error-text">{errors.hrContactMobileNumber}</span>
-                  )}
+                      <span className="error-text">
+                        {errors.hrContactMobileNumber}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>
