@@ -1,25 +1,26 @@
 import React, { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
 import linkedin from "../../Images/linkedin.svg";
 import google_g from "../../Images/google_g.jpg";
 import employerLogin from "../../Images/employerLogin.svg";
-
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import axios from "axios";
 
 import "../../Styles/Employer/EmployerLoginstyle.css";
 import { baseURL } from "../../axiosInstance"; // Import your axios instance
 
-
 const EmployerLogin = () => {
   // State to hold input values
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
- // const url = "http://localhost:9191";
-
+  // State for showing/hiding password
+  const [showPassword, setShowPassword] = useState(false);
+  // const url = "http://localhost:9191";
+  //state for errors
+  const [errors, setErrors] = useState({});
   // React Router navigation hook
   const navigate = useNavigate();
 
@@ -27,53 +28,69 @@ const EmployerLogin = () => {
   const goToRegistration = () => {
     navigate("/Employer-Registration");
   };
+  //validation part function
+  const validate = () => {
+    const newErrors = {};
 
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email.trim())) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+    }
+
+    setErrors(newErrors);
+
+    // ✅ Return true if no errors
+    return Object.keys(newErrors).length === 0;
+  };
 
   // Handle login form submission
-
-  const handleSubmit = async(e) => {
-
-    e.preventDefault();
+  const handleSubmit = async (e) => {
+     e.preventDefault();
     // navigate("/EmployerDashboard");
-    // Basic validation
-    if (!email || !password) {
-      alert("Please fill in all fields");
-      return;
-    }
+    const isValid = validate();
+  console.log("Validation passed?", isValid);
+  if (!isValid) return;
 
     // TODO: Implement actual login logic here (e.g., API call)
 
+    const user = { email, password };
 
-   const user = { email, password };
+    try {
+      const response = await axios.post(
+        `${baseURL}/api/recruiters/login`,
+        user
+      );
+      const recruiter = response.data;
 
-  try {
-    const response = await axios.post(`${baseURL}/api/recruiters/login`, user);
-    const recruiter = response.data;
-  
+      if (response.data) {
+        alert("Login Successful");
 
-    if (response.data) {
-      alert("Login Successful");
+        console.log(response.data);
 
-       console.log(response.data);
-
-       localStorage.setItem("recruiterId", recruiter.id);
+        localStorage.setItem("recruiterId", recruiter.id);
         console.log("Recruiter ID:", recruiter.id);
 
-      // set token
-      const token = response.data.token;
-      localStorage.setItem("token", token);
+        // set token
+        const token = response.data.token;
+        localStorage.setItem("token", token);
 
-     navigate("/EmployerHome"); // Navigate after successful login
-    } else {
-      alert("Invalid credentials");
+        navigate("/EmployerHome"); // Navigate after successful login
+      } else {
+        alert("Invalid credentials");
+      }
+    } catch (error) {
+      console.error("Login Failed:", error);
+      const errorMsg =
+        error.response?.data?.message ||
+        "Login failed. Please check your credentials.";
+      alert("Error: " + errorMsg);
     }
-  } catch (error) {
-    console.error("Login Failed:", error);
-    const errorMsg = error.response?.data?.message || "Login failed. Please check your credentials.";
-    alert("Error: " + errorMsg);
-  }
-
- };
+  };
 
   return (
     <div className="employer_loginpage-container">
@@ -84,19 +101,11 @@ const EmployerLogin = () => {
         </div>
 
         <nav className="employer_loginnav-links">
-          <Link to="/" >
-                      Home
-                    </Link>
-                    <Link to="/Candidates" >
-                      Candidates
-                    </Link>
-                    <Link to="/Companies" >
-                      Companies
-                    </Link>
-                    <Link to="/Employer-Registration">
-          <button className="employer_btn-primary">
-            Register
-          </button>
+          <Link to="/">Home</Link>
+          <Link to="/Candidates">Candidates</Link>
+          <Link to="/Companies">Companies</Link>
+          <Link to="/Employer-Registration">
+            <button className="employer_btn-primary">Register</button>
           </Link>
         </nav>
       </header>
@@ -107,10 +116,12 @@ const EmployerLogin = () => {
           {/* Left side: Welcome text and illustration */}
           <section className="employer_login-text col-6">
             <h1>
-              Welcome Back, to <br></br><span className="employerlogin_logomain">Career Connect</span>
+              Welcome Back, to <br></br>
+              <span className="employerlogin_logomain">Career Connect</span>
             </h1>
             <p>
-              Post jobs, review applications, and schedule interviews —  <span className="employerlogin_span-plogo">all in one place</span>
+              Post jobs, review applications, and schedule interviews —{" "}
+              <span className="employerlogin_span-plogo">all in one place</span>
             </p>
 
             <div className="employer_illustration">
@@ -129,17 +140,21 @@ const EmployerLogin = () => {
                 Email Id:
               </label>
               <div className="employer_Logininput-container">
-                <SvgIcon component={LocalPostOfficeIcon}/>
+                <SvgIcon component={LocalPostOfficeIcon} />
                 <input
                   id="email"
                   type="email"
                   placeholder="Enter email id"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (errors.email)
+                      setErrors((prev) => ({ ...prev, email: "" }));
+                  }}
+                  
                 />
               </div>
-
+              {errors.email && <p className="error-text">{errors.email}</p>}
               {/* Password Input */}
               <label className="m-1 row" htmlFor="password">
                 Password:
@@ -148,14 +163,27 @@ const EmployerLogin = () => {
                 <SvgIcon component={LockIcon} />
                 <input
                   id="password"
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errors.password)
+                      setErrors((prev) => ({ ...prev, password: "" }));
+                  }}
+                  
                 />
+                <span
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="jsl-toggle-password-icon"
+                  style={{ cursor: "pointer", marginLeft: "auto" }}
+                >
+                  {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                </span>
               </div>
-
+              {errors.password && (
+                <p className="error-text">{errors.password}</p>
+              )}
               {/* Forgot password link */}
               <p className="employer_forgotpass">
                 <a href="forgot_password">Forgot Password?</a>
