@@ -1,9 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "../../../Styles/Employer/Dashcomponents/JobPost.css";
 import axiosInstance from "../../../../src/axiosInstance";
-import {baseURL} from "../../../axiosInstance"; // Import your axios instance
-
+import { baseURL } from "../../../axiosInstance"; // Import your axios instance
 
 const JobPost = () => {
   const navigate = useNavigate();
@@ -14,6 +13,7 @@ const JobPost = () => {
   const [fetchError, setFetchError] = useState(null);
   const [skillInput, setSkillInput] = React.useState("");
   const [skills, setSkills] = React.useState([]);
+  const [errors, setErrors] = useState({});
   const [jobPost, setJobPost] = useState({
     title: "",
     employmentType: "",
@@ -28,8 +28,52 @@ const JobPost = () => {
     lastDateToApply: "",
     numberOfOpenings: 0,
   });
- // const url = "http://localhost:9191/jobposts";
+  // const url = "http://localhost:9191/jobposts";
   const recruiterId = localStorage.getItem("recruiterId");
+  // handle validation function
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!jobPost.title.trim()) {
+      newErrors.title = "Job title is required.";
+    }
+
+    if (!jobPost.employmentType) {
+      newErrors.employmentType = "Employment type is required.";
+    }
+
+    if (!jobPost.description.trim()) {
+      newErrors.description = "Job description is required.";
+    }
+
+    if (skills.length === 0) {
+      newErrors.skills = "Please add at least one skill.";
+    }
+
+    if (jobPost.minExperience === "" || jobPost.maxExperience === "") {
+      newErrors.experience = "Experience range is required.";
+    } else if (
+      parseInt(jobPost.minExperience) > parseInt(jobPost.maxExperience)
+    ) {
+      newErrors.experience =
+        "Minimum experience cannot be greater than maximum experience.";
+    }
+
+    if (!jobPost.location.trim()) {
+      newErrors.location = "Location is required.";
+    }
+
+    if (!jobPost.lastDateToApply) {
+      newErrors.lastDateToApply = "Application deadline is required.";
+    }
+
+    if (!jobPost.numberOfOpenings || parseInt(jobPost.numberOfOpenings) <= 0) {
+      newErrors.numberOfOpenings = "Enter a valid number of openings.";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleBenefitChange = (e) => {
     const { value, checked } = e.target;
@@ -46,6 +90,10 @@ const JobPost = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
     setJobPost({ ...jobPost, [name]: value });
+    // Clear error for the specific field
+    if (errors[name]) {
+      setErrors({ ...errors, [name]: null });
+    }
   };
 
   const fetchPreviousJobs = async () => {
@@ -54,7 +102,6 @@ const JobPost = () => {
       const response = await axiosInstance.get(
         `/api/jobposts/recruiter/${recruiterId}/last`
       );
-      
 
       if (response.data) {
         const mostRecentJob = response.data; // last posted job
@@ -74,9 +121,9 @@ const JobPost = () => {
           lastDateToApply: mostRecentJob.lastDateToApply || "",
           numberOfOpenings: mostRecentJob.numberOfOpenings || 0,
         });
+      } else {
+        alert("You have not posted any jobs yet.");
       }
-       else {
-      alert("You have not posted any jobs yet.");}
     } catch (error) {
       setFetchError("Failed to load previous jobs");
       console.error("Error fetching previous jobs:", error);
@@ -84,7 +131,6 @@ const JobPost = () => {
       setIsLoadingPreviousJobs(false);
     }
   };
-
 
   const handlePrefillSelection = async () => {
     setPrefillEnabled(true);
@@ -117,7 +163,10 @@ const JobPost = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-     const JobProfileData = {
+    if (!validateForm()) {
+      return; // Prevent submission if validation fails
+    }
+    const JobProfileData = {
       title: jobPost.title,
       employmentType: jobPost.employmentType,
       description: jobPost.description,
@@ -130,7 +179,7 @@ const JobPost = () => {
       benefits: jobPost.benefits,
       lastDateToApply: jobPost.lastDateToApply,
       numberOfOpenings: jobPost.numberOfOpenings,
-  };
+    };
 
     try {
       console.log("Recruiter ID:", recruiterId);
@@ -140,9 +189,9 @@ const JobPost = () => {
         JobProfileData
       );
       console.log("Job posted successfully", response.data);
-       
+
       alert("Job posted!");
-       navigate("/EmployerHome");
+      navigate("/EmployerHome");
     } catch (error) {
       console.error("Error posting job", error);
       alert("Failed to post job");
@@ -190,10 +239,7 @@ const JobPost = () => {
           <section className="EJobPost-form-section">
             <h2 className="EJobPost-section-title">Basic details</h2>
             <div className="EJobPost-form-group">
-              <label
-                htmlFor="jobTitle"
-                className="EJobPost-label-required"
-              >
+              <label htmlFor="jobTitle" className="EJobPost-label-required">
                 Job title
               </label>
               <input
@@ -204,8 +250,8 @@ const JobPost = () => {
                 value={jobPost.title}
                 onChange={handleChange}
                 placeholder="E.g Software developer"
-                required
               />
+              {errors.title && <div className="error-msg">{errors.title}</div>}
             </div>
             <div className="EJobPost-form-group">
               <label
@@ -220,7 +266,6 @@ const JobPost = () => {
                 value={jobPost.employmentType}
                 onChange={handleChange}
                 className="EJobPost-select-input"
-                required
               >
                 <option value="">Select employment type</option>
                 <option value="full-time">Full-time</option>
@@ -229,6 +274,9 @@ const JobPost = () => {
                 <option value="temporary">Temporary</option>
                 <option value="internship">Internship</option>
               </select>
+              {errors.employmentType && (
+                <div className="error-msg">{errors.employmentType}</div>
+              )}
             </div>
           </section>
 
@@ -250,16 +298,16 @@ const JobPost = () => {
                 name="description"
                 value={jobPost.description}
                 onChange={handleChange}
-                required
               ></textarea>
+              {errors.description && (
+                <div className="error-msg">{errors.description}</div>
+              )}
             </div>
           </section>
 
           {/* Skills */}
           <section className="EJobPost-form-section">
-            <h2 className="EJobPost-section-title">
-              Required skills
-            </h2>
+            <h2 className="EJobPost-section-title">Required skills</h2>
             <div className="EJobPost-skills-input-group">
               <input
                 type="text"
@@ -274,10 +322,20 @@ const JobPost = () => {
                     if (trimmed && !skills.includes(trimmed)) {
                       setSkills([...skills, trimmed]);
                       setSkillInput("");
+
+                      if (errors.skills) {
+                        setErrors((prevErrors) => ({
+                          ...prevErrors,
+                          skills: null,
+                        }));
+                      }
                     }
                   }
                 }}
               />
+              {errors.skills && (
+                <div className="error-msg">{errors.skills}</div>
+              )}
             </div>
             <div className="jscp-skills-tags">
               {skills.map((skill, index) => (
@@ -299,10 +357,7 @@ const JobPost = () => {
 
           {/* Experience */}
           <div className="EJobPost-form-group">
-            <label
-              htmlFor="minExperience"
-              className="EJobPost-label-required"
-            >
+            <label htmlFor="minExperience" className="EJobPost-label-required">
               Experience required
             </label>
             <div className="EJobPost-experience-range-group-abc">
@@ -320,7 +375,15 @@ const JobPost = () => {
                   </option>
                 ))}
               </select>
-              <span className="experience-separator" style={{paddingLeft:"10px", paddingRight:"10px"}}>to</span>
+              {errors.minExperience && (
+                <div className="error-msg">{errors.minExperience}</div>
+              )}
+              <span
+                className="experience-separator"
+                style={{ paddingLeft: "10px", paddingRight: "10px" }}
+              >
+                to
+              </span>
               <select
                 id="maxExperience"
                 name="maxExperience"
@@ -335,19 +398,17 @@ const JobPost = () => {
                   </option>
                 ))}
               </select>
+              {errors.maxExperience && (
+                <div className="error-msg">{errors.maxExperience}</div>
+              )}
             </div>
           </div>
 
           {/* Location & Salary */}
           <section className="EJobPost-form-section">
-            <h2 className="EJobPost-section-title">
-              Location & Compensation
-            </h2>
+            <h2 className="EJobPost-section-title">Location & Compensation</h2>
             <div className="EJobPost-form-group">
-              <label
-                htmlFor="location"
-                className="EJobPost-label-required"
-              >
+              <label htmlFor="location" className="EJobPost-label-required">
                 Location
               </label>
               <input
@@ -360,15 +421,13 @@ const JobPost = () => {
                 placeholder="E.g Pune, Mumbai, Bangalore..."
               />
             </div>
+            {errors.location && (
+              <div className="error-msg">{errors.location}</div>
+            )}
             <div className="EJobPost-form-group">
-              <label
-                htmlFor="salaryRange"
-                className="EJobPost-input-label"
-              >
+              <label htmlFor="salaryRange" className="EJobPost-input-label">
                 Salary range (LPA)
-                <span className="EJobPost-label-optional">
-                  [optional]
-                </span>
+                <span className="EJobPost-label-optional">[optional]</span>
               </label>
               <div className="EJobPost-salary-range-group">
                 <input
@@ -379,7 +438,12 @@ const JobPost = () => {
                   className="EJobPost-text-input-half"
                   placeholder="Minimum"
                 />
-                <span className="salary-separator" style={{paddingRight:"10px", paddingLeft:"10px"}}>to</span>
+                <span
+                  className="salary-separator"
+                  style={{ paddingRight: "10px", paddingLeft: "10px" }}
+                >
+                  to
+                </span>
                 <input
                   type="number"
                   name="maxSalary"
@@ -457,9 +521,7 @@ const JobPost = () => {
 
           {/* Application Deadline */}
           <section className="EJobPost-form-section">
-            <h2 className="EJobPost-section-title">
-              Additional details
-            </h2>
+            <h2 className="EJobPost-section-title">Additional details</h2>
             <div className="EJobPost-form-group">
               <label
                 htmlFor="applicationDeadline"
@@ -474,8 +536,10 @@ const JobPost = () => {
                 value={jobPost.lastDateToApply}
                 onChange={handleChange}
                 className="EJobPost-text-input"
-                required
               />
+              {errors.lastDateToApply && (
+                <div className="error-msg">{errors.lastDateToApply}</div>
+              )}
             </div>
             <div className="EJobPost-form-group">
               <label
@@ -491,8 +555,10 @@ const JobPost = () => {
                 name="numberOfOpenings"
                 onChange={handleChange}
                 className="EJobPost-text-input"
-                required
               />
+              {errors.numberOfOpenings && (
+                <div className="error-msg">{errors.numberOfOpenings}</div>
+              )}
             </div>
           </section>
 
@@ -501,12 +567,12 @@ const JobPost = () => {
               {/* //  <Spinner /> Loading your last job details... */}
             </div>
           )}
-          {fetchError && (
+          {/* {fetchError && (
             <div className="EJobPost-error">
               {fetchError}
               <button onClick={fetchPreviousJobs}>Retry</button>
             </div>
-          )}
+          )} */}
           <button type="submit" className="EJobPost-applypost-job-button">
             Post a job
           </button>
