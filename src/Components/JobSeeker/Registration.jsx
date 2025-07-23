@@ -4,7 +4,7 @@ import axios from "axios";
 
 import "../../Styles/JobSeeker/Registerstyle.css";
 import JSRegister from "../../Images/JSRegister.svg";
-
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import PersonIcon from "@mui/icons-material/Person";
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
@@ -18,15 +18,17 @@ const Registration = () => {
   const navigate = useNavigate();
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
-
- // const url = "http://localhost:9191";
+  // State for showing/hiding password
+  const [showPassword, setShowPassword] = useState(false);
+  const [showconfirmPassword, setShowconfirmPassword] = useState(false);
+  // const url = "http://localhost:9191";
   // State to hold form data
   const [formData, setFormData] = useState({
-    fullName: '',
-    email: '',
-    mobileNumber: '',
-    password: '',
-    confirmPassword: ''
+    fullName: "",
+    email: "",
+    mobileNumber: "",
+    password: "",
+    confirmPassword: "",
   });
 
   // New state to hold validation error messages
@@ -40,7 +42,10 @@ const Registration = () => {
       newErrors.fullName = "Full Name is required";
     } else if (data.fullName.trim().length < 3) {
       newErrors.fullName = "Full Name must be at least 3 characters";
-    }
+    } else if (!/^[A-Za-z\s]+$/.test(data.fullName.trim())) {
+          newErrors.fullName =
+            "Full Name must contain only letters and spaces.";
+        }
 
     // Email - required and valid email format
     if (!data.email.trim()) {
@@ -105,7 +110,10 @@ const Registration = () => {
     }
 
     try {
-      const response = await axios.post(`${baseURL}/api/jobseekers/register`, formData);
+      const response = await axios.post(
+        `${baseURL}/api/jobseekers/register`,
+        formData
+      );
 
       const { message, jobSeekerId } = response.data;
 
@@ -126,7 +134,9 @@ const Registration = () => {
         alert(msg);
         setShowVerificationPopup(true);
       } else if (res?.status === 409) {
-        alert("⚠️ This email is already registered and verified. Please log in.");
+        alert(
+          "⚠️ This email is already registered and verified. Please log in."
+        );
         navigate("/Jobseeker");
       } else {
         alert("❌ Error: " + msg);
@@ -193,8 +203,10 @@ const Registration = () => {
                   required
                 />
               </div>
-              {errors.fullName && <p className="error-text">{errors.fullName}</p>}
-              { /* Email - required and valid email format */}
+              {errors.fullName && (
+                <p className="error-text">{errors.fullName}</p>
+              )}
+              {/* Email - required and valid email format */}
               <label>Email Id</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={LocalPostOfficeIcon} />
@@ -208,7 +220,7 @@ const Registration = () => {
                 />
               </div>
               {errors.email && <p className="error-text">{errors.email}</p>}
-              { /* Mobile Number - required and 10 digits only */}
+              {/* Mobile Number - required and 10 digits only */}
               <label>Mobile Number</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={PhoneIcon} />
@@ -221,36 +233,56 @@ const Registration = () => {
                   required
                 />
               </div>
-              {errors.mobileNumber && <p className="error-text">{errors.mobileNumber}</p>}
-              { /* Password - required and min 6 chars */}
+              {errors.mobileNumber && (
+                <p className="error-text">{errors.mobileNumber}</p>
+              )}
+              {/* Password - required and min 6 chars */}
               <label>Create Password</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={LockIcon} />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Create a password"
                   value={formData.password}
                   onChange={handleChange}
                   required
                 />
+                <span
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="toggle-password-icon"
+                  style={{ cursor: "pointer", marginLeft: "auto" }}
+                >
+                  {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                </span>
               </div>
-              {errors.password && <p className="error-text">{errors.password}</p>}
-              { /* Confirm Password - must match password */}
+              {errors.password && (
+                <p className="error-text">{errors.password}</p>
+              )}
+              {/* Confirm Password - must match password */}
               <label>Confirm Password</label>
               <div className="jobseeker_register-input-container">
                 <SvgIcon component={LockIcon} />
                 <input
-                  type="password"
+                  type={showconfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   placeholder="Confirm your password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                   required
                 />
+                <span
+                  onClick={() => setShowconfirmPassword((prev) => !prev)}
+                  className="toggle-password-icon"
+                  style={{ cursor: "pointer", marginLeft: "auto" }}
+                >
+                  {showconfirmPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                </span>
               </div>
-              {errors.confirmPassword && <p className="error-text">{errors.confirmPassword}</p>}
-              { /* Submit Button */}
+              {errors.confirmPassword && (
+                <p className="error-text">{errors.confirmPassword}</p>
+              )}
+              {/* Submit Button */}
               <button className="jobseeker_register-btn-submit" type="submit">
                 Register
               </button>

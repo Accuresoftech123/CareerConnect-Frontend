@@ -10,6 +10,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
 import EEmailVerificationPopup from "./EmailVerification.jsx";
 import { baseURL } from "../../axiosInstance"; // Import your axios instance
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 
 const Registration = () => {
   //const url = "http://localhost:9191";
@@ -25,9 +26,12 @@ const Registration = () => {
   // New state to hold validation error messages
   const [errors, setErrors] = useState({});
   const [agreed, setAgreed] = useState(false);
-    // New state to hold verification popup and verified
+  // New state to hold verification popup and verified
   const [showVerificationPopup, setShowVerificationPopup] = useState(false);
   const [isVerified, setIsVerified] = useState(false);
+  // State for showing/hiding password
+  const [showPassword, setShowPassword] = useState(false);
+  const [showconfirmPassword, setShowconfirmPassword] = useState(false);
   //validation function
   const validate = () => {
     const newErrors = {};
@@ -36,6 +40,8 @@ const Registration = () => {
 
     if (!formData.companyName.trim()) {
       newErrors.companyName = "Company Name is required";
+    } else if (!/^[A-Za-z\s]+$/.test(formData.companyName.trim())) {
+      newErrors.companyName = "Full Name must contain only letters and spaces.";
     }
 
     if (!formData.email.trim()) {
@@ -83,38 +89,40 @@ const Registration = () => {
     e.preventDefault();
     if (!validate()) return;
 
-  try {
-   const response = await axios.post(`${baseURL}/api/recruiters/register`, formData);
+    try {
+      const response = await axios.post(
+        `${baseURL}/api/recruiters/register`,
+        formData
+      );
 
-  const recruiterId = response.data.recruiterId;
-  localStorage.setItem("recruiterId", recruiterId);
-  console.log("Recruiter ID:", recruiterId);
-  console.log("Response:", response.data);
+      const recruiterId = response.data.recruiterId;
+      localStorage.setItem("recruiterId", recruiterId);
+      console.log("Recruiter ID:", recruiterId);
+      console.log("Response:", response.data);
 
-  alert(response.data.message || "📨 OTP sent to your email.");
-  setShowVerificationPopup(true);
-} catch (error) {
-  const message = error.response?.data?.message || error.message;
+      alert(response.data.message || "📨 OTP sent to your email.");
+      setShowVerificationPopup(true);
+    } catch (error) {
+      const message = error.response?.data?.message || error.message;
 
-  // Check if it’s "already registered but not verified" from status 200
-  if (error.response?.status === 200 && message.includes("not verified")) {
-    const recruiterId = error.response.data.recruiterId;
-    localStorage.setItem("recruiterId", recruiterId);
-    alert(message); // "Email already registered but not verified. OTP re-sent."
-    setShowVerificationPopup(true);
-    return;
-  }
+      // Check if it’s "already registered but not verified" from status 200
+      if (error.response?.status === 200 && message.includes("not verified")) {
+        const recruiterId = error.response.data.recruiterId;
+        localStorage.setItem("recruiterId", recruiterId);
+        alert(message); // "Email already registered but not verified. OTP re-sent."
+        setShowVerificationPopup(true);
+        return;
+      }
 
-  if (message.includes("already registered")) {
-    alert("⚠️ This email is already registered. Please log in instead.");
-    navigate("/Employer");
-  } else {
-    alert("❌ Error: " + message);
-  }
-}
-
-};
-//handle otp verificatiion function
+      if (message.includes("already registered")) {
+        alert("⚠️ This email is already registered. Please log in instead.");
+        navigate("/Employer");
+      } else {
+        alert("❌ Error: " + message);
+      }
+    }
+  };
+  //handle otp verificatiion function
   const handleOtpVerified = () => {
     setShowVerificationPopup(false);
     setIsVerified(true);
@@ -150,7 +158,9 @@ const Registration = () => {
             </h1>
             <p>
               Post jobs, review applications, and schedule interviews —{" "}
-              <span className="employerregister_span-plogo">all in one place</span>
+              <span className="employerregister_span-plogo">
+                all in one place
+              </span>
             </p>
             <div className="employer_register-illustration">
               <img src={EmployerRegistrationImage} alt="Welcome" />
@@ -175,7 +185,9 @@ const Registration = () => {
                   onChange={handleChange}
                 />
               </div>
-              {errors.companyName && <span className="error-text">{errors.companyName}</span>}
+              {errors.companyName && (
+                <span className="error-text">{errors.companyName}</span>
+              )}
 
               {/* Email */}
               <br></br>
@@ -190,7 +202,9 @@ const Registration = () => {
                   onChange={handleChange}
                 />
               </div>
-              {errors.email && <span className="error-text">{errors.email}</span>}
+              {errors.email && (
+                <span className="error-text">{errors.email}</span>
+              )}
 
               {/* Mobile Number */}
               <br></br>
@@ -205,7 +219,9 @@ const Registration = () => {
                   onChange={handleChange}
                 />
               </div>
-              {errors.mobileNumber && <span className="error-text">{errors.mobileNumber}</span>}
+              {errors.mobileNumber && (
+                <span className="error-text">{errors.mobileNumber}</span>
+              )}
 
               {/* Password */}
               <br></br>
@@ -213,14 +229,23 @@ const Registration = () => {
               <div className="employer_register-input-container">
                 <SvgIcon component={LockIcon} />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   name="password"
                   placeholder="Create a password"
                   value={formData.password}
                   onChange={handleChange}
                 />
+                <span
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="toggle-password-icon"
+                  style={{ cursor: "pointer", marginLeft: "auto" }}
+                >
+                  {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                </span>
               </div>
-              {errors.password && <span className="error-text">{errors.password}</span>}
+              {errors.password && (
+                <span className="error-text">{errors.password}</span>
+              )}
 
               {/* Confirm Password */}
               <br></br>
@@ -228,14 +253,23 @@ const Registration = () => {
               <div className="employer_register-input-container">
                 <SvgIcon component={LockIcon} />
                 <input
-                  type="password"
+                  type={showconfirmPassword ? "text" : "password"}
                   name="confirmPassword"
                   placeholder="Confirm your password"
                   value={formData.confirmPassword}
                   onChange={handleChange}
                 />
+                <span
+                  onClick={() => setShowconfirmPassword((prev) => !prev)}
+                  className="toggle-password-icon"
+                  style={{ cursor: "pointer", marginLeft: "auto" }}
+                >
+                  {showconfirmPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                </span>
               </div>
-              {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
+              {errors.confirmPassword && (
+                <span className="error-text">{errors.confirmPassword}</span>
+              )}
 
               {/* Terms & Conditions */}
               <div className="employer_register-checkbox-container">
@@ -261,7 +295,9 @@ const Registration = () => {
                   </a>
                 </label>
               </div>
-              {errors.agreed && <span className="error-text">{errors.agreed}</span>}
+              {errors.agreed && (
+                <span className="error-text">{errors.agreed}</span>
+              )}
 
               <button className="employer_register-btn-submit" type="submit">
                 Register
@@ -277,7 +313,9 @@ const Registration = () => {
               </div>
             )}
 
-            {isVerified && <p style={{ color: "green" }}>Email Verified Successfully!</p>}
+            {isVerified && (
+              <p style={{ color: "green" }}>Email Verified Successfully!</p>
+            )}
             {/*login option */}
             <div className="employer_register-option">
               <p>

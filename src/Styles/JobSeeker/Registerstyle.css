@@ -177,7 +177,21 @@ position: relative;
   background-color: #f3f3f3;
   font-size: 14px;
 }
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
 
+.toggle-password-icon {
+   position: absolute;
+  top: 50%;
+  right: 12%;
+  transform: translateY(-50%);
+  font-size: 20px;
+  color: #888;
+  cursor: pointer;
+}
 /* Submit Button */
 .jobseeker_register-btn-submit {
   width: 100%;

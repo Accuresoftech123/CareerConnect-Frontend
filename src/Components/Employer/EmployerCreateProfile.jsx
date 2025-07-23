@@ -23,10 +23,12 @@ const EmployerCreateProfile = () => {
   const [isVerified, setIsVerified] = useState(false);
   const [imageFile, setImageFile] = useState(null);
 
+  // New state for errors
+  const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({
     companyName: "",
     companyProfile: {
-     hrName: "",
+      hrName: "",
       companyEmail: "",
       companySize: "",
       img: "",
@@ -39,8 +41,7 @@ const EmployerCreateProfile = () => {
     },
     companyLocations: [
       {
-        id:null,
-        address: "",
+        id: null,
         city: "",
         state: "",
         country: "",
@@ -48,48 +49,136 @@ const EmployerCreateProfile = () => {
       },
     ],
   });
+  //validate function
+ const validateStep1 = () => {
+  const newErrors = {};
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+
+  if (!formData.companyProfile.companyEmail.trim()) {
+    newErrors.companyEmail = "Company email is required";
+  } else if (!emailRegex.test(formData.companyProfile.companyEmail)) {
+    newErrors.companyEmail = "Invalid email format";
+  }
+
+  if (!imageFile) {
+    newErrors.profileImage = "Company logo/image is required";
+  }
+
+  if (!formData.companyProfile.website.trim()) {
+    newErrors.website = "Enter a valid website URL";
+  }
+
+  if (
+    !formData.companyProfile.industryType ||
+    formData.companyProfile.industryType === "Select industry"
+  ) {
+    newErrors.industryType = "Please select an industry type";
+  }
+
+  if (
+    !formData.companyProfile.companySize ||
+    formData.companyProfile.companySize === "Select company size"
+  ) {
+    newErrors.companySize = "Please select company size";
+  }
+
+  if (!formData.companyProfile.about.trim()) {
+    newErrors.about = "Company description is required";
+  } else if (formData.companyProfile.about.trim().length < 20) {
+    newErrors.about = "Description must be at least 20 characters";
+  }
+
+  formData.companyLocations.forEach((loc, index) => {
+    if (!loc.city || !loc.state || !loc.country || !loc.postalCode) {
+      newErrors[`location${index}`] = "All fields in company location are required";
+    }
+  });
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
+const validateStep2 = () => {
+  const newErrors = {};
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
+  const phoneRegex = /^[0-9]{10}$/;
+
+  if (!formData.companyProfile.hrName.trim()) {
+    newErrors.hrName = "Recruiter name is required";
+  } else if (!/^[A-Za-z\s]+$/.test(formData.companyProfile.hrName.trim())) {
+    newErrors.hrName = "Name must contain only letters and spaces";
+  }
+
+  if (!formData.companyProfile.hrContactEmail.trim()) {
+    newErrors.hrContactEmail = "HR email is required";
+  } else if (!emailRegex.test(formData.companyProfile.hrContactEmail.trim())) {
+    newErrors.hrContactEmail = "Invalid email format";
+  }
+
+  if (!formData.companyProfile.hrContactMobileNumber.trim()) {
+    newErrors.hrContactMobileNumber = "Mobile number is required";
+  } else if (!phoneRegex.test(formData.companyProfile.hrContactMobileNumber.trim())) {
+    newErrors.hrContactMobileNumber = "Invalid mobile number format";
+  }
+
+  setErrors(newErrors);
+  return Object.keys(newErrors).length === 0;
+};
+
 
   const handleChange = (e, group, index = 0) => {
-    const { name, value } = e.target;
+  const { name, value } = e.target;
 
-    if (!group) {
-      // Top-level field
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-    } else if (group === "companyProfile") {
-      setFormData((prev) => ({
-        ...prev,
-        companyProfile: {
-          ...prev.companyProfile,
-          [name]: value,
-        },
-      }));
-    } else if (group === "companyLocations") {
-      const updatedLocations = [...formData.companyLocations];
-      updatedLocations[index][name] = value;
-      setFormData((prev) => ({
-        ...prev,
-        companyLocations: updatedLocations,
-      }));
+  // Clear errors dynamically as user types
+  setErrors((prevErrors) => {
+    const updatedErrors = { ...prevErrors };
+
+    if (group === "companyLocations") {
+      const locationKey = `location${index}`;
+      delete updatedErrors[locationKey];
+    } else {
+      delete updatedErrors[name];
     }
-  };
+
+    return updatedErrors;
+  });
+
+  // Update form data
+  if (!group) {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  } else if (group === "companyProfile") {
+    setFormData((prev) => ({
+      ...prev,
+      companyProfile: {
+        ...prev.companyProfile,
+        [name]: value,
+      },
+    }));
+  } else if (group === "companyLocations") {
+    const updatedLocations = [...formData.companyLocations];
+    updatedLocations[index][name] = value;
+    setFormData((prev) => ({
+      ...prev,
+      companyLocations: updatedLocations,
+    }));
+  }
+};
+
   const handleNextStep = (e) => {
-    e.preventDefault();
-   // const companyName = document.getElementById("companyName").value.trim();
-    const email = document.getElementById("companyEmail").value.trim();
-    // if (!companyName || !email) {
-    //   alert("Please complete Company Name and Email Address.");
-    //   return;
-    // }
-    setStep(2);
-  };
+  e.preventDefault();
+  if (!validateStep1()) return;
+  setStep(2);
+};
+
 
   // Handle form submission
   // This function will be called when the form is submitted
   const handleSubmit = async (e) => {
     e.preventDefault();
+   if (!validateStep2()) return;
     setShowVerificationPopup(true);
     const recruiterId = localStorage.getItem("recruiterId");
 
@@ -110,7 +199,7 @@ const EmployerCreateProfile = () => {
       if (imageFile) {
         multipartFormData.append("image", imageFile);
       }
-     
+
       const response = await axiosInstance.post(
         `/api/recruiters/profile/create/${recruiterId}`,
         multipartFormData,
@@ -141,6 +230,14 @@ const EmployerCreateProfile = () => {
     const file = e.target.files[0];
     if (file) {
       setImageFile(file); // Save the raw file
+
+ // Clear image error
+    setErrors((prevErrors) => {
+      const updatedErrors = { ...prevErrors };
+      delete updatedErrors.profileImage;
+      return updatedErrors;
+    });
+
       const reader = new FileReader();
       reader.onloadend = () => {
         setFormData((prev) => ({
@@ -248,7 +345,14 @@ const EmployerCreateProfile = () => {
                     onChange={handleImageUpload}
                   />
                 </div>
-
+                {errors.profileImage && (
+                  <span
+                    className="error"
+                    style={{ textAlign: "center", fontSize: "12px" }}
+                  >
+                    {errors.profileImage}
+                  </span>
+                )}
                 {/* <div className="ecp-form-row">
                   <div className="ecp-input-group ecp-full">
                     <label htmlFor="companyName">Company Name</label>
@@ -265,7 +369,9 @@ const EmployerCreateProfile = () => {
 
                 <div className="ecp-form-row">
                   <div className="ecp-input-group ecp-half">
-                    <label htmlFor="emailAddress">Email Address</label>
+                    <label htmlFor="emailAddress">
+                      Company Alternative Email
+                    </label>
                     <input
                       type="email"
                       id="companyEmail"
@@ -274,9 +380,13 @@ const EmployerCreateProfile = () => {
                       value={formData.companyProfile.companyEmail}
                       onChange={(e) => handleChange(e, "companyProfile")}
                     />
+                    {errors.companyEmail && (
+                      <span className="error-text">{errors.companyEmail}</span>
+                    )}
                   </div>
+
                   <div className="ecp-input-group ecp-half">
-                    <label htmlFor="website">Website</label>
+                    <label htmlFor="website">Company Website</label>
                     <input
                       type="url"
                       id="website"
@@ -285,12 +395,15 @@ const EmployerCreateProfile = () => {
                       value={formData.companyProfile.website}
                       onChange={(e) => handleChange(e, "companyProfile")}
                     />
+                    {errors.website && (
+                      <span className="error-text">{errors.website}</span>
+                    )}
                   </div>
                 </div>
 
                 <div className="ecp-form-row">
                   <div className="ecp-input-group ecp-half">
-                    <label htmlFor="industry">Industry</label>
+                    <label htmlFor="industry">Industry Type</label>
                     <select
                       id="industry"
                       name="industryType"
@@ -304,8 +417,13 @@ const EmployerCreateProfile = () => {
                       <option value="Healthcare">Healthcare</option>
                       <option value="BPO">BPO</option>
                       <option value="Insurance">Insurance</option>
+                      <option value="Other">Other</option>
                     </select>
+                    {errors.industryType && (
+                      <span className="error-text">{errors.industryType}</span>
+                    )}
                   </div>
+
                   <div className="ecp-input-group ecp-half">
                     <label htmlFor="companySize">Company Size</label>
                     <select
@@ -318,10 +436,14 @@ const EmployerCreateProfile = () => {
                         Select company size
                       </option>
                       <option value="0-10">0-10</option>
-                      <option value="0-50">0-50</option>
-                      <option value="0-200">0-200</option>
-                      <option value="0-500">0-500</option>
+                      <option value="10-50">10-50</option>
+                      <option value="50-200">50-200</option>
+                      <option value="200-500">200-500</option>
+                      <option value="500-more">500-more</option>
                     </select>
+                    {errors.companySize && (
+                      <span className="error-text">{errors.companySize}</span>
+                    )}
                   </div>
                 </div>
 
@@ -329,7 +451,7 @@ const EmployerCreateProfile = () => {
                   <div className="ecp-form-row" key={index}>
                     <div className="ecp-input-group ecp-full">
                       <label>
-                        Location{" "}
+                        Company Location{" "}
                         {formData.companyLocations.length > 1 ? index + 1 : ""}
                       </label>
 
@@ -346,6 +468,7 @@ const EmployerCreateProfile = () => {
                           <option value="Maharashtra">Maharashtra</option>
                           <option value="Delhi">Delhi</option>
                           <option value="MP">MP</option>
+                          <option value="Other">Other</option>
                         </select>
 
                         <select
@@ -358,6 +481,7 @@ const EmployerCreateProfile = () => {
                           <option value="">Select your country</option>
                           <option value="India">India</option>
                           <option value="Russia">Russia</option>
+                          <option value="Other">Other</option>
                         </select>
                       </div>
 
@@ -386,7 +510,7 @@ const EmployerCreateProfile = () => {
                         />
                       </div>
 
-                      {/* Full Address */}
+                      {/* Full Address
                       <div
                         className="ecp-location-group"
                         style={{ paddingTop: "1rem" }}
@@ -401,7 +525,16 @@ const EmployerCreateProfile = () => {
                           }
                           className="ecp-full-width"
                         />
-                      </div>
+                      </div> */}
+                      {/* ✅ Show error for this location */}
+                      {errors[`location${index}`] && (
+                        <div
+                          className="error-text"
+                          style={{ color: "red", marginTop: "0.5rem" }}
+                        >
+                          {errors[`location${index}`]}
+                        </div>
+                      )}
                       {formData.companyLocations.length > 1 && (
                         <button
                           type="button"
@@ -438,7 +571,6 @@ const EmployerCreateProfile = () => {
                             country: "",
                             city: "",
                             postalCode: "",
-                            address: "",
                           },
                         ],
                       }))
@@ -460,6 +592,9 @@ const EmployerCreateProfile = () => {
                       onChange={(e) => handleChange(e, "companyProfile")}
                     ></textarea>
                   </div>
+                  {errors.about && (
+                    <span className="error-text">{errors.about}</span>
+                  )}
                 </div>
 
                 <div className="ecp-form-row ecp-buttons-row">
@@ -497,6 +632,9 @@ const EmployerCreateProfile = () => {
                       value={formData.companyProfile.hrName}
                       onChange={(e) => handleChange(e, "companyProfile")}
                     />
+                    {errors.hrName && (
+                    <span className="error-text">{errors.hrName}</span>
+                  )}
                   </div>
                 </div>
                 <div className="ecp-form-row">
@@ -512,6 +650,9 @@ const EmployerCreateProfile = () => {
                       value={formData.companyProfile.hrContactEmail}
                       onChange={(e) => handleChange(e, "companyProfile")}
                     />
+                    {errors.hrContactEmail && (
+                    <span className="error-text">{errors.hrContactEmail}</span>
+                  )}
                   </div>
                   <div className="ecp-input-group ecp-half">
                     <label htmlFor="mobileNumber">Mobile Number</label>
@@ -523,6 +664,9 @@ const EmployerCreateProfile = () => {
                       value={formData.companyProfile.hrContactMobileNumber}
                       onChange={(e) => handleChange(e, "companyProfile")}
                     />
+                    {errors.hrContactMobileNumber && (
+                    <span className="error-text">{errors.hrContactMobileNumber}</span>
+                  )}
                   </div>
                 </div>
               </div>

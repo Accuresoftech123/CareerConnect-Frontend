@@ -130,7 +130,7 @@ const Login = () => {
             {/* Password Field */}
             <div>
               <label>Password:</label>
-              <div className="jobseeker_Logininput-container password-container">
+              <div className="jobseeker_Logininput-container jsl-password-container">
                 <SvgIcon component={LockIcon} />
                 <input
                   type={showPassword ? "text" : "password"}
@@ -146,7 +146,7 @@ const Login = () => {
                 />
                 <span
                   onClick={() => setShowPassword((prev) => !prev)}
-                  className="toggle-password-icon"
+                  className="jsl-toggle-password-icon"
                   style={{ cursor: "pointer", marginLeft: "auto" }}
                 >
                   {showPassword ? <MdVisibility /> : <MdVisibilityOff />}

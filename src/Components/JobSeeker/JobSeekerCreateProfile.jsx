@@ -34,6 +34,7 @@ const JobSeekerCreateProfile = () => {
   const [skillInput, setSkillInput] = React.useState("");
   const [skills, setSkills] = React.useState([]);
   const currentYear = new Date().getFullYear();
+  const today = new Date().toISOString().split("T")[0];
   const years = Array.from({ length: 50 }, (_, i) => currentYear - i);
   const [jobPreference, setJobPreference] = useState("");
   const [isFresher, setIsFresher] = useState(false);
@@ -114,10 +115,23 @@ const JobSeekerCreateProfile = () => {
       "application/pdf",
       "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
     ];
+    const validImageTypes = ["image/jpeg", "image/png", "image/jpg"];
 
     switch (step) {
       case 1:
-        if (!fullName.trim()) stepErrors.fullName = "Full Name is required.";
+        if (!imageFile) {
+          stepErrors.profileImage = "Profile image is required.";
+        } else if (!validImageTypes.includes(imageFile.type)) {
+          stepErrors.profileImage = "Profile image must be JPG or PNG.";
+        } else if (imageFile.size > 2 * 1024 * 1024) {
+          stepErrors.profileImage = "Profile image size must be less than 2MB.";
+        }
+        if (!fullName.trim()) {
+          stepErrors.fullName = "Full Name is required.";
+        } else if (!/^[A-Za-z\s]+$/.test(fullName)) {
+          stepErrors.fullName =
+            "Full Name must contain only letters and spaces.";
+        }
 
         if (!mobileNumber.trim())
           stepErrors.mobileNumber = "Phone Number is required.";
@@ -200,7 +214,7 @@ const JobSeekerCreateProfile = () => {
     setErrors(stepErrors);
 
     if (Object.keys(stepErrors).length > 0) {
-      setFormError("Please fix the above errors.");
+      setFormError("Please fill the above fields.");
       return false;
     }
 
@@ -319,6 +333,17 @@ const JobSeekerCreateProfile = () => {
       [id]: value,
     }));
   };
+  /*handle remove education entry*/
+  const handleRemoveEducation = (indexToRemove) => {
+    setEducations((prev) => prev.filter((_, index) => index !== indexToRemove));
+  };
+  /*handle remove experience entry*/
+  const handleRemoveExperience = (indexToRemove) => {
+    setExperiences((prev) =>
+      prev.filter((_, index) => index !== indexToRemove)
+    );
+  };
+
   /*step section handling  */
   const handleNext = () => {
     if (validateStep()) {
@@ -524,6 +549,7 @@ const JobSeekerCreateProfile = () => {
                         if (file) {
                           setImageFile(file);
                           setPreviewUrl(URL.createObjectURL(file)); // Set preview
+                          clearFieldError("profileImage");
                         }
                       }}
                       style={{ display: "none" }}
@@ -531,7 +557,9 @@ const JobSeekerCreateProfile = () => {
                       // onChange={handleImageUpload}
                     />
                   </div>
-
+                  {errors.profileImage && (
+                    <span className="error" style={{textAlign:"center"}}>{errors.profileImage}</span>
+                  )}
                   <div className="jscp-form-row">
                     <div className="jscp-input-group jscp-full">
                       <label htmlFor="fullName">Full Name</label>
@@ -689,6 +717,18 @@ const JobSeekerCreateProfile = () => {
                     )}
                   </div>
                 </div>
+                  {/* Checkbox */}
+              <div className="jscp-auto-parse-checkbox">
+                <input
+                  type="checkbox"
+                  id="autoParse"
+                  checked={personalInfo.autoParse}
+                  onChange={handlePersonalInfoChange}
+                  disabled={!resumeFile}
+                  //formData.append("parseResume", parseResumeCheckbox.checked);
+                />
+                <label htmlFor="autoParse">Auto‑parse resume data</label>
+              </div>
               </section>
 
               {/* Video Upload */}
@@ -729,19 +769,6 @@ const JobSeekerCreateProfile = () => {
                   </div>
                 </div>
               </section>
-
-              {/* Checkbox */}
-              <div className="jscp-auto-parse-checkbox">
-                <input
-                  type="checkbox"
-                  id="autoParse"
-                  checked={personalInfo.autoParse}
-                  onChange={handlePersonalInfoChange}
-                  disabled={!resumeFile}
-                  //formData.append("parseResume", parseResumeCheckbox.checked);
-                />
-                <label htmlFor="autoParse">Auto‑parse resume data</label>
-              </div>
 
               {formError && (
                 <div className="jscp-error-message">
@@ -812,6 +839,7 @@ const JobSeekerCreateProfile = () => {
                             <option value="M.Sc/MCS/MCA/MCOM/MA/MBA">
                               M.Sc/MCS/MCA/MCOM/MA/MBA
                             </option>
+                             <option value="Others">Others</option>
                           </select>
                           {errors[`degree-${index}`] && (
                             <span className="error">
@@ -897,6 +925,27 @@ const JobSeekerCreateProfile = () => {
                           )}
                         </div>
                       </div>
+
+                      {/* Show Remove Button Only If Not the First Entry */}
+                      {index > 0 && (
+                        <div className="jscp-form-row">
+                          <button
+                            type="button"
+                            className="jscp-remove-button"
+                            onClick={() => handleRemoveEducation(index)}
+                            style={{
+                              marginTop: "1rem",
+                              color: "#fff",
+                              backgroundColor: "#b153e5",
+                              border: "none",
+                              borderRadius: "4px",
+                              padding: "7px",
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
@@ -976,7 +1025,6 @@ const JobSeekerCreateProfile = () => {
                       I am a Fresher (No work experience)
                     </label>
                   </div>
-
                   {experienceList.map((exp, index) => (
                     <div className="jscp-experience-entry" key={index}>
                       <div className="jscp-form-row">
@@ -1035,7 +1083,13 @@ const JobSeekerCreateProfile = () => {
                             type="date"
                             id={`startDate-${index}`}
                             value={exp.startDate || ""}
-                            max={exp.endDate || ""}
+                            max={
+                              exp.endDate
+                                ? exp.endDate < today
+                                  ? exp.endDate
+                                  : today
+                                : today
+                            }
                             onChange={(e) =>
                               handleExperienceChange(
                                 index,
@@ -1086,7 +1140,6 @@ const JobSeekerCreateProfile = () => {
                               e.target.checked
                             );
                             if (e.target.checked) {
-                              // If currently working, clear end date
                               handleExperienceChange(index, "endDate", "");
                             }
                           }}
@@ -1115,6 +1168,27 @@ const JobSeekerCreateProfile = () => {
                           />
                         </div>
                       </div>
+
+                      {/* Show Remove button only for dynamically added entries */}
+                      {index > 0 && (
+                        <div className="jscp-form-row">
+                          <button
+                            type="button"
+                            className="jscp-remove-button"
+                            onClick={() => handleRemoveExperience(index)}
+                            style={{
+                              marginTop: "1rem",
+                              color: "#fff",
+                              backgroundColor: "#b153e5",
+                              border: "none",
+                              borderRadius: "4px",
+                              padding: "7px",
+                            }}
+                          >
+                            Remove
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ))}
                 </div>
