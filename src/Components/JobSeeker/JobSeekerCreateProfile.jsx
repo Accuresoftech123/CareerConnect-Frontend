@@ -95,7 +95,7 @@ const JobSeekerCreateProfile = () => {
 
   const [jobPrefeences, setjobPrefeences] = useState({
     desiredJobTitle: "",
-    jobType: "",
+    jobTypes: [],
     expectedSalary: 0,
     preferredLocation: "",
   });
@@ -1456,17 +1456,37 @@ const JobSeekerCreateProfile = () => {
                         return (
                           <div key={value} className="jscp-radio-item">
                             <input
-                              type="radio"
+                              type="checkbox"
                               id={value}
-                              name="jobPreference"
+                              name="jobTypes"
                               value={label}
-                              checked={jobPrefeences.jobType === label}
-                              onChange={(e) =>
-                                setjobPrefeences((prev) => ({
-                                  ...prev,
-                                  jobType: e.target.value,
-                                }))
+                              checked={
+                                jobPrefeences.jobTypes.includes(label) || false
                               }
+                              onChange={(e) => {
+                                const selected = e.target.value;
+                                setjobPrefeences((prev) => {
+                                  let updatedJobTypes = [];
+
+                                  if (prev.jobTypes.includes(selected)) {
+                                    // remove if already selected
+                                    updatedJobTypes = prev.jobTypes.filter(
+                                      (t) => t !== selected
+                                    );
+                                  } else {
+                                    // add new selection
+                                    updatedJobTypes = [
+                                      ...prev.jobTypes,
+                                      selected,
+                                    ];
+                                  }
+
+                                  return {
+                                    ...prev,
+                                    jobTypes: updatedJobTypes,
+                                  };
+                                });
+                              }}
                             />
                             <label htmlFor={value}>{label}</label>
                           </div>
