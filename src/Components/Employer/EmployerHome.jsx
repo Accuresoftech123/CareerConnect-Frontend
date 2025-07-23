@@ -31,7 +31,7 @@ const EmployerHome = ({ children }) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const dispatch = useDispatch();
-
+ const [showMenu, setShowMenu] = useState(false);
   const toggleSidebar = () => setSidebarOpen(!sidebarOpen);
   const closeSidebar = () => setSidebarOpen(false);
   const isActive = (path) => {
@@ -164,22 +164,60 @@ const EmployerHome = ({ children }) => {
           <div className="EmployerHome_notification">
             <FaBell className="EmployerHome_notification" />
           </div>
-          <div className="EmployerHome_Profile">
-            {employerInfo.profileImageUrl ? (
-              <img
-                src={employerInfo.profileImageUrl}
-                alt="Profile"
-                style={{
-                  width: "40px",
-                  height: "40px",
-                  borderRadius: "50%",
-                  objectFit: "cover",
-                }}
-              />
-            ) : (
-              <FaRegUserCircle size={40} color="#ccc" />
-            )}{" "}
+          <div className="EmployerHome_Profile_Wrapper" style={{ position: "relative" }}>
+      <div
+        className="EmployerHome_Profile"
+        onClick={() => setShowMenu((prev) => !prev)}
+        style={{ cursor: "pointer" }}
+      >
+        {employerInfo?.profileImageUrl ? (
+          <img
+            src={employerInfo.profileImageUrl}
+            alt="Profile"
+            style={{
+              width: "40px",
+              height: "40px",
+              borderRadius: "50%",
+              objectFit: "cover",
+            }}
+          />
+        ) : (
+          <FaRegUserCircle size={40} color="#ccc" />
+        )}
+      </div>
+
+      {showMenu && (
+        <div
+          className="DropdownMenu"
+          style={{
+            position: "absolute",
+            top: "50px",
+            right: "0",
+            backgroundColor: "#fff",
+            boxShadow: "0px 0px 10px rgba(0,0,0,0.1)",
+            padding: "10px",
+            borderRadius: "5px",
+            zIndex: 100,
+          }}
+        >
+          <div
+            onClick={() => navigate("/Employer-Create-Profile")}
+            style={{ cursor: "pointer", padding: "5px 10px" }}
+          >
+            Update Profile
           </div>
+          <div
+            onClick={() => {
+              // handle logout or another option
+            handleLogout();
+            }}
+            style={{ cursor: "pointer", padding: "5px 10px" }}
+          >
+            Logout
+          </div>
+        </div>
+      )}
+    </div>
         </div>
       </header>
 
