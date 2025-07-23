@@ -302,3 +302,8 @@
   outline: none;
   transform: scale(1.05);
 }
+.error-msg {
+   color: red;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
