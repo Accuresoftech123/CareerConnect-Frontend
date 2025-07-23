@@ -6,6 +6,7 @@ import JSLogin from "../../Images/JSLogin.svg";
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
+import { MdVisibility, MdVisibilityOff } from "react-icons/md";
 import axios from "axios";
 import { GoogleLogin } from "@react-oauth/google";
 import { baseURL } from "../../axiosInstance";
@@ -16,7 +17,8 @@ const Login = () => {
   // State for email and password
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
+  // State for showing/hiding password
+  const [showPassword, setShowPassword] = useState(false);
   // Validation errors state
   const [errors, setErrors] = useState({});
   // Validation function
@@ -25,9 +27,7 @@ const Login = () => {
 
     if (!email.trim()) {
       newErrors.email = "Email is required";
-    } else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email.trim())
-    ) {
+    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(email.trim())) {
       newErrors.email = "Invalid email format";
     }
 
@@ -63,8 +63,8 @@ const Login = () => {
         alert("Login Failed: " + (error.response?.data || error.message));
       });
   };
-// Handle Google login error
-const handleGoogleError = () => {
+  // Handle Google login error
+  const handleGoogleError = () => {
     console.error("Google login failed");
     alert("Google login failed. Please try again.");
   };
@@ -124,18 +124,16 @@ const handleGoogleError = () => {
                   required
                 />
               </div>
-              {errors.email && (
-                <p className="error-text">{errors.email}</p>
-              )}
+              {errors.email && <p className="error-text">{errors.email}</p>}
             </div>
 
             {/* Password Field */}
             <div>
               <label>Password:</label>
-              <div className="jobseeker_Logininput-container">
+              <div className="jobseeker_Logininput-container password-container">
                 <SvgIcon component={LockIcon} />
                 <input
-                  type="password"
+                  type={showPassword ? "text" : "password"}
                   placeholder="Enter password"
                   value={password}
                   onChange={(e) => {
@@ -146,7 +144,15 @@ const handleGoogleError = () => {
                   }}
                   required
                 />
+                <span
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="toggle-password-icon"
+                  style={{ cursor: "pointer", marginLeft: "auto" }}
+                >
+                  {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                </span>
               </div>
+
               {errors.password && (
                 <p className="error-text">{errors.password}</p>
               )}
