@@ -39,6 +39,7 @@ const EmployerCreateProfile = () => {
     },
     companyLocations: [
       {
+        id:null,
         address: "",
         city: "",
         state: "",
@@ -109,7 +110,7 @@ const EmployerCreateProfile = () => {
       if (imageFile) {
         multipartFormData.append("image", imageFile);
       }
-
+     
       const response = await axiosInstance.post(
         `/api/recruiters/profile/create/${recruiterId}`,
         multipartFormData,
