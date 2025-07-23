@@ -93,8 +93,9 @@ const JobSeekerCreateProfile = () => {
     portfolioWebsite: "",
   });
 
+  const [desiredJobTitleInput, setDesiredJobTitleInput] = useState("");
   const [jobPrefeences, setjobPrefeences] = useState({
-    desiredJobTitle: "",
+    desiredJobTitle: [],
     jobTypes: [],
     expectedSalary: 0,
     preferredLocation: "",
@@ -201,8 +202,13 @@ const JobSeekerCreateProfile = () => {
         break;
 
       case 6:
-        if (!jobPrefeences.desiredJobTitle.trim())
-          stepErrors.desiredJobTitle = "Enter job title.";
+        if (
+    !Array.isArray(jobPrefeences.desiredJobTitle) ||
+    jobPrefeences.desiredJobTitle.length === 0 ||
+    !jobPrefeences.desiredJobTitle.every(title => typeof title === 'string' && title.trim() !== '')
+  ) {
+    errors.desiredJobTitle = 'Please enter at least one valid desired job title.';
+  }
         if (!jobPrefeences.preferredLocation.trim())
           stepErrors.preferredLocation = "Enter preferred location.";
         break;
@@ -1425,29 +1431,55 @@ const JobSeekerCreateProfile = () => {
                   <h3>Job Preferences</h3>
                 </header>
                 <div className="jscp-card-body">
-                  <div className="jscp-input-group">
-                    <label htmlFor="desiredJobTitle">Desired Job Title</label>
-                    <input
-                      type="text"
-                      id="desiredJobTitle"
-                      placeholder="Enter your desired job title"
-                      value={JobPreferences.desiredJobTitle}
-                      onChange={(e) => {
-                        setjobPrefeences((prev) => ({
-                          ...prev,
-                          desiredJobTitle: e.target.value,
-                        }));
-                        setErrors((prev) => ({
-                          ...prev,
-                          desiredJobTitle: "",
-                        }));
-                        clearFieldError("desiredJobTitle");
-                      }}
-                    />
-                    {errors.desiredJobTitle && (
-                      <p className="field-error">{errors.desiredJobTitle}</p>
-                    )}
-                  </div>
+                <div className="jscp-input-group">
+  <label htmlFor="desiredJobTitleInput">Desired Job Title</label>
+  <input
+    type="text"
+    id="desiredJobTitleInput"
+    placeholder="Type job title and press Enter"
+    value={desiredJobTitleInput}
+    onChange={(e) => setDesiredJobTitleInput(e.target.value)}
+    onKeyDown={(e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        const trimmed = desiredJobTitleInput.trim();
+        if (
+          trimmed &&
+          Array.isArray(jobPrefeences.desiredJobTitle) &&
+          !jobPrefeences.desiredJobTitle.includes(trimmed)
+        ) {
+          setjobPrefeences((prev) => ({
+            ...prev,
+            desiredJobTitle: [...prev.desiredJobTitle, trimmed],
+          }));
+          setDesiredJobTitleInput("");
+        }
+      }
+    }}
+  />
+
+  {/* Display tags */}
+  <div className="jscp-skills-tags">
+    {Array.isArray(jobPrefeences.desiredJobTitle) &&
+      jobPrefeences.desiredJobTitle.map((title, index) => (
+        <span key={index} className="jscp-skill-tag">
+          {title}
+          <button
+            type="button"
+            className="jscp-remove-skill"
+            onClick={() =>
+              setjobPrefeences((prev) => ({
+                ...prev,
+                desiredJobTitle: prev.desiredJobTitle.filter((_, i) => i !== index),
+              }))
+            }
+          >
+            &times;
+          </button>
+        </span>
+      ))}
+  </div>
+</div>
                   <div className="jscp-input-group">
                     <label>Preferred Job Type</label>
                     <div className="jscp-radio-group">
