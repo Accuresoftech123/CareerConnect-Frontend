@@ -347,6 +347,12 @@ display: flex;
   font-size: 12px;
   margin-top: 2px;
 }
+.error-text {
+  font-size: 0.75rem;
+  color: red;
+  margin-top: 4px;
+  display: block;
+}
 
 /* Responsive */
 @media (max-width: 1024px) {
