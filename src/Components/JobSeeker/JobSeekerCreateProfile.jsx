@@ -24,12 +24,14 @@ import plusIcon from "../../Images/plusIcon.svg";
 import axios from "axios";
 import axiosInstance from "../../axiosInstance";
 import { baseURL } from "../../axiosInstance"; // Import your axios instance
-
+import { Country, State } from "country-state-city";
 const TOTAL_STEPS = 6;
 
 const JobSeekerCreateProfile = () => {
   const resumeInputRef = useRef(null);
   const navigate = useNavigate();
+  const [countries, setCountries] = useState([]);
+  const [states, setStates] = useState([]);
   const [step, setStep] = useState(1);
   const [skillInput, setSkillInput] = React.useState("");
   const [skills, setSkills] = React.useState([]);
@@ -99,6 +101,20 @@ const JobSeekerCreateProfile = () => {
     expectedSalary: 0,
     preferredLocation: "",
   });
+  // Load countries on mount
+  useEffect(() => {
+    setCountries(Country.getAllCountries());
+  }, []);
+
+  // Load states when country changes
+  useEffect(() => {
+    if (personalInfo.country) {
+      setStates(State.getStatesOfCountry(personalInfo.country));
+    } else {
+      setStates([]);
+    }
+  }, [personalInfo.country]);
+
   // const [desiredJobTitle, setDesiredJobTitle] = React.useState("");
   // const [expectedSalary, setExpectedSalary] = React.useState("");
   // const [preferredLocation, setPreferredLocation] = React.useState("");
@@ -558,7 +574,9 @@ const JobSeekerCreateProfile = () => {
                     />
                   </div>
                   {errors.profileImage && (
-                    <span className="error" style={{textAlign:"center"}}>{errors.profileImage}</span>
+                    <span className="error" style={{ textAlign: "center" }}>
+                      {errors.profileImage}
+                    </span>
                   )}
                   <div className="jscp-form-row">
                     <div className="jscp-input-group jscp-full">
@@ -620,6 +638,44 @@ const JobSeekerCreateProfile = () => {
                     <div className="jscp-input-group jscp-full">
                       <label>Location</label>
                       <div className="jscp-location-group">
+                        {/* Country Dropdown */}
+                        <select
+                          id="country"
+                          value={personalInfo.country}
+                          onChange={handlePersonalInfoChange}
+                        >
+                          <option value="">Select your Country</option>
+                          {countries.map((country) => (
+                            <option
+                              key={country.isoCode}
+                              value={country.isoCode}
+                            >
+                              {country.name}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.country && (
+                          <p className="field-error">{errors.country}</p>
+                        )}
+
+                        {/* State Dropdown */}
+                        <select
+                          id="state"
+                          value={personalInfo.state}
+                          onChange={handlePersonalInfoChange}
+                        >
+                          <option value="">Select your State</option>
+                          {states.map((state) => (
+                            <option key={state.isoCode} value={state.isoCode}>
+                              {state.name}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.state && (
+                          <p className="field-error">{errors.state}</p>
+                        )}
+
+                        {/* City Input */}
                         <input
                           type="text"
                           id="city"
@@ -629,32 +685,6 @@ const JobSeekerCreateProfile = () => {
                         />
                         {errors.city && (
                           <p className="field-error">{errors.city}</p>
-                        )}
-                        <select
-                          id="state"
-                          value={personalInfo.state}
-                          onChange={handlePersonalInfoChange}
-                        >
-                          <option value="">Select your state</option>
-                          <option value="Maharashtra">Maharashtra</option>
-                          <option value="Delhi">Delhi</option>
-                          <option value="Madhya Pradesh">Madhya Pradesh</option>
-                        </select>
-                        {errors.state && (
-                          <p className="field-error">{errors.state}</p>
-                        )}
-                        <select
-                          id="country"
-                          value={personalInfo.country}
-                          onChange={handlePersonalInfoChange}
-                        >
-                          <option value="">Select your Country</option>
-                          <option value="India">India</option>
-                          <option value="China">China</option>
-                          <option value="Russia">Russia</option>
-                        </select>
-                        {errors.country && (
-                          <p className="field-error">{errors.country}</p>
                         )}
                       </div>
                     </div>
@@ -717,18 +747,18 @@ const JobSeekerCreateProfile = () => {
                     )}
                   </div>
                 </div>
-                  {/* Checkbox */}
-              <div className="jscp-auto-parse-checkbox">
-                <input
-                  type="checkbox"
-                  id="autoParse"
-                  checked={personalInfo.autoParse}
-                  onChange={handlePersonalInfoChange}
-                  disabled={!resumeFile}
-                  //formData.append("parseResume", parseResumeCheckbox.checked);
-                />
-                <label htmlFor="autoParse">Auto‑parse resume data</label>
-              </div>
+                {/* Checkbox */}
+                <div className="jscp-auto-parse-checkbox">
+                  <input
+                    type="checkbox"
+                    id="autoParse"
+                    checked={personalInfo.autoParse}
+                    onChange={handlePersonalInfoChange}
+                    disabled={!resumeFile}
+                    //formData.append("parseResume", parseResumeCheckbox.checked);
+                  />
+                  <label htmlFor="autoParse">Auto‑parse resume data</label>
+                </div>
               </section>
 
               {/* Video Upload */}
@@ -839,7 +869,7 @@ const JobSeekerCreateProfile = () => {
                             <option value="M.Sc/MCS/MCA/MCOM/MA/MBA">
                               M.Sc/MCS/MCA/MCOM/MA/MBA
                             </option>
-                             <option value="Others">Others</option>
+                            <option value="Others">Others</option>
                           </select>
                           {errors[`degree-${index}`] && (
                             <span className="error">
