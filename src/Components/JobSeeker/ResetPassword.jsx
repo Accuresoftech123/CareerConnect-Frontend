@@ -9,7 +9,9 @@ import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/material/SvgIcon";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
- 
+import axios from "axios";
+import { baseURL } from "../../axiosInstance";
+
 const ResetPassword = () => {
   const navigate = useNavigate();
  
@@ -68,21 +70,28 @@ const ResetPassword = () => {
     return newErrors;
   };
  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
- 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
- 
-    setErrors({});
-    console.log("Password reset successful:", formData);
-    alert("reset password successfully!!")
-    // Redirect after success
-    navigate("/JobSeeker");
-  };
+ const handleSubmit = (e) => {
+  e.preventDefault();
+  const validationErrors = validate();
+
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  axios.put(`${baseURL}/api/jobseekers/Set-password/${formData.email}/${formData.password}`)
+    .then((response) => {
+      alert(response.data.message); // ✅ use correct key "message"
+      console.log("Password reset successful:", formData);
+     // navigate("/JobSeeker");
+    })
+    .catch((err) => {
+      console.error("Reset password failed:", err);
+      alert(err.response?.data?.message || "Password reset failed.");
+    });
+
+  setErrors({});
+};
  
   return (
     <div className="ResetPassword-container">
