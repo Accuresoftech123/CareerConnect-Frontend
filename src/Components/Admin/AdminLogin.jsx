@@ -121,7 +121,7 @@ const AdminLogin = () => {
                 Password
               </label>
               {/* Changed p tag to Link for navigation */}
-              <Link to="/AdminForgetPassword" className="AdminLogin_forgot">
+              <Link to="/Admin-ForgotPassword" className="AdminLogin_forgot">
                 Forgot password?
               </Link>
               <div className="AdminLogin_Logininput-container">

@@ -141,7 +141,7 @@ const AdminHome = ({ children }) => {
       <div
         className={`AdminHome_sidebar-overlay ${
           sidebarOpen ? "active" : ""
-        }`}
+        }`} 
         onClick={closeSidebar}
       ></div>
  
@@ -164,7 +164,14 @@ const AdminHome = ({ children }) => {
                         }}
                       >
                         {item.icon}
-                        <span>{item.label}</span>
+                       <span
+  // style={{
+  //   color: isActive(item.path) ? "#000" : "#facc15",
+  //   marginLeft: "8px",
+  // }}
+>
+  {item.label}
+</span>
                       </button>
                     ) : (
                       <Link
@@ -175,7 +182,15 @@ const AdminHome = ({ children }) => {
                         style={isActive(item.path) ? { color: "#000" } : item.style}
                       >
                         {item.icon}
-                        <span>{item.label}</span>
+                       <span
+  style={{
+    color: isActive(item.path) ? "#000" : "#facc15",
+    marginLeft: "8px",
+  }}
+>
+  {item.label}
+</span>
+
                       </Link>
                     )
                   )}
