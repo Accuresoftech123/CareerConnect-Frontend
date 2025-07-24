@@ -186,7 +186,7 @@ const EmployerLogin = () => {
               )}
               {/* Forgot password link */}
               <p className="employer_forgotpass">
-                <a href="forgot_password">Forgot Password?</a>
+                <Link to="/Employer-ForgotPassword">Forgot Password</Link>
               </p>
 
               {/* Login Button */}
