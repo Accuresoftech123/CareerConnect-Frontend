@@ -17,6 +17,9 @@ import JobSeekerHome from "./Components/JobSeeker/JobSeekerHome";
 import Dashboard from "./Components/JobSeeker/DashComponents/Dashboard";
 import JSJobDetails from "./Components/JobSeeker/DashComponents/JSJobDetails";
 import SpecificJob from "./Components/JobSeeker/DashComponents/SpecificJob";
+import ForgotPassword from "./Components/JobSeeker/ForgotPassword";
+import ResetPassword from "./Components/JobSeeker/ResetPassword";
+
 
 //employer 
 import EmployerLogin from "./Components/Employer/EmployerLogin";
@@ -26,16 +29,18 @@ import EmployerCreateProfile from "./Components/Employer/EmployerCreateProfile";
 import EmployerHome from "./Components/Employer/EmployerHome";
 import EmployerDashboard from "./Components/Employer/Dashcomponents/EmployerDashboard";
 import JobPost from "./Components/Employer/Dashcomponents/JobPost";
+import EmployerForgotPassword from "./Components/Employer/EmployerForgotPassword";
+import EmployerResetPassword from "./Components/Employer/EmployerResetPassword";
 
 //Admin
 import AdminLogin from "./Components/Admin/AdminLogin";
 import AdminHome from "./Components/Admin/AdminHome";
 import AdminDashboard from "./Components/Admin/Dashcomponents/AdminDashboard";
+import AdminForgotPassword from "./Components/Admin/AdminForgotPassword";
+import AdminResetPassword from "./Components/Admin/AdminResetPassword";
 
 // ✅ Import Google OAuth Provider
 import { GoogleOAuthProvider } from "@react-oauth/google";
-import ForgotPassword from "./Components/JobSeeker/ForgotPassword";
-import ResetPassword from "./Components/JobSeeker/ResetPassword";
 
 
 function App() {
@@ -64,10 +69,18 @@ function App() {
           <Route path="/EmailVerification" element={<EEmailVerificationPopup />} />
         <Route path="/Employer-Create-Profile" element={<EmployerCreateProfile />}/>
         <Route path="/EmployerHome/*" element={<EmployerRoutes />}/>
+        <Route path="/Employer-ForgotPassword" element={<EmployerForgotPassword />} />
+        <Route path="/Employer-ResetPassword" element={<EmployerResetPassword />} />
+
+
+
  
         {/* Admin */}
         <Route path="/Admin" element={<AdminLogin />}/>
         <Route path="/AdminHome/*" element={<AdminRoutes />}/>
+        <Route path="/Admin-ForgotPassword" element={<AdminForgotPassword />} />
+        <Route path="/Admin-ResetPassword" element={<AdminResetPassword />} />
+
       </Routes>
     </BrowserRouter>
     </GoogleOAuthProvider>
