@@ -397,7 +397,7 @@ const AdminDashboard = () => {
       </div>
 
       {/* Active Users Section */}
-      <div className="AdminDashboard-dashboard-section-user">
+      <div className="AdminDashboard-dashboard-section-user" style={{ backgroundColor: "#facc15", color: "#000" }}>
         <div className="AdminDashboard-section-header">
           <span class="AdminDashboard-section-icon">
             <img src={activeUsersSection} alt="Active Users" />
@@ -437,7 +437,7 @@ const AdminDashboard = () => {
           </div>
         </div>
         {/*table of active users*/}
-        <table className="AdminDashboard-active-users-table">
+        <table className="AdminDashboard-active-users-table"  >
           <thead>
             <tr>
               <th>Name</th>
