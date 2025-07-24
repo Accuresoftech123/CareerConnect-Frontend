@@ -5,7 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "../../Styles/JobSeeker/ForgotPassword.css";
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
- 
+import { baseURL } from "../../axiosInstance";
+import axios from "axios";
 const ForgotPassword = () => {
   const navigate = useNavigate();
  const [otpSent, setOtpSent] = useState(false);
@@ -34,11 +35,18 @@ const ForgotPassword = () => {
     const validationErrors = validate();
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
-    } else {
-      setErrors({});
-      // TODO: API call to send OTP
-      console.log("OTP sent to:", email);
-    }
+      return;
+    } 
+    
+    axios.post(`${baseURL}/api/jobseekers/Send-Otp/${email}`)
+    .then((res) => {
+      alert("OTP sent to your email");
+      console.log(res.data);
+      setOtpSent(true);
+    })
+    .catch((err) => {
+      alert("Error sending OTP: " + (err.response?.data || err.message));
+    });
   };
  
   // Handle OTP verification
@@ -49,10 +57,23 @@ const ForgotPassword = () => {
   }
  
   // TODO: Add actual OTP verification API call here
-  console.log("Verifying OTP:", otp);
- 
-  // If OTP is correct, navigate to Reset Password page
-  navigate("/Reset-Password");
+  try {
+    const response = await axios.post(`${baseURL}/api/jobseekers/verify-otp`, {
+      email,
+      otp,
+    });
+
+    if (response.data.success) {
+      alert("OTP Verified");
+      console.log(response.data.message);
+      navigate("/Reset-Password");
+    } else {
+      setError(response.data.message || "OTP verification failed.");
+    }
+  } catch (err) {
+    console.error("OTP Verification Failed:", err);
+    setError(err.response?.data?.message || "Server error during OTP verification.");
+  }
 };
  
   return (
