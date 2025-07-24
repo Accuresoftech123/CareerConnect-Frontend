@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import axios from "axios";
 
 import "../../Styles/JobSeeker/Registerstyle.css";
@@ -57,11 +59,11 @@ const Registration = () => {
     }
 
     // Mobile Number - required and 10 digits only
-    if (!data.mobileNumber.trim()) {
-      newErrors.mobileNumber = "Mobile Number is required";
-    } else if (!/^\d{10}$/.test(data.mobileNumber.trim())) {
-      newErrors.mobileNumber = "Mobile Number must be 10 digits";
-    }
+   if (!data.mobileNumber.trim()) {
+  newErrors.mobileNumber = "Mobile Number is required";
+} else if (!/^\+?[1-9]\d{7,14}$/.test(data.mobileNumber.trim())) {
+  newErrors.mobileNumber = "Enter a valid phone number with country code";
+}
 
     // Password - required and min 6 chars
     if (!data.password) {
@@ -222,17 +224,27 @@ const Registration = () => {
               {errors.email && <p className="error-text">{errors.email}</p>}
               {/* Mobile Number - required and 10 digits only */}
               <label>Mobile Number</label>
-              <div className="jobseeker_register-input-container">
-                <SvgIcon component={PhoneIcon} />
-                <input
-                  type="text"
-                  name="mobileNumber"
-                  placeholder="Enter your mobile number"
-                  value={formData.mobileNumber}
-                  onChange={handleChange}
-                  required
-                />
-              </div>
+<div className="jobseeker_register-input-container">
+  <PhoneInput
+  style={{
+   width: "100%",
+  padding: "0px",
+  paddingLeft: "0px",
+  paddingRight: "0px",
+  borderRadius: "8px",
+  border: "1px solid #ccc",
+  backgroundColor: "#f3f3f3",
+  fontsize: "14px",
+  }}
+    country={'in'} // Set default country (e.g., 'in' for India)
+    value={formData.mobileNumber}
+    onChange={(phone) => setFormData({ ...formData, mobileNumber: phone })}
+    inputProps={{
+      name: 'mobileNumber',
+      required: true,
+    }}
+  />
+</div>
               {errors.mobileNumber && (
                 <p className="error-text">{errors.mobileNumber}</p>
               )}

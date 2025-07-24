@@ -157,7 +157,7 @@ const Login = () => {
                 <p className="error-text">{errors.password}</p>
               )}
               <p className="jobseeker_forgotpass">
-                <a href="/forgot_password">Forgot Password?</a>
+                <Link to="/Forgot-Password">Forgot Password</Link>
               </p>
             </div>
 

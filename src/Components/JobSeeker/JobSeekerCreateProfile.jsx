@@ -25,6 +25,8 @@ import axios from "axios";
 import axiosInstance from "../../axiosInstance";
 import { baseURL } from "../../axiosInstance"; // Import your axios instance
 import { Country, State } from "country-state-city";
+import PhoneInput from "react-phone-input-2";
+// import "react-phone-input-2/lib/style.css";
 const TOTAL_STEPS = 6;
 
 const JobSeekerCreateProfile = () => {
@@ -150,11 +152,12 @@ const JobSeekerCreateProfile = () => {
             "Full Name must contain only letters and spaces.";
         }
 
-        if (!mobileNumber.trim())
-          stepErrors.mobileNumber = "Phone Number is required.";
-        else if (!phoneRegex.test(mobileNumber))
-          stepErrors.mobileNumber = "Phone must be 10 digits.";
-
+        if (!mobileNumber.trim()) {
+          stepErrors.mobileNumber = "Mobile Number is required";
+        } else if (!/^\+?[1-9]\d{7,14}$/.test(mobileNumber.trim())) {
+          stepErrors.mobileNumber =
+            "Enter a valid phone number with country code";
+        }
         if (!personalInfo.city.trim()) stepErrors.city = "City is required.";
         if (!personalInfo.state.trim()) stepErrors.state = "State is required.";
         if (!personalInfo.country.trim())
@@ -218,15 +221,23 @@ const JobSeekerCreateProfile = () => {
         break;
 
       case 6:
+        const jobTitles = jobPrefeences.desiredJobTitle;
+
         if (
-    !Array.isArray(jobPrefeences.desiredJobTitle) ||
-    jobPrefeences.desiredJobTitle.length === 0 ||
-    !jobPrefeences.desiredJobTitle.every(title => typeof title === 'string' && title.trim() !== '')
-  ) {
-    errors.desiredJobTitle = 'Please enter at least one valid desired job title.';
-  }
-        if (!jobPrefeences.preferredLocation.trim())
+          !Array.isArray(jobTitles) ||
+          jobTitles.length === 0 ||
+          jobTitles.some(
+            (title) => typeof title !== "string" || title.trim() === ""
+          )
+        ) {
+          stepErrors.desiredJobTitle =
+            "Please enter at least one valid desired job title.";
+        }
+
+        if (!jobPrefeences.preferredLocation.trim()) {
           stepErrors.preferredLocation = "Enter preferred location.";
+        }
+
         break;
 
       default:
@@ -618,20 +629,28 @@ const JobSeekerCreateProfile = () => {
                         placeholder="Enter your email"
                       />
                     </div> */}
-                    <div className="jscp-input-group jscp-half">
-                      <label htmlFor="phone">Phone Number</label>
-                      <input
-                        type="tel"
-                        id="mobileNumber"
+                    <div className="jscp-input-group jscp-full">
+                      <label htmlFor="mobileNumber">Phone Number</label>
+                      <PhoneInput
+                        style={{ paddingLeft: "0px" }}
+                        className="phoneinput"
+                        country={"in"} // Change to your default country
                         value={mobileNumber}
-                        onChange={(e) => {
-                          setPhone(e.target.value);
+                        onChange={(phone) => {
+                          setPhone(phone);
                           setErrors((prevErrors) => ({
                             ...prevErrors,
-                            mobileNumber: "", // or delete prevErrors.mobileNumber
+                            mobileNumber: "",
                           }));
                           clearFieldError("mobileNumber");
                         }}
+                        inputProps={{
+                          name: "mobileNumber",
+                          required: true,
+                          id: "mobileNumber",
+                        }}
+                        containerClass="custom-phone-input-container"
+                        inputClass="custom-phone-input"
                         placeholder="Enter your phone number"
                       />
                       {errors.mobileNumber && (
@@ -1461,55 +1480,67 @@ const JobSeekerCreateProfile = () => {
                   <h3>Job Preferences</h3>
                 </header>
                 <div className="jscp-card-body">
-                <div className="jscp-input-group">
-  <label htmlFor="desiredJobTitleInput">Desired Job Title</label>
-  <input
-    type="text"
-    id="desiredJobTitleInput"
-    placeholder="Type job title and press Enter"
-    value={desiredJobTitleInput}
-    onChange={(e) => setDesiredJobTitleInput(e.target.value)}
-    onKeyDown={(e) => {
-      if (e.key === "Enter") {
-        e.preventDefault();
-        const trimmed = desiredJobTitleInput.trim();
-        if (
-          trimmed &&
-          Array.isArray(jobPrefeences.desiredJobTitle) &&
-          !jobPrefeences.desiredJobTitle.includes(trimmed)
-        ) {
-          setjobPrefeences((prev) => ({
-            ...prev,
-            desiredJobTitle: [...prev.desiredJobTitle, trimmed],
-          }));
-          setDesiredJobTitleInput("");
-        }
-      }
-    }}
-  />
-
-  {/* Display tags */}
-  <div className="jscp-skills-tags">
-    {Array.isArray(jobPrefeences.desiredJobTitle) &&
-      jobPrefeences.desiredJobTitle.map((title, index) => (
-        <span key={index} className="jscp-skill-tag">
-          {title}
-          <button
-            type="button"
-            className="jscp-remove-skill"
-            onClick={() =>
-              setjobPrefeences((prev) => ({
-                ...prev,
-                desiredJobTitle: prev.desiredJobTitle.filter((_, i) => i !== index),
-              }))
-            }
-          >
-            &times;
-          </button>
-        </span>
-      ))}
-  </div>
-</div>
+                  <div className="jscp-input-group">
+                    <label htmlFor="desiredJobTitleInput">
+                      Desired Job Title
+                    </label>
+                    <input
+                      type="text"
+                      id="desiredJobTitleInput"
+                      placeholder="Type Desired Job Title and press Enter"
+                      value={desiredJobTitleInput}
+                      onChange={(e) => setDesiredJobTitleInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          e.preventDefault();
+                          const trimmed = desiredJobTitleInput.trim();
+                          if (
+                            trimmed &&
+                            Array.isArray(jobPrefeences.desiredJobTitle) &&
+                            !jobPrefeences.desiredJobTitle.some(
+                              (existing) =>
+                                existing.toLowerCase() === trimmed.toLowerCase()
+                            )
+                          ) {
+                            setjobPrefeences((prev) => ({
+                              ...prev,
+                              desiredJobTitle: [
+                                ...prev.desiredJobTitle,
+                                trimmed,
+                              ],
+                            }));
+                            setDesiredJobTitleInput("");
+                          }
+                        }
+                      }}
+                    />
+                    {errors.desiredJobTitle && (
+                      <p className="field-error">{errors.desiredJobTitle}</p>
+                    )}
+                    {/* Display tags */}
+                    <div className="jscp-skills-tags">
+                      {Array.isArray(jobPrefeences.desiredJobTitle) &&
+                        jobPrefeences.desiredJobTitle.map((title, index) => (
+                          <span key={index} className="jscp-skill-tag">
+                            {title}
+                            <button
+                              type="button"
+                              className="jscp-remove-skill"
+                              onClick={() =>
+                                setjobPrefeences((prev) => ({
+                                  ...prev,
+                                  desiredJobTitle: prev.desiredJobTitle.filter(
+                                    (_, i) => i !== index
+                                  ),
+                                }))
+                              }
+                            >
+                              &times;
+                            </button>
+                          </span>
+                        ))}
+                    </div>
+                  </div>
                   <div className="jscp-input-group">
                     <label>Preferred Job Type</label>
                     <div className="jscp-radio-group">

@@ -34,6 +34,8 @@ import AdminDashboard from "./Components/Admin/Dashcomponents/AdminDashboard";
 
 // ✅ Import Google OAuth Provider
 import { GoogleOAuthProvider } from "@react-oauth/google";
+import ForgotPassword from "./Components/JobSeeker/ForgotPassword";
+import ResetPassword from "./Components/JobSeeker/ResetPassword";
 
 
 function App() {
@@ -48,6 +50,8 @@ function App() {
           <Route path="/Candidates" element={<Candidates />} />
           {/* Job seeker */}
           <Route path="/Jobseeker" element={<Login />} />
+          <Route path="/Forgot-Password" element={<ForgotPassword />} />
+          <Route path="/Reset-Password" element={<ResetPassword />} />
           <Route path="/Jobseeker-Registration" element={<Registration />} />
           <Route path="/EmailVerification" element={<JEmailVerificationPopup />} />
           <Route path="/JobSeeker-Subscription" element={<JobSeekerSubscription />} />
