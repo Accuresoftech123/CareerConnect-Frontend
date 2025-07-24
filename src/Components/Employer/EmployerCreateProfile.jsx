@@ -15,6 +15,7 @@ import "../../Styles/Employer/EmployerCreateProfilestyle.css";
 import axiosInstance from "../../axiosInstance";
 import { baseURL } from "../../axiosInstance"; // Import your axios instance
 import { Country, State } from "country-state-city";
+import PhoneInput from "react-phone-input-2";
 //const url = "http://localhost:9191/recruitersProfile";
 const EmployerCreateProfile = () => {
   const navigate = useNavigate();
@@ -123,9 +124,12 @@ const EmployerCreateProfile = () => {
     if (!formData.companyProfile.hrContactMobileNumber.trim()) {
       newErrors.hrContactMobileNumber = "Mobile number is required";
     } else if (
-      !phoneRegex.test(formData.companyProfile.hrContactMobileNumber.trim())
+      !/^\+?[1-9]\d{7,14}$/.test(
+        !formData.companyProfile.hrContactMobileNumber.trim()
+      )
     ) {
-      newErrors.hrContactMobileNumber = "Invalid mobile number format";
+      newErrors.hrContactMobileNumber =
+        "Enter a valid phone number with country code";
     }
 
     setErrors(newErrors);
@@ -180,12 +184,12 @@ const EmployerCreateProfile = () => {
       const updatedLocations = [...formData.companyLocations];
       updatedLocations[index][name] = value;
       // If country changes, update the corresponding states and reset state value
-    if (name === "country") {
-      updatedLocations[index]["state"] = "";
-      const updatedStates = [...locationStates];
-      updatedStates[index] = State.getStatesOfCountry(value);
-      setLocationStates(updatedStates);
-    }
+      if (name === "country") {
+        updatedLocations[index]["state"] = "";
+        const updatedStates = [...locationStates];
+        updatedStates[index] = State.getStatesOfCountry(value);
+        setLocationStates(updatedStates);
+      }
       setFormData((prev) => ({
         ...prev,
         companyLocations: updatedLocations,
@@ -692,14 +696,35 @@ const EmployerCreateProfile = () => {
                   </div>
                   <div className="ecp-input-group ecp-half">
                     <label htmlFor="mobileNumber">Mobile Number</label>
-                    <input
-                      type="tel"
-                      id="hrContactMobileNumber"
-                      name="hrContactMobileNumber"
-                      placeholder="Enter Mobile number for candidates communication"
+                    <PhoneInput
+                      style={{
+                        border: "1px solid #ccc",
+                      }}
+                      country={"in"} // default country
                       value={formData.companyProfile.hrContactMobileNumber}
-                      onChange={(e) => handleChange(e, "companyProfile")}
+                      onChange={(phone) =>
+                        setFormData((prevData) => ({
+                          ...prevData,
+                          companyProfile: {
+                            ...prevData.companyProfile,
+                            hrContactMobileNumber: phone,
+                          },
+                        }))
+                      }
+                      inputProps={{
+                        name: "hrContactMobileNumber",
+                        required: true,
+                        id: "hrContactMobileNumber",
+                      }}
+                      containerStyle={{ width: "100%" }}
+                      inputStyle={{
+                        width: "100%",
+                        paddingLeft: "48px", // Adjust padding for country code
+                      }}
+                      buttonStyle={{ borderRight: "1px solid #ccc" }} // Optional: style country code dropdown
+                      placeholder="Enter Mobile number for candidate communication"
                     />
+
                     {errors.hrContactMobileNumber && (
                       <span className="error-text">
                         {errors.hrContactMobileNumber}

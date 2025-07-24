@@ -156,7 +156,10 @@ position: relative;
   background-color: #f3f3f3;
   font-size: 14px;
 }
-
+.react-tel-input .form-control {
+  padding-right: 90px;
+  width: 100%;
+}
 /* Submit Button */
 .employer_register-btn-submit {
   width: 100%;

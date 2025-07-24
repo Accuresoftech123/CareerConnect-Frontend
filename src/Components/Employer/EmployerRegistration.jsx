@@ -11,7 +11,8 @@ import SvgIcon from "@mui/icons-material/LocalPostOffice";
 import EEmailVerificationPopup from "./EmailVerification.jsx";
 import { baseURL } from "../../axiosInstance"; // Import your axios instance
 import { MdVisibility, MdVisibilityOff } from "react-icons/md";
-
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 const Registration = () => {
   //const url = "http://localhost:9191";
   const navigate = useNavigate();
@@ -50,11 +51,11 @@ const Registration = () => {
       newErrors.email = "Invalid email format";
     }
 
-    if (!formData.mobileNumber.trim()) {
-      newErrors.mobileNumber = "Mobile number is required";
-    } else if (!phoneRegex.test(formData.mobileNumber.trim())) {
-      newErrors.mobileNumber = "Invalid mobile number";
-    }
+   if (!formData.mobileNumber.trim()) {
+  newErrors.mobileNumber = "Mobile Number is required";
+} else if (!/^\+?[1-9]\d{7,14}$/.test(formData.mobileNumber.trim())) {
+  newErrors.mobileNumber = "Enter a valid phone number with country code";
+}
 
     if (!formData.password) {
       newErrors.password = "Password is required";
@@ -209,16 +210,27 @@ const Registration = () => {
               {/* Mobile Number */}
               <br></br>
               <label>Mobile Number</label>
-              <div className="employer_register-input-container">
-                <SvgIcon component={PhoneIcon} />
-                <input
-                  type="text"
-                  name="mobileNumber"
-                  placeholder="Enter your mobile number"
-                  value={formData.mobileNumber}
-                  onChange={handleChange}
-                />
-              </div>
+             <div className="jobseeker_register-input-container">
+  <PhoneInput
+  style={{
+   width: "100%",
+  padding: "0px",
+  paddingLeft: "0px",
+  paddingRight: "0px",
+  borderRadius: "8px",
+  border: "1px solid #ccc",
+  backgroundColor: "#f3f3f3",
+  fontsize: "14px",
+  }}
+    country={'in'} // Set default country (e.g., 'in' for India)
+    value={formData.mobileNumber}
+    onChange={(phone) => setFormData({ ...formData, mobileNumber: phone })}
+    inputProps={{
+      name: 'mobileNumber',
+      required: true,
+    }}
+  />
+</div>
               {errors.mobileNumber && (
                 <span className="error-text">{errors.mobileNumber}</span>
               )}

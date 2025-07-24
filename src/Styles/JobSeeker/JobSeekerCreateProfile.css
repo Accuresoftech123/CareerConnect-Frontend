@@ -205,6 +205,7 @@
   margin-bottom: 0.25rem;
 }
 .jscp-input-group input,
+.phoneinput,
 .jscp-input-group select,
 .jscp-input-group textarea {
   padding: 0.6rem;
@@ -530,7 +531,46 @@ display: flex;
 .jscp-error-message, .field-error, .error {
   color: #dc3545;
 }
+.custom-phone-input-container {
+  width: 100%;
+}
 
+.custom-phone-input .form-control {
+  width: 100%;
+  padding-left: 58px; /* space for country flag & dial code */
+  height: 42px;
+  border: none;
+  background-color: transparent;
+}
+
+.flag-dropdown {
+  top: 4px;
+  margin-left: 0px;
+}
+
+.custom-phone-input {
+  border: none;
+}
+.react-tel-input .form-control {
+    position: relative;
+    font-size: 14px;
+    letter-spacing: .01rem;
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-left: 48px;
+    margin-left: 0;
+    background: transparent;
+    border: none;
+    line-height: 25px;
+    outline: none;
+}
+.form-control:focus {
+    color: #212529;
+    background-color: transparent;
+    border-color: none;
+    outline: 0;
+    box-shadow: none;
+}
 /* Responsive adjustments */
 @media (max-width: 992px) {
     .jscp-container {
