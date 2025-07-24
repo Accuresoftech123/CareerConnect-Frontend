@@ -6,7 +6,6 @@
   font-family: sans-serif;
   background-color: #f7f1ec;
   min-height: 100vh;
-
 }
 
 /* Summary Cards Section */
@@ -51,7 +50,6 @@
   align-items: center;
   margin-bottom: 10px;
   flex-wrap: wrap;
-  /* for responsive */
 }
 
 .AdminDashboard-section-header h2 {
@@ -61,17 +59,16 @@
   justify-items: center;
 }
 
-
 /* Dashboard Sections */
 .AdminDashboard-summary-icon {
-  margin-left: -163px;
+  margin-left: -103px;
   margin-top: 0px;
 }
 
 .AdminDashboard-dashboard-section-tables {
   display: flex;
   gap: 20px;
-  /* spacing between the two sections */
+  flex-wrap: nowrap;
   margin-bottom: 25px;
 }
 
@@ -81,6 +78,8 @@
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  flex: 1 1 300px;
+  min-width: 300px;
 }
 
 .AdminDashboard-dashboard-section h2 {
@@ -96,8 +95,24 @@
 .AdminDashboard-recruiters-grid,
 .AdminDashboard-candidates-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
   gap: 15px;
+  min-width: 720px; /* Important for horizontal scroll */
+  grid-template-columns: repeat(4, minmax(150px, 1fr));
+}
+
+/* Wrapping grids in a scrollable container for horizontal scroll */
+.AdminDashboard-grid-scroll-container {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  margin-bottom: 10px;
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.AdminDashboard-grid-scroll-container::-webkit-scrollbar {
+  display: none;
 }
 
 .AdminDashboard-grid-column h3 {
@@ -121,7 +136,8 @@
   border-radius: 10px;
   padding: 20px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-
+  flex: 1 1 300px;
+  min-width: 300px;
 }
 
 .AdminDashboard-dashboard-section-user h2 {
@@ -174,13 +190,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   margin: 0;
-  /* remove margin-left */
 }
-
-.AdminDashboard-dashboard-section-viewAll:hover {
-  color: #842cc0;
-}
-
 
 .AdminDashboard-dashboard-section-viewAll:hover {
   color: #842cc0;
@@ -205,7 +215,6 @@
   transform: scale(1.1);
 }
 
-
 /* Days Filter Component */
 .AdminDashboard-days-filter-container {
   position: relative;
@@ -214,6 +223,9 @@
   min-width: 180px;
   z-index: 100;
   margin-left: 110px;
+  margin: 20px 0;
+  white-space: nowrap;
+  margin-left: auto;
 }
 
 .AdminDashboard-days-filter-selected {
@@ -266,7 +278,6 @@
     opacity: 0;
     transform: translateY(-5px);
   }
-
   to {
     opacity: 1;
     transform: translateY(0);
@@ -301,98 +312,62 @@
   display: inline-block;
 }
 
-.AdminDashboard-days-filter-container {
-  margin: 20px 0;
-  white-space: nowrap;
-  margin-left: auto;
-}
+/* ========== Responsive Breakpoints ========== */
 
-.AdminDashboard-dashboard-section-tables {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.AdminDashboard-dashboard-section,
-.AdminDashboard-dashboard-section-user {
-  flex: 1 1 300px;
-  min-width: 300px;
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .AdminDashboard-days-filter-container {
-    width: 100%;
-  }
-
-  .AdminDashboard-days-filter-selected {
-    padding: 12px 16px;
-  }
-
-  .AdminDashboard-days-filter-options .filter-option {
-    padding: 12px 16px;
+/* Large Desktops (≥1200px) */
+@media (max-width: 1200px) {
+  .AdminDashboard-recruiters-grid,
+  .AdminDashboard-candidates-grid {
+    min-width: 540px;
+    grid-template-columns: repeat(3, minmax(150px, 1fr));
   }
 }
 
+/* Medium Screens (≤992px) */
+@media (max-width: 992px) {
+  .AdminDashboard-recruiters-grid,
+  .AdminDashboard-candidates-grid {
+    min-width: 360px;
+    grid-template-columns: repeat(2, minmax(150px, 1fr));
+  }
+
+  .AdminDashboard-dashboard-section,
+  .AdminDashboard-dashboard-section-user {
+    min-width: 280px;
+  }
+}
+
+/* Tablets (≤768px) */
 @media (max-width: 768px) {
   .AdminDashboard-dashboard-section-tables {
     flex-direction: column;
-  }
-
-  .AdminDashboard-dashboard-section-viewAll {
-    margin-left: 0;
-    margin-top: 10px;
+    gap: 30px;
   }
 
   .AdminDashboard-recruiters-grid,
   .AdminDashboard-candidates-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    min-width: auto;
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .AdminDashboard-days-filter-container {
+    width: 100%;
+    margin-left: 0;
+  }
+
+  .AdminDashboard-dashboard-section {
+    padding: 15px;
   }
 
   .AdminDashboard-active-users-table th,
   .AdminDashboard-active-users-table td {
-    padding: 8px 10px;
     font-size: 12px;
+    padding: 8px 10px;
   }
 }
 
-
-/* Ensure table cells have enough padding for icons */
-.AdminDashboard-active-users-table td {
-  padding: 12px 15px;
-}
-
-/* Subscription Badges */
-.AdminDashboard-grid-item:nth-child(3n) {
-  font-weight: 500;
-}
-
-.AdminDashboard-grid-item:nth-child(3n):contains("Platinum") {
-  color: #3498db;
-}
-
-.AdminDashboard-grid-item:nth-child(3n):contains("Golden") {
-  color: #f39c12;
-}
-
-.AdminDashboard-grid-item:nth-child(3n):contains("Free") {
-  color: #7f8c8d;
-}
-
-/* Time Indicators */
-/* .AdminDashboard-grid-item:nth-child(4n) {
-  color: #95a5a6;
-  font-size: 12px;
-} */
-
-/* Action Buttons */
-.AdminDashboard-active-users-table td:last-child {
-  font-size: 16px;
-  letter-spacing: 5px;
-}
-
-@media (max-width: 480px) {
+/* Phones (≤576px) */
+@media (max-width: 576px) {
   .AdminDashboard-container {
     padding: 10px;
   }
@@ -403,11 +378,48 @@
   }
 
   .AdminDashboard-card h3 {
-    font-size: 24px;
+    font-size: 22px;
   }
 
-  .AdminDashboard-dashboard-section {
-    padding: 15px;
+  .AdminDashboard-grid-column h3 {
+    font-size: 14px;
+  }
+
+  .AdminDashboard-grid-item {
+    font-size: 13px;
+    padding: 6px 0;
+  }
+
+  .AdminDashboard-days-filter-selected,
+  .AdminDashboard-days-filter-options .filter-option {
+    padding: 10px 14px;
+  }
+
+  .AdminDashboard-section-title h2 {
+    font-size: 16px;
+  }
+
+  .AdminDashboard-dashboard-section-viewAll {
+    font-size: 14px;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .AdminDashboard-active-users-table {
+    font-size: 12px;
+  }
+
+  .AdminDashboard-action-icon {
+    font-size: 16px !important;
+  }
+}
+
+/* Extra Small Phones (≤480px) */
+@media (max-width: 480px) {
+  .AdminDashboard-dashboard-section,
+  .AdminDashboard-dashboard-section-user {
+    padding: 10px;
+    min-width: 100%;
   }
 
   .AdminDashboard-recruiters-grid,
@@ -415,24 +427,85 @@
     grid-template-columns: 1fr;
   }
 
+  .AdminDashboard-dashboard-section-viewAll {
+    font-size: 13px;
+  }
+
   .AdminDashboard-days-filter-container {
     width: 100%;
   }
 
-  .AdminDashboard-active-users-table {
+  .AdminDashboard-grid-item {
     font-size: 12px;
   }
 
-  .AdminDashboard-active-users-table th,
-  .AdminDashboard-active-users-table td {
-    padding: 6px 8px;
+  .AdminDashboard-grid-column h3 {
+    font-size: 13px;
   }
+}
+.AdminDashboard-table-wrapper {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-top: 10px;
+}
 
-  .AdminDashboard-action-icon {
-    font-size: 16px !important;
+.AdminDashboard-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 600px;
+}
+
+.AdminDashboard-data-table th,
+.AdminDashboard-data-table td {
+  padding: 10px 15px;
+  text-align: left;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.AdminDashboard-data-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #333;
+}
+
+.AdminDashboard-data-table tr:hover {
+  background-color: #f4f4f4;
+}
+
+@media (max-width: 768px) {
+  .AdminDashboard-data-table {
+    font-size: 13px;
+    min-width: 500px;
   }
+}
+.AdminDashboard-scroll-container {
+  max-height: 300px;          /* Fixed height */
+  overflow-x: auto;           /* Horizontal scroll */
+  overflow-y: hidden;         /* No vertical scroll */
+  position: relative;
+  border: 1px solid #ddd;     /* subtle border */
+  border-radius: 4px;
+  scrollbar-width: thin;      /* Firefox slim scrollbar */
+  scrollbar-color: #888 #f1f1f1;
+}
 
-  .AdminDashboard-days-filter-container {
-    margin-left: 0;
+.AdminDashboard-scroll-container::-webkit-scrollbar {
+  height: 6px;
+}
+
+.AdminDashboard-scroll-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 4px;
+}
+
+.AdminDashboard-scroll-container::-webkit-scrollbar-thumb {
+  background-color: #888;
+  border-radius: 4px;
+  border: 2px solid #f1f1f1;
+}
+@media (max-width: 768px) {
+  .AdminDashboard-scroll-container {
+    max-height: 220px;  /* smaller height on tablet/mobile */
   }
 }

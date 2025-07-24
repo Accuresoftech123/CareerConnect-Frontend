@@ -105,7 +105,7 @@ const EmployerCreateProfile = () => {
   const validateStep2 = () => {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    const phoneRegex = /^[0-9]{10}$/;
+    // const phoneRegex = /^[0-9]{10}$/;
 
     if (!formData.companyProfile.hrName.trim()) {
       newErrors.hrName = "Recruiter name is required";
@@ -121,16 +121,12 @@ const EmployerCreateProfile = () => {
       newErrors.hrContactEmail = "Invalid email format";
     }
 
-    if (!formData.companyProfile.hrContactMobileNumber.trim()) {
-      newErrors.hrContactMobileNumber = "Mobile number is required";
-    } else if (
-      !/^\+?[1-9]\d{7,14}$/.test(
-        !formData.companyProfile.hrContactMobileNumber.trim()
-      )
-    ) {
-      newErrors.hrContactMobileNumber =
-        "Enter a valid phone number with country code";
-    }
+     const phoneNumber = formData.companyProfile.hrContactMobileNumber.trim();
+  if (!phoneNumber) {
+    newErrors.hrContactMobileNumber = "Mobile number is required";
+  } else if (!/^\+?[1-9]\d{7,14}$/.test(phoneNumber)) {
+    newErrors.hrContactMobileNumber = "Enter a valid phone number with country code";
+  }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
