@@ -83,6 +83,12 @@ const JobSeekerSubscription = () => {
         }
       }
         );    const orderId = orderData.id;
+         // 💡 For FREE plan: backend returns a message instead of order ID
+    if (!orderData.id) {
+      alert("✅ " + orderData.message);
+      navigate("/JobSeeker-Create-Profile");
+      return;
+    }
         
  
     const options = {
@@ -231,7 +237,7 @@ const starterFeatures = [
             <p className="js_subscription_features-title">Features includes:</p>
             <ul>{renderFeatures(starterFeatures)}</ul>
           </div>
-          <button onClick={() => handlePayment("FreePLAN", isMonthly ? 0 : 0)} className="js_subscription_continue-button starter-btn">
+          <button onClick={() => handlePayment("FreePLAN", 0)} className="js_subscription_continue-button starter-btn">
             Continue with Free plan
           </button>
         </div>
