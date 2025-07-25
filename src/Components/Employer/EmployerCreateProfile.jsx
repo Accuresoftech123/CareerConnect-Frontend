@@ -106,7 +106,7 @@ const EmployerCreateProfile = () => {
   const validateStep2 = () => {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    const phoneRegex = /^[0-9]{10}$/;
+    // const phoneRegex = /^[0-9]{10}$/;
 
     if (!formData.companyProfile.hrName.trim()) {
       newErrors.hrName = "Recruiter name is required";

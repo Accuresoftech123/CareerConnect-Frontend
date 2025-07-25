@@ -127,7 +127,7 @@ const JobSeekerCreateProfile = () => {
   const validateStep = () => {
     setFormError(""); // Clear general error
     const stepErrors = {};
-    const phoneRegex = /^[0-9]{10}$/;
+    // const phoneRegex = /^[0-9]{10}$/;
     const urlRegex =
       /^(https?:\/\/)?([\w\d-]+\.){1,}[\w\d-]+(\/[\w\d#?&=.-]*)?$/;
     const validResumeTypes = [
