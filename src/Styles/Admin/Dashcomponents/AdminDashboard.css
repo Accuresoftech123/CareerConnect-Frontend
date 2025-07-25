@@ -1,6 +1,9 @@
-/* AdminDashboard.css */
+/* =======================
+   AdminDashboard CSS
+   Responsive & Clean Layout
+========================== */
 
-/* Main Container */
+/* ---------- Main Container ---------- */
 .AdminDashboard-container {
   padding: 20px;
   font-family: sans-serif;
@@ -8,7 +11,7 @@
   min-height: 100vh;
 }
 
-/* Summary Cards Section */
+/* ---------- Summary Cards Section ---------- */
 .AdminDashboard-summary-cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
@@ -44,6 +47,7 @@
   margin: 0;
 }
 
+/* ---------- Section Headers ---------- */
 .AdminDashboard-section-header {
   display: flex;
   justify-content: space-between;
@@ -55,20 +59,19 @@
 .AdminDashboard-section-header h2 {
   margin: 0;
   text-align: center;
-  align-items: center;
-  justify-items: center;
 }
 
-/* Dashboard Sections */
+/* ---------- Icon Styling ---------- */
 .AdminDashboard-summary-icon {
   margin-left: -103px;
   margin-top: 0px;
 }
 
+/* ---------- Dashboard Layout ---------- */
 .AdminDashboard-dashboard-section-tables {
   display: flex;
   gap: 20px;
-  flex-wrap: nowrap;
+  flex-wrap: nowrap; /* Default is nowrap, will override in media */
   margin-bottom: 25px;
 }
 
@@ -90,31 +93,239 @@
   padding-bottom: 10px;
   margin-left: 36px;
 }
+/*--------------subscribed candidates---------------*/
+/* Subscribed Candidates Section */
+.SubscribedCandidates-section {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.06);
+  max-height: 100%;
+}
 
-/* Grid Layout for Recruiters and Candidates */
+.SubscribedCandidates-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.SubscribedCandidates-header h3 {
+  font-size: 18px;
+  font-weight: bold;
+}
+.SubscribedCandidates-icon img {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+.SubscribedCandidates-filter-container {
+  position: relative;
+}
+
+.SubscribedCandidates-filter-selected {
+  cursor: pointer;
+  background-color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  user-select: none;
+}
+
+.SubscribedCandidates-filter-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: max-content;
+  z-index: 99;
+}
+
+.SubscribedCandidates-filter-options .filter-option {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.SubscribedCandidates-filter-options .filter-option:hover,
+.SubscribedCandidates-filter-options .filter-option.selected {
+  background-color: #facc15;
+}
+
+/* Table styles */
+.SubscribedCandidates-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+   table-layout: fixed;
+}
+.SubscribedCandidates-table tr{
+   height: 52px;
+}
+.SubscribedCandidates-table th{
+  text-align: left;
+  padding: 12px 15px;
+  border-bottom: 1px solid #fff;
+}
+.SubscribedCandidates-table td {
+  text-align: left;
+  padding: 12px 15px;
+  border-bottom: 1px solid #fff;
+  word-break: break-word;
+  white-space: normal;
+}
+
+.SubscribedCandidates-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.SubscribedCandidates-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.SubscribedCandidates-icon {
+  cursor: pointer;
+  color: #444;
+  transition: color 0.2s ease-in-out;
+}
+
+.SubscribedCandidates-icon:hover {
+  color: #007bff;
+}
+.AdminDashboard-table-scroll-wrapper {
+  max-height: 220px; /* Shows approx 5 rows comfortably */
+  overflow-y: auto;
+  overflow-x: hidden;
+  border-radius: 8px;
+  margin-top: 10px;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: #ccc transparent;
+}
+/* Name Cell: avatar + name inline */
+.SubscribedCandidates-nameCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.SubscribedCandidates-nameText {
+  font-weight: 500;
+  color: #333;
+}
+
+/* Plan styling */
+.SubscribedCandidates-plan {
+  font-weight: 500;
+  color: #6b7280;
+}
+
+/* Job title styling */
+.SubscribedCandidates-jobTitle {
+  color: #444;
+  font-size: 13px;
+}
+
+/* Interview Status colored labels */
+.SubscribedCandidates-status {
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.SubscribedCandidates-status.pending {
+  background-color: #facc15; /* yellow */
+  color: #000;
+}
+
+.SubscribedCandidates-status.scheduled {
+  background-color: #3b82f6; /* blue */
+}
+
+.SubscribedCandidates-status.completed {
+  background-color: #10b981; /* green */
+}
+
+.SubscribedCandidates-status.cancelled {
+  background-color: #ef4444; /* red */
+}
+
+/* Schedule Interview Button */
+.SubscribedCandidates-scheduleBtn {
+  background-color: #b153e5;
+  color: #fff;
+  padding: 6px 12px;
+  font-size: 13px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.SubscribedCandidates-scheduleBtn:hover {
+  background-color: #842cc0;
+}
+
+/* Optional scrollbar for WebKit browsers */
+.AdminDashboard-table-scroll-wrapper::-webkit-scrollbar {
+  width: 6px;
+}
+.AdminDashboard-table-scroll-wrapper::-webkit-scrollbar-thumb {
+  background-color: #bbb;
+  border-radius: 10px;
+}
+
+
+/* ---------- Recruiters & Candidates Grid ---------- */
 .AdminDashboard-recruiters-grid,
 .AdminDashboard-candidates-grid {
   display: grid;
   gap: 15px;
-  min-width: 720px; /* Important for horizontal scroll */
-  grid-template-columns: repeat(4, minmax(150px, 1fr));
+  width: 100%;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
 }
 
-/* Wrapping grids in a scrollable container for horizontal scroll */
-.AdminDashboard-grid-scroll-container {
-  width: 100%;
+/* ---------- Scroll Wrapper (Optional Horizontal Scroll) ---------- */
+.AdminDashboard-table-wrapper {
+   height: 220px;
   overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
+  scrollbar-width: thin; /* Firefox */
+  scrollbar-color: rgba(0, 0, 0, 0.2) transparent; /* Firefox */
+}
+
+/* Chrome, Safari, Opera */
+.AdminDashboard-table-wrapper::-webkit-scrollbar {
+  height: 4px;
+  width: 6px;
+}
+
+.AdminDashboard-table-wrapper::-webkit-scrollbar-track {
+   background: transparent;
+  margin-top: 10px;
   margin-bottom: 10px;
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.AdminDashboard-grid-scroll-container::-webkit-scrollbar {
-  display: none;
+.AdminDashboard-table-wrapper::-webkit-scrollbar-thumb {
+  background-color: #bcbcbc;
+  border-radius: 10px;
+  height: 40px;
 }
 
+/* ---------- Grid Column Titles & Items ---------- */
 .AdminDashboard-grid-column h3 {
   font-size: 14px;
   font-weight: 600;
@@ -130,7 +341,7 @@
   border-bottom: 1px solid #f8f9fa;
 }
 
-/* Active Users Table */
+/* ---------- Active Users Table ---------- */
 .AdminDashboard-dashboard-section-user {
   background: white;
   border-radius: 10px;
@@ -157,7 +368,7 @@
 }
 
 .AdminDashboard-active-users-table th {
-  background-color: #f8f9fa;
+  background-color: none;
   color: #080808;
   font-weight: 600;
   padding: 12px 15px;
@@ -173,6 +384,7 @@
   background-color: #f8f9fa;
 }
 
+/* ---------- Section Title & View All ---------- */
 .AdminDashboard-section-title {
   display: flex;
   justify-content: space-between;
@@ -189,14 +401,13 @@
   color: #b153e5;
   cursor: pointer;
   transition: all 0.2s ease;
-  margin: 0;
 }
 
 .AdminDashboard-dashboard-section-viewAll:hover {
   color: #842cc0;
 }
 
-/* Action Icons Styles */
+/* ---------- Action Icons ---------- */
 .AdminDashboard-action-icons {
   display: flex;
   gap: 12px;
@@ -215,17 +426,15 @@
   transform: scale(1.1);
 }
 
-/* Days Filter Component */
+/* ---------- Days Filter Dropdown ---------- */
 .AdminDashboard-days-filter-container {
   position: relative;
   display: inline-block;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   min-width: 180px;
   z-index: 100;
-  margin-left: 110px;
+  margin-left: auto;
   margin: 20px 0;
   white-space: nowrap;
-  margin-left: auto;
 }
 
 .AdminDashboard-days-filter-selected {
@@ -237,7 +446,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  transition: all 0.2s ease;
   font-size: 14px;
   color: #333333;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
@@ -268,9 +476,9 @@
   border: 1px solid #e0e0e0;
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  z-index: 10;
   overflow: hidden;
   animation: fadeIn 0.15s ease-out;
+  z-index: 10;
 }
 
 @keyframes fadeIn {
@@ -287,7 +495,6 @@
 .AdminDashboard-days-filter-options .filter-option {
   padding: 10px 16px;
   cursor: pointer;
-  transition: all 0.2s ease;
   font-size: 14px;
   color: #333333;
   border-bottom: 1px solid #f0f0f0;
@@ -306,48 +513,109 @@
   color: #1890ff;
   font-weight: 500;
 }
-
-.AdminDashboard-dashboard-section-viewAll {
-  margin-left: auto;
-  display: inline-block;
+.Adash-viewAll-container {
+  text-align: right;
+  margin-top: 10px; /* optional spacing from table */
 }
 
-/* ========== Responsive Breakpoints ========== */
+.Adash-viewAll {
+  color: #b153e5;
+  cursor: pointer;
+  font-weight: 500;
+  transition: color 0.2s ease;
+}
 
-/* Large Desktops (≥1200px) */
+.Adash-viewAll:hover {
+  color: #842cc0;
+}
+
+/* ---------- Data Table Styling ---------- */
+.AdminDashboard-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  min-width: 600px;
+}
+
+.AdminDashboard-data-table th,
+.AdminDashboard-data-table td {
+  padding: 10px 15px;
+  text-align: left;
+  border-bottom: none;
+}
+
+.AdminDashboard-data-table th {
+  background-color: #f9fafb;
+  font-weight: 600;
+  color: #333;
+}
+
+.AdminDashboard-data-table td {
+  vertical-align: middle;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.5;
+}
+
+.AdminDashboard-data-table tr:hover {
+  background-color: #f4f4f4;
+}
+
+.AdminDashboard-table-wrapper {
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  margin-top: 10px;
+}
+
+/* ========================
+   Responsive Breakpoints
+========================== */
+
+/* Large Desktops (≤1200px) */
 @media (max-width: 1200px) {
+  /* Removed min-width: 540px here to avoid horizontal scroll */
   .AdminDashboard-recruiters-grid,
   .AdminDashboard-candidates-grid {
-    min-width: 540px;
     grid-template-columns: repeat(3, minmax(150px, 1fr));
   }
+  .SubscribedCandidates-table th,
+  .SubscribedCandidates-table td {
+    padding: 10px 12px;
+  }
 }
 
-/* Medium Screens (≤992px) */
-@media (max-width: 992px) {
+/* Medium Desktops/Tablets Landscape (≤ 1000px) */
+/* Changed from forced 1 column to 2 columns for better responsiveness */
+@media (max-width: 1000px) and (min-width: 769px) {
   .AdminDashboard-recruiters-grid,
   .AdminDashboard-candidates-grid {
-    min-width: 360px;
-    grid-template-columns: repeat(2, minmax(150px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
-
-  .AdminDashboard-dashboard-section,
-  .AdminDashboard-dashboard-section-user {
-    min-width: 280px;
+  .SubscribedCandidates-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .SubscribedCandidates-filter-selected {
+    width: 100%;
   }
 }
 
 /* Tablets (≤768px) */
-@media (max-width: 768px) {
+@media (max-width: 768px) and (min-width: 541px) {
+  /* Stack sections vertically */
   .AdminDashboard-dashboard-section-tables {
-    flex-direction: column;
+    /* flex-direction: column; */
     gap: 30px;
   }
 
   .AdminDashboard-recruiters-grid,
   .AdminDashboard-candidates-grid {
-    min-width: auto;
-    grid-template-columns: repeat(1, 1fr);
+    /* grid-template-columns: repeat(2, minmax(140px, 1fr)); */
+    gap: 12px;
+    width: 100%;
   }
 
   .AdminDashboard-days-filter-container {
@@ -363,6 +631,38 @@
   .AdminDashboard-active-users-table td {
     font-size: 12px;
     padding: 8px 10px;
+  }
+   .SubscribedCandidates-section {
+    padding: 15px;
+  }
+  .SubscribedCandidates-header {
+    align-items: flex-start;
+  }
+  .SubscribedCandidates-table th:nth-child(3),
+  .SubscribedCandidates-table td:nth-child(3),
+  .SubscribedCandidates-table th:nth-child(4),
+  .SubscribedCandidates-table td:nth-child(4) {
+    display: none; /* hide Plan & Job Title to save space */
+  }
+}
+
+/* Small Tablets & Large Phones (≤540px) */
+@media (max-width: 540px) {
+  .AdminDashboard-recruiters-grid,
+  .AdminDashboard-candidates-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .AdminDashboard-dashboard-section-tables {
+    flex-direction: column;
+    gap: 30px;
+  }
+
+  .AdminDashboard-dashboard-section {
+    width: 100%;
+    min-width: auto;
+    padding: 15px;
   }
 }
 
@@ -381,18 +681,9 @@
     font-size: 22px;
   }
 
-  .AdminDashboard-grid-column h3 {
-    font-size: 14px;
-  }
-
   .AdminDashboard-grid-item {
     font-size: 13px;
     padding: 6px 0;
-  }
-
-  .AdminDashboard-days-filter-selected,
-  .AdminDashboard-days-filter-options .filter-option {
-    padding: 10px 14px;
   }
 
   .AdminDashboard-section-title h2 {
@@ -401,8 +692,6 @@
 
   .AdminDashboard-dashboard-section-viewAll {
     font-size: 14px;
-    margin-left: 0;
-    margin-top: 10px;
   }
 
   .AdminDashboard-active-users-table {
@@ -411,6 +700,17 @@
 
   .AdminDashboard-action-icon {
     font-size: 16px !important;
+  }
+  .SubscribedCandidates-table {
+    font-size: 13px;
+  }
+  .SubscribedCandidates-avatar {
+    width: 30px;
+    height: 30px;
+  }
+  .SubscribedCandidates-table th,
+  .SubscribedCandidates-table td {
+    padding: 8px 10px;
   }
 }
 
@@ -442,70 +742,31 @@
   .AdminDashboard-grid-column h3 {
     font-size: 13px;
   }
-}
-.AdminDashboard-table-wrapper {
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  margin-top: 10px;
-}
-
-.AdminDashboard-data-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 14px;
-  min-width: 600px;
-}
-
-.AdminDashboard-data-table th,
-.AdminDashboard-data-table td {
-  padding: 10px 15px;
-  text-align: left;
-  border-bottom: 1px solid #e0e0e0;
-}
-
-.AdminDashboard-data-table th {
-  background-color: #f9fafb;
-  font-weight: 600;
-  color: #333;
-}
-
-.AdminDashboard-data-table tr:hover {
-  background-color: #f4f4f4;
-}
-
-@media (max-width: 768px) {
-  .AdminDashboard-data-table {
-    font-size: 13px;
-    min-width: 500px;
+   .SubscribedCandidates-table th:nth-child(2),
+  .SubscribedCandidates-table td:nth-child(2),
+  .SubscribedCandidates-table th:nth-child(3),
+  .SubscribedCandidates-table td:nth-child(3) {
+    display: none; /* hide Name & Plan to simplify layout */
+  }
+  .SubscribedCandidates-table th:nth-child(5),
+  .SubscribedCandidates-table td:nth-child(5) {
+    display: none; /* hide status */
+  }
+  .SubscribedCandidates-table th:nth-child(6),
+  .SubscribedCandidates-table td:nth-child(6) {
+    width: auto;
   }
 }
-.AdminDashboard-scroll-container {
-  max-height: 300px;          /* Fixed height */
-  overflow-x: auto;           /* Horizontal scroll */
-  overflow-y: hidden;         /* No vertical scroll */
-  position: relative;
-  border: 1px solid #ddd;     /* subtle border */
-  border-radius: 4px;
-  scrollbar-width: thin;      /* Firefox slim scrollbar */
-  scrollbar-color: #888 #f1f1f1;
-}
 
-.AdminDashboard-scroll-container::-webkit-scrollbar {
-  height: 6px;
-}
+/* ========= Fix for 820px-920px width range ========= */
+@media (max-width: 920px) and (min-width: 820px) {
+  .AdminDashboard-dashboard-section-tables {
+    flex-wrap: wrap; /* Allow wrapping */
+    gap: 15px;
+  }
 
-.AdminDashboard-scroll-container::-webkit-scrollbar-track {
-  background: #f1f1f1;
-  border-radius: 4px;
-}
-
-.AdminDashboard-scroll-container::-webkit-scrollbar-thumb {
-  background-color: #888;
-  border-radius: 4px;
-  border: 2px solid #f1f1f1;
-}
-@media (max-width: 768px) {
-  .AdminDashboard-scroll-container {
-    max-height: 220px;  /* smaller height on tablet/mobile */
+  .AdminDashboard-dashboard-section {
+    width: 100% !important; /* Full width on wrap */
+    min-width: unset !important; /* Remove min-width */
   }
 }

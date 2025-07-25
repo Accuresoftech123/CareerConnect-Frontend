@@ -284,56 +284,185 @@ const AdminDashboard = () => {
         </div>
       </div>
 
+      {/* Subscribed Candidates Section */}
+      <div className="SubscribedCandidates-section">
+        <div className="SubscribedCandidates-header">
+          <div className="SubscribedCandidates-header">
+            <span className="SubscribedCandidates-icon">
+              <img src={activeUsersSection} alt="Subscribed Candidates" />
+            </span>
+
+            <h3 style={{ paddingTop: "20px" }}>Subscribed Candidates</h3>
+          </div>
+          {/* Days Filter */}
+          {/* <div className="SubscribedCandidates-filter-container">
+            <div
+              className="SubscribedCandidates-filter-selected"
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              {selectedFilter}
+              <span className={`dropdown-icon ${isOpen ? "open" : ""}`}>▾</span>
+            </div>
+
+            {isOpen && (
+              <div className="SubscribedCandidates-filter-options">
+                {filterOptions.map((option) => (
+                  <div
+                    key={option}
+                    className={`filter-option ${
+                      selectedFilter === option ? "selected" : ""
+                    }`}
+                    onClick={() => {
+                      setSelectedFilter(option);
+                      setIsOpen(false);
+                      applyActiveUsersFilter(option); // Reuse for now
+                    }}
+                  >
+                    {option}
+                  </div>
+                ))}
+              </div>
+            )}
+          </div> */}
+        </div>
+        <div className="AdminDashboard-table-scroll-wrapper">
+          {/* Subscribed Candidates Table */}
+          <table className="SubscribedCandidates-table">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Plan</th>
+      <th>Job Title</th>
+      <th>Interview Status</th>
+      <th>Schedule Interview</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {filteredActiveUsers.map((user, index) => (
+      <tr key={index}>
+        {/* Name with avatar + name */}
+        <td>
+          <div className="SubscribedCandidates-nameCell">
+            <img
+              src="https://via.placeholder.com/40"
+              alt={user.name}
+              className="SubscribedCandidates-avatar"
+            />
+            <span className="SubscribedCandidates-nameText">{user.name}</span>
+          </div>
+        </td>
+
+        {/* Plan */}
+        <td>
+          <span className="SubscribedCandidates-plan">{user.userType}</span>
+        </td>
+
+        {/* Job Title */}
+        <td>
+          <span className="SubscribedCandidates-jobTitle">{user.jobTitle}</span>
+        </td>
+
+        {/* Interview Status with colored background */}
+        <td>
+          <span className={`SubscribedCandidates-status ${user.status.toLowerCase()}`}>
+            {user.status}
+          </span>
+        </td>
+
+        {/* Schedule Button */}
+        <td>
+          <button
+            className="SubscribedCandidates-scheduleBtn"
+            // onClick={() => handleSchedule(user)}
+          >
+            Schedule
+          </button>
+        </td>
+
+        {/* Actions */}
+        <td>
+          <div className="SubscribedCandidates-actions">
+            <VisibilityIcon
+              className="SubscribedCandidates-icon"
+              onClick={() => handleView(user)}
+              titleAccess="View"
+            />
+            <MessageIcon
+              className="SubscribedCandidates-icon"
+              onClick={() => handleMessage(user)}
+              titleAccess="Message"
+            />
+            <MoreVertIcon
+              className="SubscribedCandidates-icon"
+              onClick={() => handleMore(user)}
+              titleAccess="More Options"
+            />
+          </div>
+        </td>
+      </tr>
+    ))}
+  </tbody>
+</table>
+
+        </div>
+        <div className="Adash-viewAll-container">
+          <span className="Adash-viewAll">View all</span>
+        </div>
+      </div>
+
       {/* New Recruiters Section */}
       <div className="AdminDashboard-dashboard-section-tables">
         <div className="AdminDashboard-dashboard-section">
           <div className="AdminDashboard-section-title">
-            <span
-              className="AdminDashboard-section-icon"
-              style={{ paddingRight: "20px" }}
-            >
-              <img src={newRecruiter} alt="New Recruiters" />
-            </span>
-            <h2>New Recruiters</h2>
+            <div className="AdminDashboard-section-title">
+              <span
+                className="AdminDashboard-section-icon"
+                style={{ paddingRight: "20px" }}
+              >
+                <img src={newRecruiter} alt="New Recruiters" />
+              </span>
+              <h2 style={{ paddingTop: "20px" }}>New Recruiters</h2>
+            </div>
             <span className="AdminDashboard-dashboard-section-viewAll">
               View all
             </span>
           </div>
           <div className="AdminDashboard-table-wrapper">
             <div className="AdminDashboard-scroll-container">
-            <table className="AdminDashboard-data-table">
-              <thead>
-                <tr>
-                  <th>Company Name</th>
-                  <th>Location</th>
-                  <th>Mobile Number</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {newRecruiters.map((recruiter, index) => (
-                  <tr key={index}>
-                    <td>{recruiter.companyName}</td>
-                    <td>
-                      {recruiter.companyLocations?.length > 0
-                        ? recruiter.companyLocations
-                            .map((location) => location.city)
-                            .filter(Boolean)
-                            .join(", ")
-                        : "N/A"}
-                    </td>
-                    <td>{recruiter.mobileNumber}</td>
-                    <td>
-                      {recruiter.createdAt
-                        ? `${formatDistanceToNow(
-                            new Date(recruiter.createdAt)
-                          )} ago`
-                        : "N/A"}
-                    </td>
+              <table className="AdminDashboard-data-table">
+                <thead>
+                  <tr>
+                    <th>Company Name</th>
+                    <th>Location</th>
+                    <th>Mobile Number</th>
+                    <th>Time</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {newRecruiters.map((recruiter, index) => (
+                    <tr key={index}>
+                      <td>{recruiter.companyName}</td>
+                      <td>
+                        {recruiter.companyLocations?.length > 0
+                          ? recruiter.companyLocations
+                              .map((location) => location.city)
+                              .filter(Boolean)
+                              .join(", ")
+                          : "N/A"}
+                      </td>
+                      <td>{recruiter.mobileNumber}</td>
+                      <td>
+                        {recruiter.createdAt
+                          ? `${formatDistanceToNow(
+                              new Date(recruiter.createdAt)
+                            )} ago`
+                          : "N/A"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -341,56 +470,58 @@ const AdminDashboard = () => {
         {/* New Candidates Section */}
         <div className="AdminDashboard-dashboard-section">
           <div className="AdminDashboard-section-title">
-            <span
-              className="AdminDashboard-section-icon"
-              style={{ paddingRight: "20px" }}
-            >
-              <img src={Candidates} alt="New Candidates" />
-            </span>
-            <h2>New Job-Seekers</h2>
+            <div className="AdminDashboard-section-title">
+              <span
+                className="AdminDashboard-section-icon"
+                style={{ paddingRight: "20px" }}
+              >
+                <img src={Candidates} alt="New Candidates" />
+              </span>
+              <h2 style={{ paddingTop: "20px" }}>New Job-Seekers</h2>
+            </div>
             <span className="AdminDashboard-dashboard-section-viewAll">
               View all
             </span>
           </div>
           <div className="AdminDashboard-table-wrapper">
             <div className="AdminDashboard-scroll-container">
-            <table className="AdminDashboard-data-table">
-              <thead>
-                <tr>
-                  <th>Candidate Name</th>
-                  <th>Job Title</th>
-                  <th>Mobile Number</th>
-                  <th>Time</th>
-                </tr>
-              </thead>
-              <tbody>
-                {newCandidates.map((candidate, index) => {
-                  const titles =
-                    candidate.jobPreferences?.desiredJobTitle || [];
-                  const displayTitles = titles.slice(0, 2).join(", ");
-                  const extraCount =
-                    titles.length > 2 ? ` +${titles.length - 2} more` : "";
-                  return (
-                    <tr key={index}>
-                      <td>{candidate.fullName}</td>
-                      <td>
-                        {titles.length > 0
-                          ? displayTitles + extraCount
-                          : "No job titles specified"}
-                      </td>
-                      <td>{candidate.mobileNumber}</td>
-                      <td>
-                        {candidate.createdAt
-                          ? `${formatDistanceToNow(
-                              new Date(candidate.createdAt)
-                            )} ago`
-                          : "N/A"}
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
+              <table className="AdminDashboard-data-table">
+                <thead>
+                  <tr>
+                    <th>Candidate Name</th>
+                    <th>Job Title</th>
+                    <th>Mobile Number</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {newCandidates.map((candidate, index) => {
+                    const titles =
+                      candidate.jobPreferences?.desiredJobTitle || [];
+                    const displayTitles = titles.slice(0, 2).join(", ");
+                    const extraCount =
+                      titles.length > 2 ? ` +${titles.length - 2} more` : "";
+                    return (
+                      <tr key={index}>
+                        <td>{candidate.fullName}</td>
+                        <td>
+                          {titles.length > 0
+                            ? displayTitles + extraCount
+                            : "No job titles specified"}
+                        </td>
+                        <td>{candidate.mobileNumber}</td>
+                        <td>
+                          {candidate.createdAt
+                            ? `${formatDistanceToNow(
+                                new Date(candidate.createdAt)
+                              )} ago`
+                            : "N/A"}
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
             </div>
           </div>
         </div>
@@ -402,12 +533,13 @@ const AdminDashboard = () => {
         style={{ backgroundColor: "#facc15", color: "#000" }}
       >
         <div className="AdminDashboard-section-header">
-          <span class="AdminDashboard-section-icon">
-            <img src={activeUsersSection} alt="Active Users" />
-          </span>
+          <div className="AdminDashboard-section-header">
+            <span class="AdminDashboard-section-icon">
+              <img src={activeUsersSection} alt="Active Users" />
+            </span>
 
-          <h2>Active users</h2>
-
+            <h2 style={{ paddingRight: "20px" }}>Active users</h2>
+          </div>
           {/* Days Filter */}
           <div className="AdminDashboard-days-filter-container">
             <div
@@ -440,46 +572,51 @@ const AdminDashboard = () => {
           </div>
         </div>
         {/*table of active users*/}
-        <table className="AdminDashboard-active-users-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>User type</th>
-              <th>Job Title</th>
-              <th>Status</th>
-              <th>Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredActiveUsers.map((user, index) => (
-              <tr key={index}>
-                <td>{user.name}</td>
-                <td>{user.userType}</td>
-                <td>{user.jobTitle}</td>
-                <td>{user.status}</td>
-                <td>
-                  <div className="AdminDashboard-action-icons">
-                    <VisibilityIcon
-                      className="AdminDashboard-action-icon"
-                      onClick={() => handleView(user)}
-                      titleAccess="View"
-                    />
-                    <MessageIcon
-                      className="AdminDashboard-action-icon"
-                      onClick={() => handleMessage(user)}
-                      titleAccess="Message"
-                    />
-                    <MoreVertIcon
-                      className="AdminDashboard-action-icon"
-                      onClick={() => handleMore(user)}
-                      titleAccess="More Options"
-                    />
-                  </div>
-                </td>
+        <div className="AdminDashboard-table-scroll-wrapper">
+          <table className="AdminDashboard-active-users-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>User type</th>
+                <th>Job Title</th>
+                <th>Status</th>
+                <th>Action</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredActiveUsers.map((user, index) => (
+                <tr key={index}>
+                  <td>{user.name}</td>
+                  <td>{user.userType}</td>
+                  <td>{user.jobTitle}</td>
+                  <td>{user.status}</td>
+                  <td>
+                    <div className="AdminDashboard-action-icons">
+                      <VisibilityIcon
+                        className="AdminDashboard-action-icon"
+                        onClick={() => handleView(user)}
+                        titleAccess="View"
+                      />
+                      <MessageIcon
+                        className="AdminDashboard-action-icon"
+                        onClick={() => handleMessage(user)}
+                        titleAccess="Message"
+                      />
+                      <MoreVertIcon
+                        className="AdminDashboard-action-icon"
+                        onClick={() => handleMore(user)}
+                        titleAccess="More Options"
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="Adash-viewAll-container">
+          <span className="Adash-viewAll">View all</span>
+        </div>
       </div>
     </div>
   );
