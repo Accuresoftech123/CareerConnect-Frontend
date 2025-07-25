@@ -842,10 +842,10 @@ const JobSeekerCreateProfile = () => {
                   type="button"
                   className="jscp-btn-primary"
                   onClick={() => {
-                    // if (!resumeFile) {
-                    //   alert("Please upload your resume before proceeding.");
-                    //   return;
-                    // }
+                    if (!resumeFile) {
+                      alert("Please upload your resume before proceeding.");
+                      return;
+                    }
                     handleNext(); // proceed to next step if resume is uploaded
                   }}
                 >
