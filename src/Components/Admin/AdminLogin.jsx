@@ -63,7 +63,9 @@ const AdminLogin = () => {
       });
 
       if (response.status === 200) {
-        alert("✅ Login success");
+       alert(" ✅ Login success");
+       localStorage.setItem("adminId", response.data.id);
+          localStorage.setItem("token", response.data.token);
         navigate("/AdminHome");
       }
     } catch (err) {
@@ -136,7 +138,7 @@ const AdminLogin = () => {
             <label className="AdminLogin_label" htmlFor="password">
               Password
             </label>
-            <Link to="/AdminForgetPassword" className="AdminLogin_forgot">
+            <Link to="/Admin-ForgotPassword" className="AdminLogin_forgot">
               Forgot password?
             </Link>
             <div className="AdminLogin_Logininput-container">
