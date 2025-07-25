@@ -87,10 +87,18 @@ const AdminHome = ({ children }) => {
     },
   ];
  
- // logout function
-  const handleLogout = () => {
-    navigate("/Admin"); // Redirect to login page
-  };
+// logout function
+const handleLogout = () => {
+  localStorage.removeItem("adminId"); // Clear stored user ID
+  localStorage.removeItem("token");    // Clear token if you're using JWT
+  localStorage.removeItem("rzp_checkout_anon_id");//clear razerpay details
+  localStorage.removeItem("rzp_device_id");// clear razerpay id
+  localStorage.removeItem("rzp_stored_checkout_id");
+  localStorage.removeItem("recommendedJobs");
+  localStorage.removeItem("upcomingInterviews");
+
+  navigate("/Admin"); // Redirect to login page
+};
 
     return (
     <div className="AdminHome_layout-container">
