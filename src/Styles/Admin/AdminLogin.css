@@ -3,6 +3,7 @@
   color: #222;
 }
 
+/* ---------- HEADER ---------- */
 .Admin_header {
   justify-content: space-between;
   align-items: center;
@@ -57,17 +58,12 @@
   transition: background-color 0.3s ease;
 }
 
-.Admin_btn-outline:hover {
-  outline: none;
-  border-color: #9b5de5;
-  box-shadow: 0 0 5px #9b5de5;
-}
+.Admin_btn-outline:hover,
 .Admin_btn-outline:focus {
   outline: none;
   border-color: #9b5de5;
   box-shadow: 0 0 5px #9b5de5;
 }
-
 
 .Admin_btn-primary {
   background-color: #b153e5;
@@ -83,179 +79,206 @@
 .Admin_btn-primary:hover {
   background-color: #842cc0;
 }
-  
- 
-/* login box */
+
+/* ---------- LOGIN BOX ---------- */
 .AdminLogin_login-fillUp {
   margin-top: 40px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
- 
+
 .AdminLogin-loginBox {
-    background-color: #fff;
-    /* margin-top:70px; */
-    padding: 30px 40px;
-    border-radius: 12px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-    width: 550px;
-    text-align: center;
-    border: 1px solid #ddd;
-    border-radius: 8px;
+  background-color: #fff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  width: 550px;
+  text-align: center;
+  border: 1px solid #ddd;
 }
- 
+
 .AdminLogin_welcome-text {
-    font-size: 24px;
-    font-weight: bold;
-    margin-bottom: 0.5rem;
-    color: #000;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #000;
 }
- 
+
 .AdminLogin_welcome-text span,
 .AdminLogin_forgot,
 .AdminLogin_help-text span {
-    color: #b153e5;
-    font-weight: 600;
+  color: #b153e5;
+  font-weight: 600;
 }
- 
-.AdminLogin-loginBox > p {
-    font-size: 14px;
-    color: #555;
-    margin-bottom: 25px;
-}
- 
-.AdminLogin-loginBox > div {
-    margin-bottom: 15px;
-    text-align: left;
-    position: relative;
-}
- 
-/* Adjust label style */
-.AdminLogin_label {
-    font-weight: 500;  
-    font-size: 14px;
-    margin-bottom: 8px;  
-    display: block;  
-    color: #333;
-}
- 
-/* Input container styling */
-.AdminLogin_Logininput-container {
-    display: flex;
-    align-items: center;
-    border: 1px solid #e0e0e0;
-    border-radius: 5px;
-    padding: 10px 15px;
-    background-color: #fff;
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
- 
-.AdminLogin_Logininput-container:focus-within {
-    border-color: #b153e5;
-    box-shadow: 0 0 0 2px rgba(177, 83, 229, 0.2);
-}
- 
-/* Icon within the input container */
-.AdminLogin_Logininput-container svg {
-    margin-right: 10px;
-    color: #888;
-    font-size: 20px;
-}
- 
-/* Input field within the container */
-.AdminLogin_Logininput-container input {
-    flex-grow: 1;
-    border: none;
-    outline: none;
-    font-size: 15px;
-    padding: 0;
-    background-color: transparent;
-    color: #333;
-}
- 
-.AdminLogin_Logininput-container input::placeholder {
-    color: #aaa;
-}
- 
-/* Forgot password link specific styling */
-.AdminLogin_forgot {
-    position: absolute;
-    top: 0;
-    right: 0;
-    font-size: 13px;
-    cursor: pointer;
-    text-decoration: none;
-}
- 
-.AdminLogin_forgot:hover {
-    text-decoration: underline;
-}
- 
- 
-/* Remember Password Checkbox */
-.AdminLogin-loginBox input[type="checkbox"] {
-    margin-right: 8px;
-    vertical-align: middle;
-}
- 
-.AdminLogin-loginBox label[for="remember"] {
-    font-size: 14px;
-    color: #555;
-    vertical-align: middle;
-}
- 
-/* Buttons */
-.AdminLogin_loginbtn-primary {
-    width: 100%;
-    background-color: #b153e5;
-    color: #fff;
-    padding: 12px;
-    font-weight: bold;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-top: 25px;
-    margin-bottom: 20px;
-    transition: background-color 0.3s ease;
-    font-size: 16px;
-}
- 
-.AdminLogin_loginbtn-primary:hover {
-    background-color: #842cc0;
-}
- 
-/* Help text at the bottom */
-.AdminLogin_help-text {
-    font-size: 13px;
-    color: #777;
-    margin-top: 15px;
-}
- 
-.AdminLogin_help-text span {
-    cursor: pointer;
-    text-decoration: none;
-}
- 
-.AdminLogin_help-text span:hover {
-    text-decoration: underline;
-}
- 
-/* ========== RESPONSIVE STYLES ========== */
 
-/* Tablets: Reduce padding and font sizes */
+.AdminLogin-loginBox > p {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+.AdminLogin-loginBox > div {
+  margin-bottom: 15px;
+  text-align: left;
+  position: relative;
+}
+
+.AdminLogin_label {
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 8px;
+  display: block;
+  color: #333;
+}
+
+.AdminLogin_Logininput-container {
+  display: flex;
+  align-items: center;
+  border: 1px solid #e0e0e0;
+  border-radius: 5px;
+  padding: 10px 15px;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.AdminLogin_Logininput-container:focus-within {
+  border-color: #b153e5;
+  box-shadow: 0 0 0 2px rgba(177, 83, 229, 0.2);
+}
+
+.AdminLogin_Logininput-container svg {
+  margin-right: 10px;
+  color: #888;
+  font-size: 20px;
+}
+
+.AdminLogin_Logininput-container input {
+  flex-grow: 1;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  padding: 0;
+  background-color: #fff;
+  color: #333;
+}
+
+.AdminLogin_Logininput-container input::placeholder {
+  background-color: #fff;
+}
+
+/* Autofill fix for Chrome */
+input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px white inset !important;
+  box-shadow: 0 0 0 1000px white inset !important;
+  -webkit-text-fill-color: #000 !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Forgot password */
+.AdminLogin_forgot {
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 13px;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.AdminLogin_forgot:hover {
+  text-decoration: underline;
+}
+
+/* Checkbox */
+.AdminLogin-loginBox input[type="checkbox"] {
+  margin-right: 8px;
+  vertical-align: middle;
+}
+
+.AdminLogin-loginBox label[for="remember"] {
+  font-size: 14px;
+  color: #555;
+  vertical-align: middle;
+}
+
+/* Button */
+.AdminLogin_loginbtn-primary {
+  width: 100%;
+  background-color: #b153e5;
+  color: #fff;
+  padding: 12px;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 25px;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+  font-size: 16px;
+}
+
+.AdminLogin_loginbtn-primary:hover {
+  background-color: #842cc0;
+}
+
+/* Help Text */
+.AdminLogin_help-text {
+  font-size: 13px;
+  color: #777;
+  margin-top: 15px;
+}
+
+.AdminLogin_help-text span {
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.AdminLogin_help-text span:hover {
+  text-decoration: underline;
+}
+
+/* Error Messages */
+.AdminLogin-error-text {
+  color: red;
+  font-size: 0.875rem;
+  margin-top: 4px;
+  margin-left: 4px;
+}
+
+.AdminLogin-server-error {
+  color: #b00020 !important;
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 10px;
+  font-weight: 500;
+}
+
+/* ---------- RESPONSIVE STYLES ---------- */
+
+/* Tablet */
+/* Tablets: Up to 768px */
 @media (max-width: 768px) {
   .AdminLogin-loginBox {
     width: 90%;
     padding: 20px;
+    max-width: none;
   }
 
-  .AdminLogin_header {
+  .Admin_header {
     padding: 0.5rem 1.5rem;
+    flex-wrap: wrap;
+    font-size: 16px;
   }
 
-  .AdminLogin_logo {
+  .Admin_logo {
     font-size: 24px;
+    margin-bottom: 0.5rem;
+  }
+
+  .Admin_nav-links {
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
   }
 
   .AdminLogin_welcome-text {
@@ -268,10 +291,11 @@
 
   .AdminLogin_loginbtn-primary {
     font-size: 15px;
+    padding: 12px;
   }
 }
 
-/* Mobile: Stack layout, shrink fonts/buttons */
+/* Mobile: Up to 480px */
 @media (max-width: 480px) {
   .AdminLogin_login-fillUp {
     padding: 20px 10px;
@@ -282,17 +306,26 @@
     margin-top: 50px;
     padding: 20px;
     border-radius: 10px;
+    max-width: 100%;
   }
 
-  .AdminLogin_header {
+  .Admin_header {
     padding: 0.5rem 1rem;
     flex-direction: column;
     align-items: flex-start;
     gap: 0.5rem;
   }
 
-  .AdminLogin_logo {
+  .Admin_logo {
     font-size: 20px;
+    margin-bottom: 0.5rem;
+  }
+
+  .Admin_nav-links {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
   .AdminLogin_welcome-text {
@@ -327,5 +360,180 @@
 
   .AdminLogin_help-text {
     font-size: 12px;
+  }
+}
+/* Large desktops (1200px and up) */
+@media (min-width: 1200px) {
+  .AdminLogin-loginBox {
+    width: 550px;
+    padding: 30px 40px;
+  }
+  .Admin_header {
+    padding: 0.5rem 4.2rem 0.5rem 4.2rem;
+    font-size: 18px;
+  }
+  .Admin_logo {
+    font-size: 28px;
+  }
+  .Admin_nav-links {
+    gap: 2.5rem;
+  }
+}
+
+/* Medium desktops (992px to 1199px) */
+@media (min-width: 992px) and (max-width: 1199px) {
+  .AdminLogin-loginBox {
+    width: 500px;
+    padding: 25px 35px;
+  }
+  .Admin_header {
+    padding: 0.5rem 3rem 0.5rem 3rem;
+    font-size: 17px;
+  }
+  .Admin_logo {
+    font-size: 26px;
+  }
+  .Admin_nav-links {
+    gap: 2rem;
+  }
+}
+
+/* Tablets (768px to 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+  .AdminLogin-loginBox {
+    width: 90%;
+    padding: 20px 25px;
+    max-width: none;
+  }
+  .Admin_header {
+    padding: 0.5rem 1.5rem;
+    font-size: 16px;
+    flex-wrap: wrap;
+  }
+  .Admin_logo {
+    font-size: 24px;
+    margin-bottom: 0.5rem;
+  }
+  .Admin_nav-links {
+    justify-content: center;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .AdminLogin_welcome-text {
+    font-size: 22px;
+  }
+  .AdminLogin_Logininput-container {
+    padding: 8px 12px;
+  }
+  .AdminLogin_loginbtn-primary {
+    font-size: 15px;
+    padding: 12px;
+  }
+}
+
+/* Small tablets / large phones (576px to 767px) */
+@media (min-width: 576px) and (max-width: 767px) {
+  .AdminLogin-loginBox {
+    width: 100%;
+    padding: 18px 20px;
+    border-radius: 10px;
+    max-width: 100%;
+  }
+  .Admin_header {
+    padding: 0.5rem 1rem;
+    font-size: 15px;
+    flex-wrap: wrap;
+  }
+  .Admin_logo {
+    font-size: 22px;
+    margin-bottom: 0.5rem;
+  }
+  .Admin_nav-links {
+    justify-content: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .AdminLogin_welcome-text {
+    font-size: 20px;
+  }
+  .AdminLogin-loginBox > p {
+    font-size: 13px;
+  }
+  .AdminLogin_Logininput-container svg {
+    font-size: 18px;
+  }
+  .AdminLogin_Logininput-container input {
+    font-size: 14px;
+  }
+  .AdminLogin_label,
+  .AdminLogin-loginBox label[for="remember"] {
+    font-size: 13px;
+  }
+  .AdminLogin_forgot {
+    font-size: 12px;
+  }
+  .AdminLogin_loginbtn-primary {
+    font-size: 15px;
+    padding: 10px;
+  }
+  .AdminLogin_help-text {
+    font-size: 12px;
+  }
+}
+
+/* Mobile phones (up to 575px) */
+@media (max-width: 575px) {
+  .AdminLogin_login-fillUp {
+    padding: 20px 10px;
+  }
+  .AdminLogin-loginBox {
+    width: 100%;
+    margin-top: 50px;
+    padding: 15px 15px;
+    border-radius: 10px;
+    max-width: 100%;
+  }
+  .Admin_header {
+    padding: 0.5rem 1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 14px;
+  }
+  .Admin_logo {
+    font-size: 20px;
+    margin-bottom: 0.5rem;
+  }
+  .Admin_nav-links {
+    width: 100%;
+    justify-content: flex-start;
+    gap: 1rem;
+    flex-wrap: wrap;
+  }
+  .AdminLogin_welcome-text {
+    font-size: 18px;
+  }
+  .AdminLogin-loginBox > p {
+    font-size: 12px;
+  }
+  .AdminLogin_Logininput-container svg {
+    font-size: 16px;
+  }
+  .AdminLogin_Logininput-container input {
+    font-size: 13px;
+  }
+  .AdminLogin_label,
+  .AdminLogin-loginBox label[for="remember"] {
+    font-size: 12px;
+  }
+  .AdminLogin_forgot {
+    font-size: 11px;
+  }
+  .AdminLogin_loginbtn-primary {
+    font-size: 14px;
+    padding: 10px;
+  }
+  .AdminLogin_help-text {
+    font-size: 11px;
   }
 }

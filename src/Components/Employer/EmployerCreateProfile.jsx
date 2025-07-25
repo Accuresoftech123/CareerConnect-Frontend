@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import facebook from "../../Images/facebook.svg";
 import instagram from "../../Images/instagram.svg";
-import linkedin from "../../Images/linkedin.svg";
+import linkedinIcon from "../../Images/linkedin.svg";
 import x from "../../Images/x.svg";
 import user from "../../Images/user.svg";
 import UploadCompanyImage from "../../Images/UploadCompanyImage.svg";
@@ -41,6 +41,7 @@ const EmployerCreateProfile = () => {
       foundingYear: 0,
       hrContactEmail: "",
       hrContactMobileNumber: "",
+      companyLinkdln: "",
     },
     companyLocations: [
       {
@@ -105,7 +106,7 @@ const EmployerCreateProfile = () => {
   const validateStep2 = () => {
     const newErrors = {};
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
-    const phoneRegex = /^[0-9]{10}$/;
+    // const phoneRegex = /^[0-9]{10}$/;
 
     if (!formData.companyProfile.hrName.trim()) {
       newErrors.hrName = "Recruiter name is required";
@@ -121,16 +122,15 @@ const EmployerCreateProfile = () => {
       newErrors.hrContactEmail = "Invalid email format";
     }
 
-    if (!formData.companyProfile.hrContactMobileNumber.trim()) {
-      newErrors.hrContactMobileNumber = "Mobile number is required";
-    } else if (
-      !/^\+?[1-9]\d{7,14}$/.test(
-        !formData.companyProfile.hrContactMobileNumber.trim()
-      )
-    ) {
-      newErrors.hrContactMobileNumber =
-        "Enter a valid phone number with country code";
-    }
+    const rawPhone = formData.companyProfile.hrContactMobileNumber.trim().replace(/[\s-]/g, ""); // removes spaces and dashes
+
+if (!rawPhone) {
+  newErrors.hrContactMobileNumber = "Mobile number is required";
+} else if (!/^\+?[1-9]\d{7,14}$/.test(rawPhone)) {
+  newErrors.hrContactMobileNumber =
+    "Enter a valid phone number with country code";
+}
+
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -547,7 +547,7 @@ const EmployerCreateProfile = () => {
                           }
                         />
                       </div>
-
+                        
                       {/* Full Address
                       <div
                         className="ecp-location-group"
@@ -617,7 +617,25 @@ const EmployerCreateProfile = () => {
                     <img src={plusIcon} alt="" /> Add another location
                   </button>
                 </div>
-
+                      <div className="ecp-input-group jscp-full">
+                        <label htmlFor="linkedinUrl">
+                          <img
+                            src={linkedinIcon}
+                            alt="LinkedIn Profile"
+                            className="ecp-card-icon"
+                          />{" "}
+                          LinkedIn Profile
+                        </label>
+                        <input
+                          type="url"
+                          id="linkedinUrl"
+                          name="companyLinkdln"
+                          placeholder={"Enter your LinkedIn Profile URL"}
+                          value={formData.companyProfile.companyLinkdln}
+                          onChange={(e) =>
+                            handleChange(e, "companyProfile")}
+                        />
+                      </div>
                 <div className="ecp-form-row">
                   <div className="ecp-input-group ecp-full">
                     <label htmlFor="aboutCompany">About company</label>
@@ -791,7 +809,7 @@ const EmployerCreateProfile = () => {
                 <img src={instagram} alt="i" />
               </span>
               <span>
-                <img src={linkedin} alt="l" />
+                <img src={linkedinIcon} alt="l" />
               </span>
               <span>
                 <img src={x} alt="x" />

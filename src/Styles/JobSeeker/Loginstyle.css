@@ -208,9 +208,9 @@
   display: flex;
   align-items: center;
 }
-.jobseeker_sociallogin-container {
+/* .jobseeker_sociallogin-container {
   
-}
+} */
 .jsl-toggle-password-icon {
    position: absolute;
   top: 50%;
