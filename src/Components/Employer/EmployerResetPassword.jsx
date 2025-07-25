@@ -10,6 +10,8 @@ import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/material/SvgIcon";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { baseURL } from "../../axiosInstance";
+import axios from "axios";
  
 const EmployerResetPassword = () => {
   const navigate = useNavigate();
@@ -69,22 +71,39 @@ const EmployerResetPassword = () => {
     return newErrors;
   };
  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
- 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
- 
-    setErrors({});
-    console.log("Password reset successful:", formData);
-    alert("reset password successfully!!")
-    // Redirect after success
-    navigate("/JobSeeker");
-  };
- 
+ const handleSubmit = (e) => {
+  e.preventDefault();
+
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  axios.put(
+    `${baseURL}/api/recruiters/Set-password/${formData.email}/${formData.password}`
+  )
+    .then((response) => {
+      alert(response.data.message); // "Password reset successfully."
+      console.log("Password reset successful:", response.data);
+      navigate("/Employer");
+    })
+    .catch((err) => {
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+
+      if (status === 404 && message === "Email not registered. Please register first.") {
+        alert("Email not found. Please register first.");
+      } else {
+        alert(message || "Password reset failed. Please try again.");
+      }
+
+      console.error("Reset password failed:", err);
+    });
+
+  setErrors({});
+};
+
   return (
     <div className="EmpResetPassword-container">
       {/* Header */}

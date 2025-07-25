@@ -8,6 +8,8 @@ import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/material/SvgIcon";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import { baseURL } from "../../axiosInstance";
+import axios from "axios";
  
 const AdminResetPassword = () => {
   const navigate = useNavigate();
@@ -67,22 +69,38 @@ const AdminResetPassword = () => {
     return newErrors;
   };
  
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = validate();
- 
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    }
- 
-    setErrors({});
-    console.log("Password reset successful:", formData);
-    alert("reset password successfully!!")
-    // Redirect after success
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  setErrors({});
+
+  try {
+    const response = await axios.put(
+      `${baseURL}/api/admin/Set-password/${formData.email}/${formData.password}`
+    );
+
+    alert(response.data.message);
     navigate("/Admin");
-  };
- 
+
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      alert("Email not found. Please register first.");
+    } else {
+      alert(
+        error.response?.data?.message ||
+        "Failed to reset password. Please try again."
+      );
+    }
+    console.error("Password reset failed:", error);
+  }
+};
+
   return (
     <div className="AdminResetPassword-container">
       {/* Header */}

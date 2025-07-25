@@ -5,7 +5,8 @@ import { Link, useNavigate } from "react-router-dom";
 import "../../Styles/Admin/AdminForgotPassword.css";
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import SvgIcon from "@mui/icons-material/LocalPostOffice";
- 
+import axios from "axios";
+import { baseURL } from "../../axiosInstance";
 const AdminForgotPassword = () => {
   const navigate = useNavigate();
  const [otpSent, setOtpSent] = useState(false);
@@ -28,32 +29,62 @@ const AdminForgotPassword = () => {
   };
  
   // Handle "Get OTP" submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setOtpSent(true);
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  setOtpSent(true);
+
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  setErrors({});
+
+  try {
+    const response = await axios.post(
+      `${baseURL}/api/admin/send-otp/${email}`
+    );
+    alert(response.data.message); 
+    console.log("OTP sent to:",email);
+  } catch (error) {
+    if (error.response && error.response.status === 404) {
+      // backend threw "UserNotFoundException" with status 404
+      alert("Your email is not registered.");
     } else {
-      setErrors({});
-      // TODO: API call to send OTP
-      console.log("OTP sent to:", email);
+      alert("Failed to send OTP. Please try again.");
     }
-  };
+    console.error("Error sending OTP:", error);
+  }
+};
  
-  // Handle OTP verification
- const verifyOtp = async () => {
+
+
+const verifyOtp = async () => {
   if (otp.length !== 6) {
     setError("Please enter a valid 6-digit OTP.");
     return;
   }
- 
-  // TODO: Add actual OTP verification API call here
-  console.log("Verifying OTP:", otp);
- 
-  // If OTP is correct, navigate to Reset Password page
-  navigate("/Admin-ResetPassword");
+
+  try {
+    const response = await axios.post(
+      `${baseURL}/api/admin/verify-otp/${email}/${otp}`
+    );
+    console.log(response.data.message);
+    alert(response.data.message); // Should show: "OTP verified successfully."
+    navigate("/Admin-ResetPassword");
+  } catch (error) {
+    if (error.response && error.response.status === 400) {
+      setError("Invalid or expired OTP. Please try again.");
+    } else if (error.response && error.response.status === 404) {
+      setError("Admin not found. Please check your email.");
+    } else {
+      setError("Something went wrong. Please try again later.");
+    }
+    console.error("OTP verification failed:", error);
+  }
 };
+
  
   return (
     <div className="AdminForgotPassword_container">

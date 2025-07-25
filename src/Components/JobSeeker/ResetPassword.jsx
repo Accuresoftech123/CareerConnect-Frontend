@@ -70,28 +70,38 @@ const ResetPassword = () => {
     return newErrors;
   };
  
- const handleSubmit = (e) => {
+const handleSubmit = (e) => {
   e.preventDefault();
-  const validationErrors = validate();
 
+  const validationErrors = validate();
   if (Object.keys(validationErrors).length > 0) {
     setErrors(validationErrors);
     return;
   }
 
+  
+  setErrors({});
+
   axios.put(`${baseURL}/api/jobseekers/Set-password/${formData.email}/${formData.password}`)
     .then((response) => {
-      alert(response.data.message); // ✅ use correct key "message"
+      alert(response.data.message); 
       console.log("Password reset successful:", formData);
-     // navigate("/JobSeeker");
+      navigate("/JobSeeker");
     })
     .catch((err) => {
-      console.error("Reset password failed:", err);
-      alert(err.response?.data?.message || "Password reset failed.");
-    });
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
 
-  setErrors({});
+      console.error("Reset password failed:", err);
+
+      if (status === 404 || message?.includes("not registered")) {
+        alert("Email not found. Please register first.");
+      } else {
+        alert(message || "Password reset failed. Please try again.");
+      }
+    });
 };
+
  
   return (
     <div className="ResetPassword-container">

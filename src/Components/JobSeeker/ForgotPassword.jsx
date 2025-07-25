@@ -30,52 +30,82 @@ const ForgotPassword = () => {
  
   // Handle "Get OTP" submission
   const handleSubmit = (e) => {
-    e.preventDefault();
-    setOtpSent(true);
-    const validationErrors = validate();
-    if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
-    } 
-    
-    axios.post(`${baseURL}/api/jobseekers/Send-Otp/${email}`)
+  e.preventDefault();
+
+  const validationErrors = validate();
+  if (Object.keys(validationErrors).length > 0) {
+    setErrors(validationErrors);
+    return;
+  }
+
+  setErrors({});
+
+  axios.post(`${baseURL}/api/jobseekers/Send-Otp/${email}`)
     .then((res) => {
-      alert("OTP sent to your email");
-      console.log(res.data);
+      alert(`OTP sent to your email: ${email}`);
       setOtpSent(true);
     })
     .catch((err) => {
-      alert("Error sending OTP: " + (err.response?.data || err.message));
+      const status = err.response?.status;
+      const message = err.response?.data?.message;
+
+      console.error("Error sending OTP:", err);
+
+      if (status === 404 || message?.includes("Job seeker not found")) {
+        alert("Email not registered. Please sign up first.");
+      } else {
+        alert("Failed to send OTP. Please try again.");
+      }
     });
-  };
+};
+
  
   // Handle OTP verification
- const verifyOtp = async () => {
+const verifyOtp = async () => {
   if (otp.length !== 6) {
     setError("Please enter a valid 6-digit OTP.");
     return;
   }
- 
-  // TODO: Add actual OTP verification API call here
+
   try {
     const response = await axios.post(`${baseURL}/api/jobseekers/verify-otp`, {
       email,
       otp,
     });
 
-    if (response.data.success) {
-      alert("OTP Verified");
-      console.log(response.data.message);
+    const data = response.data;
+
+    if (data.success) {
+      alert("OTP verification successful!");
+      console.log("OTP verified:", data.message);
       navigate("/Reset-Password");
     } else {
-      setError(response.data.message || "OTP verification failed.");
+      // In case backend returns 200 but success=false
+      setError(data.message || "OTP verification failed.");
     }
+
   } catch (err) {
-    console.error("OTP Verification Failed:", err);
-    setError(err.response?.data?.message || "Server error during OTP verification.");
+    const status = err.response?.status;
+    const message = err.response?.data?.message;
+
+    console.error("OTP verification failed:", err);
+
+    if (status === 400) {
+      if (message === "Invalid OTP") {
+        setError("The OTP you entered is incorrect. Please try again.");
+      } else if (message === "OTP expired") {
+        setError("Your OTP has expired. Please request a new one.");
+      } else {
+        setError(message || "OTP verification failed.");
+      }
+    } else if (status === 404 && message?.includes("not found")) {
+      setError("Email not found. Please register first.");
+    } else {
+      setError("Server error during OTP verification.");
+    }
   }
 };
- 
+
   return (
     <div className="ForgotPassword_container">
       {/* Header */}
