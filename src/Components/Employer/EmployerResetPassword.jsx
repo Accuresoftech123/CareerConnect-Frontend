@@ -2,17 +2,18 @@
 import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
  
-import "../../Styles/JobSeeker/ResetPassword.css";
+// import "../../Styles/JobSeeker/ResetPassword.css";
+import "../../Styles/Employer/EmployerResetPassword.css"
  
 import LocalPostOfficeIcon from "@mui/icons-material/LocalPostOffice";
 import LockIcon from "@mui/icons-material/Lock";
 import SvgIcon from "@mui/material/SvgIcon";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import axios from "axios";
 import { baseURL } from "../../axiosInstance";
-
-const ResetPassword = () => {
+import axios from "axios";
+ 
+const EmployerResetPassword = () => {
   const navigate = useNavigate();
  
   const [formData, setFormData] = useState({
@@ -70,7 +71,7 @@ const ResetPassword = () => {
     return newErrors;
   };
  
-const handleSubmit = (e) => {
+ const handleSubmit = (e) => {
   e.preventDefault();
 
   const validationErrors = validate();
@@ -79,56 +80,56 @@ const handleSubmit = (e) => {
     return;
   }
 
-  
-  setErrors({});
-
-  axios.put(`${baseURL}/api/jobseekers/Set-password/${formData.email}/${formData.password}`)
+  axios.put(
+    `${baseURL}/api/recruiters/Set-password/${formData.email}/${formData.password}`
+  )
     .then((response) => {
-      alert(response.data.message); 
-      console.log("Password reset successful:", formData);
-      navigate("/JobSeeker");
+      alert(response.data.message); // "Password reset successfully."
+      console.log("Password reset successful:", response.data);
+      navigate("/Employer");
     })
     .catch((err) => {
       const status = err.response?.status;
       const message = err.response?.data?.message;
 
-      console.error("Reset password failed:", err);
-
-      if (status === 404 || message?.includes("not registered")) {
+      if (status === 404 && message === "Email not registered. Please register first.") {
         alert("Email not found. Please register first.");
       } else {
         alert(message || "Password reset failed. Please try again.");
       }
+
+      console.error("Reset password failed:", err);
     });
+
+  setErrors({});
 };
 
- 
   return (
-    <div className="ResetPassword-container">
+    <div className="EmpResetPassword-container">
       {/* Header */}
-      <header className="ResetPassword-header">
-        <div className="ResetPassword-logo">
+      <header className="EmpResetPassword-header">
+        <div className="EmpResetPassword-logo">
           <span>Career</span> Connect
         </div>
-        <nav className="ResetPassword-nav-links">
+        <nav className="EmpResetPassword-nav-links">
           <Link to="/">Home</Link>
           <Link to="/Jobs">Jobs</Link>
           <Link to="/Companies">Companies</Link>
-          <Link to="/JobSeeker-Registration">
-            <button className="ResetPassword-btn-primary">Register</button>
+          <Link to="/Employer-Registration">
+            <button className="EmpResetPassword-btn-primary">Register</button>
           </Link>
         </nav>
       </header>
  
       {/* Main Section */}
-      <main className="ResetPassword-section">
-        <form className="ResetPassword-content" onSubmit={handleSubmit}>
+      <main className="EmpResetPassword-section">
+        <form className="EmpResetPassword-content" onSubmit={handleSubmit}>
           <h1>Reset Your Password</h1>
-          <p>Please enter your details</p>
+          <p>Enter your email and create a new password here.</p>
  
           {/* Email */}
           <label>Email Id</label>
-          <div className="ResetPassword-input-container">
+          <div className="EmpResetPassword-input-container">
             <SvgIcon component={LocalPostOfficeIcon} />
             <input
               type="email"
@@ -139,12 +140,12 @@ const handleSubmit = (e) => {
             />
           </div>
           {errors.email && (
-            <p className="ResetPassword-error-text">{errors.email}</p>
+            <p className="EmpResetPassword-error-text">{errors.email}</p>
           )}
  
           {/* New Password */}
           <label>Create new password</label>
-          <div className="ResetPassword-input-container">
+          <div className="EmpResetPassword-input-container">
             <SvgIcon component={LockIcon} />
             <input
               type={showPassword ? "text" : "password"}
@@ -155,7 +156,7 @@ const handleSubmit = (e) => {
             />
             <span
               onClick={togglePasswordVisibility}
-              className="ResetPassword--toggle-icon"
+              className="EmpResetPassword--toggle-icon"
             >
               {showPassword ? (
                 <VisibilityOffIcon fontSize="small" />
@@ -165,12 +166,12 @@ const handleSubmit = (e) => {
             </span>
           </div>
           {errors.password && (
-            <p className="ResetPassword-error-text">{errors.password}</p>
+            <p className="EmpResetPassword-error-text">{errors.password}</p>
           )}
  
           {/* Confirm Password */}
           <label>Re-enter new password</label>
-          <div className="ResetPassword-input-container">
+          <div className="EmpResetPassword-input-container">
             <SvgIcon component={LockIcon} />
             <input
               type={showConfirmPassword ? "text" : "password"}
@@ -181,7 +182,7 @@ const handleSubmit = (e) => {
             />
             <span
               onClick={toggleConfirmPasswordVisibility}
-              className="ResetPassword--toggle-icon"
+              className="EmpResetPassword--toggle-icon"
             >
               {showConfirmPassword ? (
                 <VisibilityOffIcon fontSize="small" />
@@ -191,18 +192,18 @@ const handleSubmit = (e) => {
             </span>
           </div>
           {errors.confirmPassword && (
-            <p className="ResetPassword-error-text">
+            <p className="EmpResetPassword-error-text">
               {errors.confirmPassword}
             </p>
           )}
  
           {/* Submit Button */}
-          <button className="ResetPassword-btn-submit" type="submit">
+          <button className="EmpResetPassword-btn-submit" type="submit">
             Reset Password
           </button>
  
-          <p className="ResetPassword-span-link">
-          Back to <Link to="/JobSeeker" style={{textDecoration: "none"}}><span>Log In</span></Link>
+          <p className="EmpResetPassword-span-link">
+          Back to <Link to="/Employer" style={{textDecoration: "none"}}><span>Log In</span></Link>
         </p>
         </form>
       </main>
@@ -210,4 +211,4 @@ const handleSubmit = (e) => {
   );
 };
  
-export default ResetPassword;
+export default EmployerResetPassword;

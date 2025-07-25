@@ -17,7 +17,7 @@ import axiosInstance, { baseURL } from "../../../axiosInstance";
 import { formatDistanceToNow } from "date-fns";
 
 const AdminDashboard = () => {
- // const url = "http://localhost:9191";
+  // const url = "http://localhost:9191";
   // Stats data
   const [newJobPostedcount, setnewJobPostedcount] = useState(0);
   const [newCandidatescount, setnewCandidatescount] = useState(0);
@@ -289,54 +289,51 @@ const AdminDashboard = () => {
         <div className="AdminDashboard-dashboard-section">
           <div className="AdminDashboard-section-title">
             <span
-              class="AdminDashboard-section-icon"
+              className="AdminDashboard-section-icon"
               style={{ paddingRight: "20px" }}
             >
-              <img src={newRecruiter} alt="New Job Posted" />
+              <img src={newRecruiter} alt="New Recruiters" />
             </span>
             <h2>New Recruiters</h2>
             <span className="AdminDashboard-dashboard-section-viewAll">
-              view all
+              View all
             </span>
           </div>
-          <div className="AdminDashboard-recruiters-grid">
-            <div className="AdminDashboard-grid-column">
-              <h3>Company Name</h3>
-              {newRecruiters.map((recruiter, index) => (
-                <div key={index} className="AdminDashboard-grid-item">
-                  {recruiter.companyName}
-                </div>
-              ))}
-            </div>
-            <div className="AdminDashboard-grid-column">
-              <h3>Location</h3>
-              {newRecruiters.map((recruiter, index) => (
-                <div key={index} className="AdminDashboard-grid-item"> {recruiter.companyLocations?.length > 0
-        ? recruiter.companyLocations
-            .map((location) => location.city)
-            .filter(city => city) // remove null or empty
-            .join(", ")
-        : "N/A"}
-</div>
-              ))}
-            </div>
-            <div className="AdminDashboard-grid-column">
-              <h3>Mobile Number</h3>
-              {newRecruiters.map((recruiter, index) => (
-                <div key={index} className="AdminDashboard-grid-item">{recruiter.mobileNumber}</div>
-              ))}
-            </div>
-            <div className="AdminDashboard-grid-column">
-              <h3>Time</h3>
-               {newRecruiters.map((recruiter, index) => (
-                <div key={index} className="AdminDashboard-grid-item">
-                  {recruiter.createdAt
-                    ? `${formatDistanceToNow(
-                        new Date(recruiter.createdAt)
-                      )} ago`
-                    : "N/A"}
-                </div>
-              ))}
+          <div className="AdminDashboard-table-wrapper">
+            <div className="AdminDashboard-scroll-container">
+            <table className="AdminDashboard-data-table">
+              <thead>
+                <tr>
+                  <th>Company Name</th>
+                  <th>Location</th>
+                  <th>Mobile Number</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {newRecruiters.map((recruiter, index) => (
+                  <tr key={index}>
+                    <td>{recruiter.companyName}</td>
+                    <td>
+                      {recruiter.companyLocations?.length > 0
+                        ? recruiter.companyLocations
+                            .map((location) => location.city)
+                            .filter(Boolean)
+                            .join(", ")
+                        : "N/A"}
+                    </td>
+                    <td>{recruiter.mobileNumber}</td>
+                    <td>
+                      {recruiter.createdAt
+                        ? `${formatDistanceToNow(
+                            new Date(recruiter.createdAt)
+                          )} ago`
+                        : "N/A"}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
             </div>
           </div>
         </div>
@@ -345,64 +342,65 @@ const AdminDashboard = () => {
         <div className="AdminDashboard-dashboard-section">
           <div className="AdminDashboard-section-title">
             <span
-              class="AdminDashboard-section-icon"
+              className="AdminDashboard-section-icon"
               style={{ paddingRight: "20px" }}
             >
               <img src={Candidates} alt="New Candidates" />
             </span>
             <h2>New Job-Seekers</h2>
             <span className="AdminDashboard-dashboard-section-viewAll">
-              view all
+              View all
             </span>
           </div>
-          <div className="AdminDashboard-candidates-grid">
-            <div className="AdminDashboard-grid-column">
-              <h3>Candidate Name</h3>
-              {newCandidates.map((candidate, index) => (
-                <div key={index} className="AdminDashboard-grid-item">
-                  {candidate.fullName}
-                </div>
-              ))}
-            </div>
-            <div className="AdminDashboard-grid-column">
-      <h3>Job Title</h3>
-      {newCandidates.map((candidate, index) => {
-        const titles = candidate.jobPreferences?.desiredJobTitle || [];
-        const displayTitles = titles.slice(0, 2).join(", ");
-        const extraCount = titles.length > 2 ? ` +${titles.length - 2} more` : "";
-        return (
-          <div key={index} className="AdminDashboard-grid-item">
-            {titles.length > 0 ? displayTitles + extraCount : "No job titles specified"}
-          </div>
-        );
-      })}
-    </div>
-            <div className="AdminDashboard-grid-column">
-              <h3>Mobile Number</h3>
-              {newCandidates.map((candidate, index) => (
-                <div key={index} className="AdminDashboard-grid-item">
-                  {candidate.mobileNumber}
-                </div>
-              ))}
-            </div>
-            <div className="AdminDashboard-grid-column">
-              <h3>Time</h3>
-              {newCandidates.map((candidate, index) => (
-                <div key={index} className="AdminDashboard-grid-item">
-                  {candidate.createdAt
-                    ? `${formatDistanceToNow(
-                        new Date(candidate.createdAt)
-                      )} ago`
-                    : "N/A"}
-                </div>
-              ))}
+          <div className="AdminDashboard-table-wrapper">
+            <div className="AdminDashboard-scroll-container">
+            <table className="AdminDashboard-data-table">
+              <thead>
+                <tr>
+                  <th>Candidate Name</th>
+                  <th>Job Title</th>
+                  <th>Mobile Number</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody>
+                {newCandidates.map((candidate, index) => {
+                  const titles =
+                    candidate.jobPreferences?.desiredJobTitle || [];
+                  const displayTitles = titles.slice(0, 2).join(", ");
+                  const extraCount =
+                    titles.length > 2 ? ` +${titles.length - 2} more` : "";
+                  return (
+                    <tr key={index}>
+                      <td>{candidate.fullName}</td>
+                      <td>
+                        {titles.length > 0
+                          ? displayTitles + extraCount
+                          : "No job titles specified"}
+                      </td>
+                      <td>{candidate.mobileNumber}</td>
+                      <td>
+                        {candidate.createdAt
+                          ? `${formatDistanceToNow(
+                              new Date(candidate.createdAt)
+                            )} ago`
+                          : "N/A"}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
             </div>
           </div>
         </div>
       </div>
 
       {/* Active Users Section */}
-      <div className="AdminDashboard-dashboard-section-user" style={{ backgroundColor: "#facc15", color: "#000" }}>
+      <div
+        className="AdminDashboard-dashboard-section-user"
+        style={{ backgroundColor: "#facc15", color: "#000" }}
+      >
         <div className="AdminDashboard-section-header">
           <span class="AdminDashboard-section-icon">
             <img src={activeUsersSection} alt="Active Users" />
@@ -442,7 +440,7 @@ const AdminDashboard = () => {
           </div>
         </div>
         {/*table of active users*/}
-        <table className="AdminDashboard-active-users-table"  >
+        <table className="AdminDashboard-active-users-table">
           <thead>
             <tr>
               <th>Name</th>
