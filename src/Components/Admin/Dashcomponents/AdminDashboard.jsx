@@ -32,7 +32,7 @@ const AdminDashboard = () => {
 
   const fetchRecentJobSeekers = async () => {
     try {
-      const response = await axios.get(`${baseURL}/api/jobseekers/recent`);
+      const response = await axiosInstance.get(`/api/admin/jobseeker/recent`);
       setNewCandidates(response.data);
       console.log("Recent Job Seekers:", response.data);
     } catch (error) {
@@ -45,7 +45,7 @@ const AdminDashboard = () => {
   const fetchJobPostedcount = async () => {
     try {
       const response = await axiosInstance.get(
-        `${baseURL}/api/jobposts/jobposts/recent/count`
+        `/api/admin/jobposts/recent/count`
       );
       setnewJobPostedcount(response.data);
     } catch (error) {
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
   const fetchCandidatescount = async () => {
     try {
       const response = await axiosInstance.get(
-        `${baseURL}/api/jobseekers/recent/count`
+        `/api/admin/jobseeker/recent/count`
       );
       setnewCandidatescount(response.data);
     } catch (error) {
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
   const fetchCompaniescount = async () => {
     try {
       const response = await axiosInstance.get(
-        `${baseURL}/api/recruiters/recent/count`
+        `/api/admin/recruiter/recent/count`
       );
       setnewCompaniescount(response.data);
     } catch (error) {
@@ -77,7 +77,7 @@ const AdminDashboard = () => {
 
   const fetchSubscriptionscount = async () => {
     try {
-      const response = await axiosInstance.get(
+      const response = await axios.get(
         `${baseURL}/api/payments/total-amount`
       );
       settotalSubscriptionscount(response.data);
@@ -97,14 +97,14 @@ const AdminDashboard = () => {
   };
   // New Recruiters data
   const fetchnewcompanies = async () => {
-    try {
-      const response = await axios.get(`${baseURL}/api/recruiters/recent`);
-      setNewrecruiters(response.data);
-      console.log(response.data);
-    } catch (error) {
-      console.error("Error fetching recruiters:", error);
-    }
-  };
+      try {
+        const response = await axiosInstance.get(`/api/admin/recruiter/recent`);
+       setNewrecruiters(response.data);
+       console.log(response.data);
+      } catch (error) {
+        console.error("Error fetching recruiters:", error);
+      }
+    };
 
   // New Candidates data
   // const fetchnewcandidates = () => {

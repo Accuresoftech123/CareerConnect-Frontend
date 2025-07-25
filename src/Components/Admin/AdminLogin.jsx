@@ -63,7 +63,9 @@ const AdminLogin = () => {
       });
 
       if (response.status === 200) {
-        alert("✅ Login success");
+       alert(" ✅ Login success");
+       localStorage.setItem("adminId", response.data.id);
+          localStorage.setItem("token", response.data.token);
         navigate("/AdminHome");
       }
     } catch (err) {
