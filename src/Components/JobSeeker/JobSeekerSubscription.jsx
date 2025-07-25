@@ -14,6 +14,7 @@ import x from "../../Images/x.svg";
 import axios from "axios";
 import axiosInstance, {baseURL} from "../../axiosInstance";
 
+import { useEffect } from "react";
  
 // CSS
 import "../../Styles/JobSeeker/JobSeekerSubscription.css";
@@ -21,7 +22,13 @@ import "../../Styles/JobSeeker/JobSeekerSubscription.css";
 const JobSeekerSubscription = () => {
   const navigate = useNavigate();
   const [isMonthly, setIsMonthly] = useState(true);
+  const [plan, setPlan] = useState('');
+  const [amount, setAmount] = useState(0);
+  const [orderId, setOrderId] = useState("");
+  const [paymentId, setPaymentId] = useState("");
   const jobSeekerId = localStorage.getItem("jobSeekerId"); // Get ID stored after registration
+  console.log("Job Seeker ID:", jobSeekerId);
+  const userId = parseInt(jobSeekerId); // Convert to integer for API call
 
  // const url = "http://localhost:9191";
   // Function to load Razorpay script dynamically
@@ -42,7 +49,11 @@ const JobSeekerSubscription = () => {
   };
   // Function to handle payment
   // This function will be called when the user clicks on a plan's "Continue" button
- const handlePayment = async (amount) => {
+  const handlePlanPayment = (selectedPlan, selectedAmount) => {
+  setPlan(selectedPlan);  // Optional
+  handlePayment(selectedPlan, selectedAmount);
+};
+ const handlePayment = async (selectedPlan, amount) => {
   const res = await loadRazorpayScript();
   if (!res) {
     alert("Razorpay SDK failed to load.");
@@ -50,19 +61,35 @@ const JobSeekerSubscription = () => {
   }
  
   try {
+
+    console.log("Sending to backend:", {
+  userId: parseInt(jobSeekerId),
+  amount,
+  plan
+});
+
    // ✅ Pass jobSeekerId and amount both to your backend
     const { data: orderData } = await axios.post(
 
+      
       // create order api
       `${baseURL}/api/payments/create-order`,
       null,
       {
         params: {
-          userId: jobSeekerId,   // Pass JobSeeker id here
-          amount: amount
+         userId: userId,   // ✅ required
+      amount: amount,
+      plan:selectedPlan
         }
       }
         );    const orderId = orderData.id;
+         // 💡 For FREE plan: backend returns a message instead of order ID
+    if (!orderData.id) {
+      alert("✅ " + orderData.message);
+      navigate("/JobSeeker-Create-Profile");
+      return;
+    }
+        
  
     const options = {
       key: "rzp_test_AuIadyQBYv3HGr",
@@ -145,6 +172,11 @@ const starterFeatures = [
       </li>
     ));
  
+  //   useEffect(() => {
+  //   if (plan === "FREE") setAmount(0);
+  //   else if (plan === "PRO") setAmount(999);
+  //   else if (plan === "ELITE") setAmount(4999);
+  // }, [plan]);
   return (
     <div className="js_subscription_container">
       {/* Header */}
@@ -205,7 +237,7 @@ const starterFeatures = [
             <p className="js_subscription_features-title">Features includes:</p>
             <ul>{renderFeatures(starterFeatures)}</ul>
           </div>
-          <button onClick={handleSubmit} className="js_subscription_continue-button starter-btn">
+          <button onClick={() => handlePayment("FreePLAN", 0)} className="js_subscription_continue-button starter-btn">
             Continue with Free plan
           </button>
         </div>
@@ -223,7 +255,7 @@ const starterFeatures = [
             <p className="js_subscription_features-title">Features includes:</p>
             <ul>{renderFeatures(proFeatures)}</ul>
           </div>
-          <button onClick={() => handlePayment(isMonthly ? 999 : 9999)} className="js_subscription_continue-button pro-btn">
+          <button onClick={() => handlePayment("PROPLAN", isMonthly ? 999 : 9999)} className="js_subscription_continue-button pro-btn">
             Continue with Pro plan
           </button>
         </div>
@@ -240,7 +272,7 @@ const starterFeatures = [
             <p className="js_subscription_features-title">Features includes:</p>
             <ul>{renderFeatures(eliteFeatures)}</ul>
           </div>
-          <button onClick={()=>handlePayment(isMonthly?4999 : 24999)} className="js_subscription_continue-button elite-btn">
+          <button  onClick={() => handlePayment("ELITEPLAN", isMonthly ? 4999 : 24999)} className="js_subscription_continue-button elite-btn">
             Continue with Elite plan
           </button>
         </div>

@@ -262,7 +262,7 @@ const formatStatus = (status) => {
         >
           <option value="">Select experience</option>
           <option value="Internship">Internship</option>
-          <option value="1 Tos 2 Years">1 Tos 2 Years</option>
+          <option value="1 To 2 Years">1 To 2 Years</option>
           <option value="2 To 5 Years">2 To 5 Years</option>
           <option value="5 Years Above">5 Years Above</option>
         </select>
