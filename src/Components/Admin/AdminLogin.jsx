@@ -136,7 +136,7 @@ const AdminLogin = () => {
             <label className="AdminLogin_label" htmlFor="password">
               Password
             </label>
-            <Link to="/AdminForgetPassword" className="AdminLogin_forgot">
+            <Link to="/Admin-ForgotPassword" className="AdminLogin_forgot">
               Forgot password?
             </Link>
             <div className="AdminLogin_Logininput-container">
