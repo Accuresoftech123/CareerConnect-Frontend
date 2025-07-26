@@ -1,0 +1,302 @@
+/* ========== MODAL OVERLAY ========== */
+.scheduleInterview-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding-top: 40px;
+  padding-bottom: 40px;
+  overflow-y: auto;
+  z-index: 2000; /* increased to stay above sidebar */
+}
+
+/* ========== MODAL BOX ========== */
+.scheduleInterview-modal {
+  margin-top: 25px;
+  background: #fff;
+  width: 540px;
+  max-width: 95%;
+  max-height: 87vh;
+  overflow-y: auto;
+  padding: 20px 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+  z-index: 2001;
+}
+
+/* =======================
+   Modal Title
+========================== */
+.scheduleInterview-modal-title {
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+/* =======================
+   Form Section Heading
+========================== */
+.scheduleInterview-form .form-section {
+  margin-bottom: 18px;
+}
+
+.scheduleInterview-form h4 {
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: #333;
+}
+
+/* =======================
+   Form Row (2 fields in 1 row)
+========================== */
+.scheduleInterview-form-row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+/* Input Fields */
+.scheduleInterview-form-row input,
+.scheduleInterview-form-row select {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+.scheduleInterview-input-group {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.scheduleInterview-input-group label {
+  font-size: 13px;
+  font-weight: 500;
+  margin-bottom: 5px;
+  color: #333;
+}
+.time-range-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.time-range-wrapper input {
+  flex: 1;
+  padding: 6px;
+}
+
+
+/* =======================
+   Full Row (Textarea)
+========================== */
+.scheduleInterview-form-row-full {
+  margin-top: 10px;
+}
+
+.scheduleInterview-form-row-full textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 13px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  resize: vertical;
+  min-height: 60px;
+  outline: none;
+}
+
+/* =======================
+   Buttons Area
+========================== */
+.scheduleInterview-modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.scheduleInterview-cancel-btn,
+.scheduleInterview-btn {
+  padding: 9px 16px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.scheduleInterview-cancel-btn {
+  background-color: #f1f1f1;
+  color: #555;
+}
+
+.scheduleInterview-cancel-btn:hover {
+  background-color: #e0e0e0;
+}
+
+.scheduleInterview-btn {
+  background-color: #9147ff;
+  color: white;
+  font-weight: 600;
+}
+
+.scheduleInterview-btn:hover {
+  background-color: #7b35e6;
+}
+/*=========   icon and title  ==========*/
+.scheduleInterview-section-title {
+  display: flex;
+  /* justify-content: space-between; */
+  align-items: center;
+  margin-bottom: 15px;
+  flex-wrap: wrap;
+}
+
+.scheduleInterview-section-icon {
+  color: #7f8c8d;
+  cursor: pointer;
+  font-size: 24px;
+  transition: all 0.2s ease;
+  font-size: 24px !important;
+}
+
+.scheduleInterview-section-icon:hover {
+  color: #842cc0;
+  transform: scale(1.1);
+}
+.material-symbols-outlined.calendar-clock-icon:hover {
+  transform: scale(1.1);
+}
+
+
+
+/* =======================
+   Media Queries
+========================== */
+
+/* Tablets (max-width: 1024px) */
+@media screen and (max-width: 1024px) {
+  .scheduleInterview-modal {
+    width: 90%;
+    padding: 18px 20px;
+  }
+
+  .scheduleInterview-modal-title {
+    font-size: 17px;
+  }
+}
+
+/* Tablets & Small Laptops (max-width: 768px) */
+@media screen and (max-width: 768px) {
+  .scheduleInterview-modal {
+    margin-top: 115px;
+    width: 95%;
+    padding: 16px 18px;
+  }
+
+  .scheduleInterview-form-row {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .scheduleInterview-modal-title {
+    font-size: 16px;
+  }
+
+  .scheduleInterview-form-row input,
+  .scheduleInterview-form-row select {
+    font-size: 13px;
+  }
+
+  .scheduleInterview-form-row-full textarea {
+    font-size: 13px;
+  }
+
+  .scheduleInterview-cancel-btn,
+  .scheduleInterview-btn {
+    font-size: 13px;
+    padding: 8px 14px;
+  }
+
+  .scheduleInterview-modal-actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
+
+/* Small Devices (max-width: 480px) */
+@media screen and (max-width: 480px) {
+  .scheduleInterview-modal {
+    margin-top: 95px;
+    width: 95%;
+    padding: 14px 16px;
+  }
+
+  .scheduleInterview-modal-title {
+    font-size: 15px;
+  }
+
+  .scheduleInterview-form-row input,
+  .scheduleInterview-form-row select,
+  .scheduleInterview-form-row-full textarea {
+    font-size: 12px;
+    padding: 7px 10px;
+  }
+
+  .scheduleInterview-cancel-btn,
+  .scheduleInterview-schedule-btn {
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+}
+
+/* Extra Small Devices (max-width: 360px) */
+@media screen and (max-width: 360px) {
+  .scheduleInterview-modal {
+    margin-top: 100px;
+    width: 100%;
+    padding: 12px 12px;
+    border-radius: 0;
+  }
+
+  .scheduleInterview-modal-title {
+    font-size: 14px;
+  }
+
+  .scheduleInterview-form-row input,
+  .scheduleInterview-form-row select,
+  .scheduleInterview-form-row-full textarea {
+    font-size: 12px;
+    padding: 6px 9px;
+  }
+
+  .scheduleInterview-cancel-btn,
+  .scheduleInterview-schedule-btn {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
+}
+
+/* Specific Fix for 820px, 853px, 912px, 1024px */
+@media screen and (min-width: 800px) and (max-width: 1024px) {
+  .scheduleInterview-modal-overlay {
+    align-items: flex-start;
+    padding-top: 60px;
+  }
+
+  .scheduleInterview-modal {
+    width: 90vw;
+    margin-top: 0;
+    margin-left: auto;
+    margin-right: auto;
+    z-index: 2001;
+  }
+}

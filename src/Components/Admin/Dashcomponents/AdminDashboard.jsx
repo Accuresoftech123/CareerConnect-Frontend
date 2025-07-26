@@ -15,20 +15,27 @@ import activeUsersSection from "../../../Images/activeUsersSection.svg";
 import axios from "axios";
 import axiosInstance, { baseURL } from "../../../axiosInstance";
 import { formatDistanceToNow } from "date-fns";
+import ScheduleInterviewModal from "./ScheduleInterviewModal";
 
 const AdminDashboard = () => {
   // const url = "http://localhost:9191";
   // Stats data
+  //count
   const [newJobPostedcount, setnewJobPostedcount] = useState(0);
   const [newCandidatescount, setnewCandidatescount] = useState(0);
   const [newCompaniescount, setnewCompaniescount] = useState(0);
   const [totalSubscriptionscount, settotalSubscriptionscount] = useState(0);
   const [totalActiveUserscount, settotalActiveUserscount] = useState(0);
+  //data table section
+  const [subscribedCandidates, setsubscribedCandidates] = useState([]);
   const [newCandidates, setNewCandidates] = useState([]);
   const [newRecruiters, setNewrecruiters] = useState([]);
   const [allActiveUsers, setAllActiveUsers] = useState([]); // static data initially
   const [filteredActiveUsers, setFilteredActiveUsers] = useState([]);
   const [loading, setLoading] = useState(true);
+  //for schedule interview usestates
+  const [isScheduleModalOpen, setScheduleModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
 
   const fetchRecentJobSeekers = async () => {
     try {
@@ -77,9 +84,7 @@ const AdminDashboard = () => {
 
   const fetchSubscriptionscount = async () => {
     try {
-      const response = await axios.get(
-        `${baseURL}/api/payments/total-amount`
-      );
+      const response = await axios.get(`${baseURL}/api/payments/total-amount`);
       settotalSubscriptionscount(response.data);
       //  console.log(response);
     } catch (error) {
@@ -97,14 +102,14 @@ const AdminDashboard = () => {
   };
   // New Recruiters data
   const fetchnewcompanies = async () => {
-      try {
-        const response = await axiosInstance.get(`/api/admin/recruiter/recent`);
-       setNewrecruiters(response.data);
-       console.log(response.data);
-      } catch (error) {
-        console.error("Error fetching recruiters:", error);
-      }
-    };
+    try {
+      const response = await axiosInstance.get(`/api/admin/recruiter/recent`);
+      setNewrecruiters(response.data);
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error fetching recruiters:", error);
+    }
+  };
 
   // New Candidates data
   // const fetchnewcandidates = () => {
@@ -118,6 +123,70 @@ const AdminDashboard = () => {
   //   ]);
   // }
 
+  //subscribed candidates
+  const fetchSubscriptionCandidates = () => {
+    setsubscribedCandidates([
+  {
+    name: "Vivek Pawar",
+    userType: "Pro",
+    jobTitle: "Full-stack Developer",
+    status: "Scheduled",
+    minExperience: 2,
+    maxExperience: 4,
+    ExpectedSalary: 800000, // in INR per annum
+  },
+  {
+    name: "Racton Solutions",
+    userType: "Pro",
+    jobTitle: "Jr. iOS Developer",
+    status: "Re-scheduled",
+    minExperience: 1,
+    maxExperience: 2,
+    expectedSalary: 500000,
+  },
+  {
+    name: "Techrodrant Solutions",
+    userType: "Pro",
+    jobTitle: "UI/UX Designer",
+    status: "Cancelled",
+    minExperience: 3,
+    maxExperience: 5,
+    expectedSalary: 750000,
+  },
+  {
+    name: "Mayur Shinde",
+    userType: "elite",
+    jobTitle: "Senior HR Executive",
+    status: "Pending",
+    minExperience: 4,
+    maxExperience: 7,
+    expectedSalary: 900000,
+  },
+  {
+    name: "Nautik Tandel",
+    userType: "free",
+    jobTitle: "Java Developer",
+    status: "Done",
+    minExperience: 2,
+    maxExperience: 3,
+    expectedSalary: 600000,
+  },
+]);
+  };
+  //schedule interview popup
+  const openScheduleModal = (e, user) => {
+    e.preventDefault();
+    setSelectedUser(user);
+    setScheduleModalOpen(true);
+    console.log(user);
+  };
+
+  const closeScheduleModal = () => {
+    setSelectedUser(null);
+    setScheduleModalOpen(false);
+  };
+  //Active user section
+  
   // Active Users data with action icons
   const [selectedFilter, setSelectedFilter] = useState("Last 7 days");
   const [isOpen, setIsOpen] = useState(false);
@@ -131,8 +200,6 @@ const AdminDashboard = () => {
     "Last 12 months",
     "Custom range",
   ];
-
-  //Active user section
   const fetchactiveUsers = () => {
     const user = [
       {
@@ -237,6 +304,7 @@ const AdminDashboard = () => {
     fetchRecentJobSeekers();
     fetchnewcompanies();
     fetchactiveUsers();
+    fetchSubscriptionCandidates();
   }, []);
 
   useEffect(() => {
@@ -291,121 +359,97 @@ const AdminDashboard = () => {
             <span className="SubscribedCandidates-icon">
               <img src={activeUsersSection} alt="Subscribed Candidates" />
             </span>
-
             <h3 style={{ paddingTop: "20px" }}>Subscribed Candidates</h3>
           </div>
-          {/* Days Filter */}
-          {/* <div className="SubscribedCandidates-filter-container">
-            <div
-              className="SubscribedCandidates-filter-selected"
-              onClick={() => setIsOpen(!isOpen)}
-            >
-              {selectedFilter}
-              <span className={`dropdown-icon ${isOpen ? "open" : ""}`}>▾</span>
-            </div>
-
-            {isOpen && (
-              <div className="SubscribedCandidates-filter-options">
-                {filterOptions.map((option) => (
-                  <div
-                    key={option}
-                    className={`filter-option ${
-                      selectedFilter === option ? "selected" : ""
-                    }`}
-                    onClick={() => {
-                      setSelectedFilter(option);
-                      setIsOpen(false);
-                      applyActiveUsersFilter(option); // Reuse for now
-                    }}
-                  >
-                    {option}
-                  </div>
-                ))}
-              </div>
-            )}
-          </div> */}
         </div>
+
         <div className="AdminDashboard-table-scroll-wrapper">
-          {/* Subscribed Candidates Table */}
           <table className="SubscribedCandidates-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>Plan</th>
-      <th>Job Title</th>
-      <th>Interview Status</th>
-      <th>Schedule Interview</th>
-      <th>Action</th>
-    </tr>
-  </thead>
-  <tbody>
-    {filteredActiveUsers.map((user, index) => (
-      <tr key={index}>
-        {/* Name with avatar + name */}
-        <td>
-          <div className="SubscribedCandidates-nameCell">
-            <img
-              src="https://via.placeholder.com/40"
-              alt={user.name}
-              className="SubscribedCandidates-avatar"
-            />
-            <span className="SubscribedCandidates-nameText">{user.name}</span>
-          </div>
-        </td>
-
-        {/* Plan */}
-        <td>
-          <span className="SubscribedCandidates-plan">{user.userType}</span>
-        </td>
-
-        {/* Job Title */}
-        <td>
-          <span className="SubscribedCandidates-jobTitle">{user.jobTitle}</span>
-        </td>
-
-        {/* Interview Status with colored background */}
-        <td>
-          <span className={`SubscribedCandidates-status ${user.status.toLowerCase()}`}>
-            {user.status}
-          </span>
-        </td>
-
-        {/* Schedule Button */}
-        <td>
-          <button
-            className="SubscribedCandidates-scheduleBtn"
-            // onClick={() => handleSchedule(user)}
-          >
-            Schedule
-          </button>
-        </td>
-
-        {/* Actions */}
-        <td>
-          <div className="SubscribedCandidates-actions">
-            <VisibilityIcon
-              className="SubscribedCandidates-icon"
-              onClick={() => handleView(user)}
-              titleAccess="View"
-            />
-            <MessageIcon
-              className="SubscribedCandidates-icon"
-              onClick={() => handleMessage(user)}
-              titleAccess="Message"
-            />
-            <MoreVertIcon
-              className="SubscribedCandidates-icon"
-              onClick={() => handleMore(user)}
-              titleAccess="More Options"
-            />
-          </div>
-        </td>
-      </tr>
-    ))}
-  </tbody>
-</table>
-
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Plan</th>
+                <th>Job Title</th>
+                <th>Interview Status</th>
+                <th>Schedule Interview</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              {subscribedCandidates.map((user, index) => (
+                <tr key={index}>
+                  <td>
+                    <div className="SubscribedCandidates-nameCell">
+                      <img
+                        src="https://via.placeholder.com/40"
+                        alt={user.name}
+                        className="SubscribedCandidates-avatar"
+                      />
+                      <span className="SubscribedCandidates-nameText">
+                        {user.name}
+                      </span>
+                    </div>
+                  </td>
+                  <td>
+                    <span className="SubscribedCandidates-plan">
+                      {user.userType}
+                    </span>
+                  </td>
+                  <td>
+                    <span className="SubscribedCandidates-jobTitle">
+                      {user.jobTitle}
+                    </span>
+                  </td>
+                  <td>
+                    <span
+                      className={`SubscribedCandidates-status ${user.status
+                        .toLowerCase()
+                        .replace("-", "")}`}
+                    >
+                      {user.status}
+                    </span>
+                  </td>
+                  <td>
+                    <button
+                      className="SubscribedCandidates-scheduleBtn"
+                      onClick={(e) => openScheduleModal(e, user)}
+                    >
+                      <span className="material-symbols-outlined calendar-clock-icon">
+                        calendar_clock
+                      </span>
+                      <span style={{ paddingLeft: "10px" }}>Schedule</span>
+                    </button>
+                  </td>
+                  <td>
+                    <div className="SubscribedCandidates-actions">
+                      <VisibilityIcon
+                        className="SubscribedCandidates-icon"
+                        onClick={() => handleView(user)}
+                        titleAccess="View"
+                      />
+                      <MessageIcon
+                        className="SubscribedCandidates-icon"
+                        onClick={() => handleMessage(user)}
+                        titleAccess="Message"
+                      />
+                      <MoreVertIcon
+                        className="SubscribedCandidates-icon"
+                        onClick={() => handleMore(user)}
+                        titleAccess="More Options"
+                      />
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <ScheduleInterviewModal
+            isOpen={isScheduleModalOpen}
+            onClose={closeScheduleModal}
+            user={selectedUser}
+          />
         </div>
+
         <div className="Adash-viewAll-container">
           <span className="Adash-viewAll">View all</span>
         </div>
